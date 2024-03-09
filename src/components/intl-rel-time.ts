@@ -5,7 +5,7 @@ import {
     ONE_MINUTE_MS,
     ONE_SECOND_MS,
     ONE_DAY_MS,
-} from './utils/time-in-miliseconds'
+} from 'src/utils/time-in-miliseconds'
 import { config } from '../config'
 
 type RelUnit =

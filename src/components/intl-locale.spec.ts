@@ -1,7 +1,7 @@
 import {Cube} from "../types";
 import * as cube from '../cube';
 
-import initLocale from './intl-locale';
+import initLocale from 'src/components/intl-locale';
 import {render} from "../testing";
 import {html} from "@beforesemicolon/web-component";
 

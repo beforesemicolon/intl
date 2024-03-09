@@ -1,9 +1,9 @@
 import {Cube} from "../types";
 import * as cube from '../cube';
-import initPlural from './intl-plural';
+import initPlural from 'src/components/intl-plural';
 import {render} from "../testing";
 import {state, html} from "@beforesemicolon/web-component";
-import initLocale from "./intl-locale";
+import initLocale from "src/components/intl-locale";
 import {TC} from '../utils';
 
 const CUBE = {

@@ -1,5 +1,5 @@
 import { Cube, ShadowRootModeEnum } from '../types'
-import { millisecondsToTimeParts } from './utils/milliseconds-to-time-parts'
+import { millisecondsToTimeParts } from 'src/utils/milliseconds-to-time-parts'
 import { Props, ObjectLiteral } from '@beforesemicolon/web-component'
 
 const allFields = new Set(['second', 'minute', 'hour', 'day', 'month', 'year'])

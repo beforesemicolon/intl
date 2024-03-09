@@ -1,6 +1,6 @@
 import {Cube} from "../types";
 import * as cube from '../cube';
-import initDate from './intl-datetime';
+import initDate from 'src/components/intl-datetime';
 import {render} from "../testing";
 import {html, state} from "@beforesemicolon/web-component";
 import {TC} from "../utils";

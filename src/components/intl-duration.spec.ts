@@ -1,7 +1,7 @@
 import {Cube} from "../types";
 import * as cube from '../cube';
-import initDuration, {IntlDurationProps} from './intl-duration';
-import initLocale from './intl-locale';
+import initDuration, {IntlDurationProps} from 'src/components/intl-duration';
+import initLocale from 'src/components/intl-locale';
 import {render} from "../testing";
 import {TC} from "../utils";
 import {html, state} from "@beforesemicolon/web-component";

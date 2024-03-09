@@ -1,6 +1,6 @@
 import {Cube} from "../types";
 import * as cube from '../cube';
-import initRelTime from './intl-rel-time';
+import initRelTime from 'src/components/intl-rel-time';
 import {render, wait, waitFor} from "../testing";
 import {html, state} from "@beforesemicolon/web-component";
 import {
@@ -11,7 +11,7 @@ import {
 	ONE_WEEK_MS,
 	ONE_YEAR_MS,
 	ONE_DAY_MS
-} from "./utils/time-in-miliseconds";
+} from "src/utils/time-in-miliseconds";
 import {TC} from '../utils';
 
 const CUBE = {

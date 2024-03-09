@@ -1,5 +1,5 @@
 import { Cube, ShadowRootModeEnum } from '../types'
-import { conditionalField } from './utils/conditional-field'
+import { conditionalField } from 'src/utils/conditional-field'
 import { Props } from '@beforesemicolon/web-component'
 
 export interface IntlDatetimeProps {

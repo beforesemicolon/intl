@@ -1,6 +1,6 @@
 import {Cube} from "../types";
 import * as cube from '../cube';
-import initNumber from './intl-number';
+import initNumber from 'src/components/intl-number';
 import {render} from "../testing";
 import {html, state} from "@beforesemicolon/web-component";
 import {TC} from "../utils";
