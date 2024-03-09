@@ -1,6 +1,5 @@
-import { Cube, ShadowRootModeEnum } from '../types'
-import { conditionalField } from 'src/utils/conditional-field'
-import { Props } from '@beforesemicolon/web-component'
+import { conditionalField } from '../utils/conditional-field'
+import type { StateGetter } from '@beforesemicolon/web-component'
 
 export interface IntlDatetimeProps {
     hour12: boolean | undefined
@@ -25,7 +24,7 @@ export interface IntlDatetimeProps {
         | 'shortGeneric'
         | 'longGeneric'
         | undefined
-    value: string | number
+    value: string | number | Date
     locale: string | undefined
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/getCalendars#supported_calendar_types
     calendar:
@@ -50,7 +49,12 @@ export interface IntlDatetimeProps {
         | undefined
 }
 
-export default ({ register, host, template, config, TC }: Cube) => {
+export default ({
+    html,
+    helper,
+    val,
+    WebComponent,
+}: typeof import('@beforesemicolon/web-component')) => {
     const intlDatetimeDefaultProps: IntlDatetimeProps = {
         hour12: false,
         hourCycle: 'h23',
@@ -69,93 +73,232 @@ export default ({ register, host, template, config, TC }: Cube) => {
         calendar: undefined,
         timezone: undefined,
         timezoneName: 'short',
-        value: '',
+        value: new Date(),
     }
 
-    const intlDatetime = (
-        lang: string,
-        value: string | number = '',
-        opt?: Partial<Omit<IntlDatetimeProps, 'value' | 'locale'>>
-    ) => {
-        if (!TC.oneOf(value, TC.string, TC.number)) {
-            console.error('intl-datetime: invalid value', value)
-            return ''
-        }
+    const intlDatetime = helper(
+        (
+            hour12:
+                | StateGetter<IntlDatetimeProps['hour12']>
+                | IntlDatetimeProps['hour12'] = intlDatetimeDefaultProps[
+                'hour12'
+            ],
+            hourCycle:
+                | StateGetter<IntlDatetimeProps['hourCycle']>
+                | IntlDatetimeProps['hourCycle'] = intlDatetimeDefaultProps[
+                'hourCycle'
+            ],
+            weekday:
+                | StateGetter<IntlDatetimeProps['weekday']>
+                | IntlDatetimeProps['weekday'] = intlDatetimeDefaultProps[
+                'weekday'
+            ],
+            locale:
+                | StateGetter<IntlDatetimeProps['locale']>
+                | IntlDatetimeProps['locale'] = intlDatetimeDefaultProps[
+                'locale'
+            ],
+            era:
+                | StateGetter<IntlDatetimeProps['era']>
+                | IntlDatetimeProps['era'] = intlDatetimeDefaultProps['era'],
+            dayPeriod:
+                | StateGetter<IntlDatetimeProps['dayPeriod']>
+                | IntlDatetimeProps['dayPeriod'] = intlDatetimeDefaultProps[
+                'dayPeriod'
+            ],
+            year:
+                | StateGetter<IntlDatetimeProps['year']>
+                | IntlDatetimeProps['year'] = intlDatetimeDefaultProps['year'],
+            day:
+                | StateGetter<IntlDatetimeProps['day']>
+                | IntlDatetimeProps['day'] = intlDatetimeDefaultProps['day'],
+            hour:
+                | StateGetter<IntlDatetimeProps['hour']>
+                | IntlDatetimeProps['hour'] = intlDatetimeDefaultProps['hour'],
+            minute:
+                | StateGetter<IntlDatetimeProps['minute']>
+                | IntlDatetimeProps['minute'] = intlDatetimeDefaultProps[
+                'minute'
+            ],
+            second:
+                | StateGetter<IntlDatetimeProps['second']>
+                | IntlDatetimeProps['second'] = intlDatetimeDefaultProps[
+                'second'
+            ],
+            month:
+                | StateGetter<IntlDatetimeProps['month']>
+                | IntlDatetimeProps['month'] = intlDatetimeDefaultProps[
+                'month'
+            ],
+            timeStyle:
+                | StateGetter<IntlDatetimeProps['timeStyle']>
+                | IntlDatetimeProps['timeStyle'] = intlDatetimeDefaultProps[
+                'timeStyle'
+            ],
+            dateStyle:
+                | StateGetter<IntlDatetimeProps['dateStyle']>
+                | IntlDatetimeProps['dateStyle'] = intlDatetimeDefaultProps[
+                'dateStyle'
+            ],
+            calendar:
+                | StateGetter<IntlDatetimeProps['calendar']>
+                | IntlDatetimeProps['calendar'] = intlDatetimeDefaultProps[
+                'calendar'
+            ],
+            timezone:
+                | StateGetter<IntlDatetimeProps['timezone']>
+                | IntlDatetimeProps['timezone'] = intlDatetimeDefaultProps[
+                'timezone'
+            ],
+            timezoneName:
+                | StateGetter<IntlDatetimeProps['timezoneName']>
+                | IntlDatetimeProps['timezoneName'] = intlDatetimeDefaultProps[
+                'timezoneName'
+            ],
+            value:
+                | StateGetter<IntlDatetimeProps['value']>
+                | IntlDatetimeProps['value'] = intlDatetimeDefaultProps['value']
+        ) => {
+            let dateTimeValue = val(value)
 
-        opt = { ...intlDatetimeDefaultProps, ...opt }
-
-        const dateTimeOptions = {
-            ...conditionalField('weekday', opt.weekday),
-            ...conditionalField('era', opt.era),
-            ...conditionalField('year', opt.year),
-            ...conditionalField('month', opt.month),
-            ...conditionalField('day', opt.day),
-            ...conditionalField('dayPeriod', opt.dayPeriod),
-            ...conditionalField('hour', opt.hour),
-            ...conditionalField('minute', opt.minute),
-            ...conditionalField('second', opt.second),
-        }
-
-        const dt = new Intl.DateTimeFormat(lang, {
-            hour12: opt.hour12,
-            ...conditionalField('calendar', opt.calendar),
-            ...conditionalField('hourCycle', opt.hourCycle),
-            ...conditionalField('timeStyle', opt.timeStyle),
-            ...conditionalField('dateStyle', opt.dateStyle),
-            ...conditionalField('timeZone', opt.timezone),
-            ...conditionalField('timezoneName', opt.timezoneName),
-            // if dateStyle or timeStyle is provided we cannot set individual time/date options
-            ...(opt.dateStyle || opt.timeStyle ? {} : dateTimeOptions),
-        })
-
-        try {
-            const date =
-                TC.string(value) || TC.numeric(value)
-                    ? TC.numeric(value)
-                        ? new Date(Number(value))
-                        : new Date(value)
-                    : value
-
-            if (!TC.validDate(date)) {
-                throw new Error('Invalid Date')
+            if (
+                !dateTimeValue ||
+                (!/string|number/.test(typeof dateTimeValue) &&
+                    !(dateTimeValue instanceof Date))
+            ) {
+                dateTimeValue = new Date()
             }
 
-            return dt.format(date)
-        } catch (e) {
-            return `[Invalid Date: ${value}]`
+            const dateTimeOptions = {
+                ...conditionalField('weekday', val(weekday)),
+                ...conditionalField('era', val(era)),
+                ...conditionalField('year', val(year)),
+                ...conditionalField('month', val(month)),
+                ...conditionalField('day', val(day)),
+                ...conditionalField('dayPeriod', val(dayPeriod)),
+                ...conditionalField('hour', val(hour)),
+                ...conditionalField('minute', val(minute)),
+                ...conditionalField('second', val(second)),
+            }
+
+            const dt = new Intl.DateTimeFormat(val(locale), {
+                hour12: val(hour12),
+                ...conditionalField('calendar', val(calendar)),
+                ...conditionalField('hourCycle', val(hourCycle)),
+                ...conditionalField('timeStyle', val(timeStyle)),
+                ...conditionalField('dateStyle', val(dateStyle)),
+                ...conditionalField('timeZone', val(timezone)),
+                ...conditionalField('timezoneName', val(timezoneName)),
+                // if dateStyle or timeStyle is provided we cannot set individual time/date options
+                ...(val(dateStyle) || val(timeStyle) ? {} : dateTimeOptions),
+            })
+
+            try {
+                const date = /string|number/.test(typeof dateTimeValue)
+                    ? typeof dateTimeValue === 'string' &&
+                      /^[0-9]+$/.test(dateTimeValue)
+                        ? new Date(Number(dateTimeValue))
+                        : new Date(dateTimeValue as string)
+                    : dateTimeValue
+
+                if (!(date instanceof Date)) {
+                    throw new Error('Invalid Date')
+                }
+
+                return dt.format(date)
+            } catch (e) {
+                return `[Invalid Date: ${value}]`
+            }
+        }
+    )
+
+    class IntlDatetime extends WebComponent<IntlDatetimeProps> {
+        static observedAttributes = [
+            'hour12',
+            'hour-cycle',
+            'weekday',
+            'era',
+            'day-period',
+            'year',
+            'day',
+            'hour',
+            'minute',
+            'second',
+            'month',
+            'time-style',
+            'date-style',
+            'calendar',
+            'timezone',
+            'timezone-name',
+            'value',
+        ]
+        hour12 = intlDatetimeDefaultProps['hour12']
+        hourCycle = intlDatetimeDefaultProps['hourCycle']
+        weekday = intlDatetimeDefaultProps['weekday']
+        locale = intlDatetimeDefaultProps['locale']
+        era = intlDatetimeDefaultProps['era']
+        dayPeriod = intlDatetimeDefaultProps['dayPeriod']
+        year = intlDatetimeDefaultProps['year']
+        day = intlDatetimeDefaultProps['day']
+        hour = intlDatetimeDefaultProps['hour']
+        minute = intlDatetimeDefaultProps['minute']
+        second = intlDatetimeDefaultProps['second']
+        month = intlDatetimeDefaultProps['month']
+        timeStyle = intlDatetimeDefaultProps['timeStyle']
+        dateStyle = intlDatetimeDefaultProps['dateStyle']
+        calendar = intlDatetimeDefaultProps['calendar']
+        timezone = intlDatetimeDefaultProps['timezone']
+        timezoneName = intlDatetimeDefaultProps['timezoneName']
+        value = intlDatetimeDefaultProps['value']
+
+        render() {
+            return html`${intlDatetime(
+                this.props['hour12'],
+                this.props['hourCycle'],
+                this.props['weekday'],
+                this.props['locale'],
+                this.props['era'],
+                this.props['dayPeriod'],
+                this.props['year'],
+                this.props['day'],
+                this.props['hour'],
+                this.props['minute'],
+                this.props['second'],
+                this.props['month'],
+                this.props['timeStyle'],
+                this.props['dateStyle'],
+                this.props['calendar'],
+                this.props['timezone'],
+                this.props['timezoneName'],
+                this.textContent || this.props['value']
+            )}`
         }
     }
 
-    const IntlDatetime = (props: Props<IntlDatetimeProps>) => {
-        const comp = host()
-        const locale = new Intl.Locale(
-            document.documentElement.lang || config.lang
-        )
-        const content = comp.textContent
+    customElements.define('intl-datetime', IntlDatetime)
 
-        comp.innerHTML = ''
-
-        const dateString = () => {
-            const value = props.value() || content || Date.now()
-
-            return intlDatetime(
-                props.locale() || locale.language,
-                value,
-                Object.keys(props).reduce((acc, key) => {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    acc[key] = props[key]()
-                    return acc
-                }, {} as IntlDatetimeProps)
-            )
-        }
-
-        template`${dateString}`
+    return (props: Partial<IntlDatetimeProps>) => {
+        props = { ...intlDatetimeDefaultProps, ...props }
+        return intlDatetime(
+            props['hour12'],
+            props['hourCycle'],
+            props['weekday'],
+            props['locale'],
+            props['era'],
+            props['dayPeriod'],
+            props['year'],
+            props['day'],
+            props['hour'],
+            props['minute'],
+            props['second'],
+            props['month'],
+            props['timeStyle'],
+            props['dateStyle'],
+            props['calendar'],
+            props['timezone'],
+            props['timezoneName'],
+            props['value']
+            // @ts-expect-error the helper has a value property
+        ).value
     }
-
-    register<IntlDatetimeProps>(IntlDatetime, intlDatetimeDefaultProps, {
-        mode: ShadowRootModeEnum.NONE,
-    })
-
-    return intlDatetime
 }

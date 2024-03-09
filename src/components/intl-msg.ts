@@ -128,6 +128,7 @@ export default (
             )
         }
 
-        return text(true, id, values, false)
+        // @ts-expect-error the helper has a value property
+        return text(true, id, values, false).value
     }
 }

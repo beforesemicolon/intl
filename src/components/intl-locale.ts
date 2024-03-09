@@ -139,7 +139,6 @@ export default ({
     customElements.define('intl-locale', IntlLocale)
 
     return (sub: LocaleListener) => {
-        console.log('-- sub', ready)
         if (ready) {
             sub(lang, messages)
         } else {

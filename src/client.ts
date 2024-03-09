@@ -1,6 +1,7 @@
 import './components/intl-locale'
 import initLocale from './components/intl-locale'
 import initLocaleMsg from './components/intl-msg'
+import initLocaleDatetime from './components/intl-datetime'
 import type { WebComponent } from '@beforesemicolon/web-component'
 
 declare global {
@@ -21,15 +22,17 @@ if (!window.BFS?.MARKUP || !window.BFS.WebComponent) {
 
 if (window.BFS) {
     const BFS = { ...window.BFS, ...window.BFS?.MARKUP }
-    
+
     const onLocaleMessagesLoaded = initLocale(BFS)
     const intlMsg = initLocaleMsg(onLocaleMessagesLoaded, BFS)
+    const intlDatetime = initLocaleDatetime(BFS)
 
     window.BFS = {
         ...(window.BFS || {}),
         INTL: {
             onLocaleMessagesLoaded,
-            intlMsg
+            intlMsg,
+            intlDatetime,
         },
     }
 }
