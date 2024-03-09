@@ -1,25 +1,6 @@
-export interface LocaleMessage {
-    [key: string]: string | LocaleMessage
-}
-
-export type LocaleListener = (lang: string, msgs: LocaleMessage) => void
-
-interface IntlLocaleProps {
-    src: string
-    srcDir: string
-    messages: LocaleMessage
-}
-
-export default ({
-    html,
-    WebComponent,
-    when,
-}: typeof import('@beforesemicolon/web-component')) => {
-    const subs: Set<LocaleListener> = new Set()
-    const lang = document.documentElement.lang
-    let ready = false
-    let messages: LocaleMessage = {
-        'cube-intl': {
+let messages = {
+    _locale_: {
+        duration: {
             year: {
                 single: 'year',
                 plural: 'years',
@@ -64,16 +45,38 @@ export default ({
                 narrow: 'ns',
                 short: 'nano',
             },
-            plural: {
-                other: 'th',
-                zero: 'th',
-                one: 'st',
-                two: 'nd',
-                few: 'rd',
-                many: 'th',
-            },
         },
-    }
+        plural: {
+            other: 'th',
+            zero: 'th',
+            one: 'st',
+            two: 'nd',
+            few: 'rd',
+            many: 'th',
+        },
+    },
+}
+
+export type LocaleMessage = typeof messages & {
+    [key: string]: LocaleMessage | string
+}
+
+export type LocaleListener = (lang: string, msgs: LocaleMessage) => void
+
+interface IntlLocaleProps {
+    src: string
+    srcDir: string
+    messages: LocaleMessage
+}
+
+export default ({
+    html,
+    WebComponent,
+    when,
+}: typeof import('@beforesemicolon/web-component')) => {
+    const subs: Set<LocaleListener> = new Set()
+    const lang = document.documentElement.lang
+    let ready = false
 
     class IntlLocale extends WebComponent<IntlLocaleProps, { ready: boolean }> {
         static observedAttributes = ['src', 'src-dir', 'messages']
@@ -85,7 +88,7 @@ export default ({
         }
 
         broadcast = () => {
-            subs.forEach((sub) => sub(lang, messages))
+            subs.forEach((sub) => sub(lang, messages as LocaleMessage))
             subs.clear()
             ready = true
             this.setState({ ready: true })
@@ -145,7 +148,7 @@ export default ({
 
     return (sub: LocaleListener) => {
         if (ready) {
-            sub(lang, messages)
+            sub(lang, messages as LocaleMessage)
         } else {
             subs.add(sub)
         }

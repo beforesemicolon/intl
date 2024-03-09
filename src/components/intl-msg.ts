@@ -1,7 +1,7 @@
 import { LocaleListener, LocaleMessage } from './intl-locale'
 import { StateGetter } from '@beforesemicolon/web-component'
 
-interface IntlMsgProps {
+export interface IntlMsgProps {
     id: string
     values: LocaleMessage
 }
@@ -17,7 +17,7 @@ export default (
     }: typeof import('@beforesemicolon/web-component')
 ) => {
     let locale = new Intl.Locale(document.documentElement.lang)
-    let messages: LocaleMessage = {}
+    let messages = {} as LocaleMessage
     let ready = false
 
     const text = helper(
@@ -121,14 +121,16 @@ export default (
 
     customElements.define('intl-msg', IntlMsg)
 
-    return (id: string, values: LocaleMessage = {}) => {
-        if (!ready) {
-            throw new Error(
-                'You are calling "intlMsg" before locale messages got loaded. Please render "intl-locale" and use the "onLocaleMessagesLoaded" util to know when messages loaded.'
-            )
-        }
+    return {
+        intlMsg: (id: string, values = {} as LocaleMessage) => {
+            if (!ready) {
+                throw new Error(
+                    'You are calling "intlMsg" before locale messages got loaded.'
+                )
+            }
 
-        // @ts-expect-error the helper has a value property
-        return text(true, id, values, false).value
+            // @ts-expect-error the helper has a value property
+            return text(true, id, values, false).value
+        },
     }
 }

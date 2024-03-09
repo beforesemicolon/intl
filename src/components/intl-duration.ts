@@ -1,16 +1,26 @@
-import { Cube, ShadowRootModeEnum } from '../types'
-import { millisecondsToTimeParts } from 'src/utils/milliseconds-to-time-parts'
-import { Props, ObjectLiteral } from '@beforesemicolon/web-component'
+import { millisecondsToTimeParts } from '../utils/milliseconds-to-time-parts'
+import type { StateGetter } from '@beforesemicolon/web-component'
+import type { LocaleListener, LocaleMessage } from './intl-locale'
 
 const allFields = new Set(['second', 'minute', 'hour', 'day', 'month', 'year'])
 
 export interface IntlDurationProps {
     value: number | undefined
-    style: 'narrow' | 'short' | 'long'
+    timeStyle: 'narrow' | 'short' | 'long'
     fields: '*' | 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year'
 }
 
-export default ({ register, host, template, useContext, TC }: Cube) => {
+export default (
+    onLocaleMessagesLoaded: (sub: LocaleListener) => void,
+    {
+        html,
+        WebComponent,
+        val,
+        helper,
+    }: typeof import('@beforesemicolon/web-component')
+) => {
+    let messages = {} as LocaleMessage
+    let ready = false
     const name = new Intl.DisplayNames('en', {
         style: 'long',
         type: 'dateTimeField',
@@ -23,123 +33,175 @@ export default ({ register, host, template, useContext, TC }: Cube) => {
     })
 
     const getText = (
-        msg: ObjectLiteral,
         value: number,
-        key: string,
-        style: IntlDurationProps['style']
+        key: keyof LocaleMessage['_locale_']['duration'],
+        style: IntlDurationProps['timeStyle']
     ) => {
-        const cubeIntl = msg ? msg['cube-intl'] : null
+        const _ = messages['_locale_'].duration
 
-        if (cubeIntl && cubeIntl[key]) {
+        if (_ && _[key]) {
             if (style === 'narrow') {
-                return cubeIntl[key].narrow
+                return _[key].narrow
             }
 
             if (style === 'short') {
-                return cubeIntl[key].short
+                return _[key].short
             }
 
-            return value === 1 ? cubeIntl[key].single : cubeIntl[key].plural
+            return value === 1 ? _[key].single : _[key].plural
         }
 
         return name.of(key)
     }
 
-    const intlDuration = (
-        msgs: ObjectLiteral,
-        value: number,
-        fields: IntlDurationProps['fields'] = '*',
-        style: IntlDurationProps['style'] = 'long'
-    ) => {
-        if (!TC.number(value) || !TC.string(fields)) {
-            console.error(
-                "intl.duration: Invalid 'value' or 'fields'. Received: value=",
-                value,
-                ', fields=',
-                fields,
-                ''
-            )
+    const intlDuration = helper(
+        (
+            ready: StateGetter<boolean> | boolean,
+            _value:
+                | StateGetter<IntlDurationProps['value']>
+                | IntlDurationProps['value'],
+            _fields:
+                | StateGetter<IntlDurationProps['fields']>
+                | IntlDurationProps['fields'] = '*',
+            _style:
+                | StateGetter<IntlDurationProps['timeStyle']>
+                | IntlDurationProps['timeStyle'] = 'long'
+        ) => {
+            if (ready) {
+                const value = val(_value)
+                const fields = val(_fields)
+                const style = val<IntlDurationProps['timeStyle']>(_style)
+
+                if (typeof value !== 'number' || typeof fields !== 'string') {
+                    console.error(
+                        "intl.duration: Invalid 'value' or 'fields'. Received: value=",
+                        value,
+                        ', fields=',
+                        fields,
+                        ''
+                    )
+                    return ''
+                }
+
+                const parts =
+                    fields.trim() === '*'
+                        ? allFields
+                        : new Set(
+                              (fields || '').split(/\s+/g).map((s) => s.trim())
+                          )
+                const tp = millisecondsToTimeParts(value, parts)
+                const gap = style === 'narrow' ? '' : ' '
+
+                return list.format([
+                    ...(parts.has('year') && tp.year
+                        ? [
+                              `${[tp.year]}${gap}${getText(
+                                  tp.year,
+                                  'year',
+                                  style
+                              )}`,
+                          ]
+                        : []),
+                    ...(parts.has('month') && tp.month
+                        ? [
+                              `${[tp.month]}${gap}${getText(
+                                  tp.month,
+                                  'month',
+                                  style
+                              )}`,
+                          ]
+                        : []),
+                    ...(parts.has('day') && tp.day
+                        ? [`${[tp.day]}${gap}${getText(tp.day, 'day', style)}`]
+                        : []),
+                    ...(parts.has('hour') && tp.hour
+                        ? [
+                              `${[tp.hour]}${gap}${getText(
+                                  tp.hour,
+                                  'hour',
+                                  style
+                              )}`,
+                          ]
+                        : []),
+                    ...(parts.has('minute') && tp.minute
+                        ? [
+                              `${[tp.minute]}${gap}${getText(
+                                  tp.minute,
+                                  'minute',
+                                  style
+                              )}`,
+                          ]
+                        : []),
+                    ...(parts.has('second') && tp.second
+                        ? [
+                              `${[tp.second]}${gap}${getText(
+                                  tp.second,
+                                  'second',
+                                  style
+                              )}`,
+                          ]
+                        : []),
+                ])
+            }
+
             return ''
         }
-
-        const parts =
-            fields.trim() === '*'
-                ? allFields
-                : new Set((fields || '').split(/\s+/g).map((s) => s.trim()))
-        const tp = millisecondsToTimeParts(value, parts)
-        const gap = style === 'narrow' ? '' : ' '
-
-        return list.format([
-            ...(parts.has('year') && tp.year
-                ? [`${[tp.year]}${gap}${getText(msgs, tp.year, 'year', style)}`]
-                : []),
-            ...(parts.has('month') && tp.month
-                ? [
-                      `${[tp.month]}${gap}${getText(
-                          msgs,
-                          tp.month,
-                          'month',
-                          style
-                      )}`,
-                  ]
-                : []),
-            ...(parts.has('day') && tp.day
-                ? [`${[tp.day]}${gap}${getText(msgs, tp.day, 'day', style)}`]
-                : []),
-            ...(parts.has('hour') && tp.hour
-                ? [`${[tp.hour]}${gap}${getText(msgs, tp.hour, 'hour', style)}`]
-                : []),
-            ...(parts.has('minute') && tp.minute
-                ? [
-                      `${[tp.minute]}${gap}${getText(
-                          msgs,
-                          tp.minute,
-                          'minute',
-                          style
-                      )}`,
-                  ]
-                : []),
-            ...(parts.has('second') && tp.second
-                ? [
-                      `${[tp.second]}${gap}${getText(
-                          msgs,
-                          tp.second,
-                          'second',
-                          style
-                      )}`,
-                  ]
-                : []),
-        ])
-    }
-
-    const IntlDuration = (props: Props<IntlDurationProps>) => {
-        const comp = host()
-        const msgsctx = useContext<ObjectLiteral>('intl-msg', true)
-        const content = comp.textContent
-
-        comp.innerHTML = ''
-
-        const duration = () => {
-            return intlDuration(
-                msgsctx.value() ?? {},
-                Number(props.value() || content),
-                props.fields(),
-                props.style()
-            )
-        }
-
-        template`${duration}`
-    }
-
-    register<IntlDurationProps>(
-        IntlDuration,
-        {
-            value: undefined,
-            style: 'long',
-            fields: '*',
-        },
-        { mode: ShadowRootModeEnum.NONE }
     )
 
-    return intlDuration
+    onLocaleMessagesLoaded((_, msgs) => {
+        messages = msgs
+        ready = true
+    })
+
+    class IntlDuration extends WebComponent<
+        IntlDurationProps,
+        { ready: boolean }
+    > {
+        static observedAttributes = ['value', 'time-style', 'fields']
+        initialState = {
+            ready: false,
+        }
+        value = undefined
+        timeStyle = 'long'
+        fields = '*'
+
+        onMount() {
+            onLocaleMessagesLoaded(() => {
+                this.setState({ ready: true })
+            })
+        }
+        render() {
+            return html`${intlDuration(
+                this.state.ready,
+                this.props.value,
+                this.props.fields,
+                this.props.timeStyle
+            )}`
+        }
+    }
+
+    customElements.define('intl-duration', IntlDuration)
+
+    return {
+        intlDuration: (props: Partial<IntlDurationProps>) => {
+            props = {
+                value: undefined,
+                timeStyle: 'long',
+                fields: '*',
+                ...props,
+            }
+            if (!ready) {
+                throw new Error(
+                    'You are calling "intlDuration" before locale messages got loaded.'
+                )
+            }
+
+            return intlDuration(
+                true,
+                props.value,
+                props.fields,
+                props.timeStyle
+            ).value
+        },
+    }
 }

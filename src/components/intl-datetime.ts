@@ -277,28 +277,30 @@ export default ({
 
     customElements.define('intl-datetime', IntlDatetime)
 
-    return (props: Partial<IntlDatetimeProps>) => {
-        props = { ...intlDatetimeDefaultProps, ...props }
-        return intlDatetime(
-            props['hour12'],
-            props['hourCycle'],
-            props['weekday'],
-            props['locale'],
-            props['era'],
-            props['dayPeriod'],
-            props['year'],
-            props['day'],
-            props['hour'],
-            props['minute'],
-            props['second'],
-            props['month'],
-            props['timeStyle'],
-            props['dateStyle'],
-            props['calendar'],
-            props['timezone'],
-            props['timezoneName'],
-            props['value']
-            // @ts-expect-error the helper has a value property
-        ).value
+    return {
+        intlDatetime: (props: Partial<IntlDatetimeProps>) => {
+            props = { ...intlDatetimeDefaultProps, ...props }
+            return intlDatetime(
+                props['hour12'],
+                props['hourCycle'],
+                props['weekday'],
+                props['locale'],
+                props['era'],
+                props['dayPeriod'],
+                props['year'],
+                props['day'],
+                props['hour'],
+                props['minute'],
+                props['second'],
+                props['month'],
+                props['timeStyle'],
+                props['dateStyle'],
+                props['calendar'],
+                props['timezone'],
+                props['timezoneName'],
+                props['value']
+                // @ts-expect-error the helper has a value property
+            ).value
+        },
     }
 }
