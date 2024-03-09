@@ -13,6 +13,7 @@ interface IntlLocaleProps {
 export default ({
     html,
     WebComponent,
+    when,
 }: typeof import('@beforesemicolon/web-component')) => {
     const subs: Set<LocaleListener> = new Set()
     const lang = document.documentElement.lang
@@ -74,16 +75,20 @@ export default ({
         },
     }
 
-    class IntlLocale extends WebComponent<IntlLocaleProps> {
+    class IntlLocale extends WebComponent<IntlLocaleProps, { ready: boolean }> {
         static observedAttributes = ['src', 'src-dir', 'messages']
         src = ''
         srcDir = ''
         messages = null
+        initialState = {
+            ready: false,
+        }
 
         broadcast = () => {
             subs.forEach((sub) => sub(lang, messages))
             subs.clear()
             ready = true
+            this.setState({ ready: true })
         }
 
         loadMessages = async () => {
@@ -132,7 +137,7 @@ export default ({
         }
 
         render() {
-            return html`<slot></slot>`
+            return html`${when(this.state.ready, html`<slot></slot>`, '')}`
         }
     }
 
