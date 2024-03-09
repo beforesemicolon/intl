@@ -3,6 +3,7 @@ import initLocale from './components/intl-locale'
 import initLocaleMsg from './components/intl-msg'
 import initLocaleDatetime from './components/intl-datetime'
 import initLocaleDuration from './components/intl-duration'
+import initLocaleRelativeTime from './components/intl-rel-time'
 import type { WebComponent } from '@beforesemicolon/web-component'
 
 declare global {
@@ -27,6 +28,7 @@ if (window.BFS) {
     const onLocaleMessagesLoaded = initLocale(BFS)
     const { intlMsg } = initLocaleMsg(onLocaleMessagesLoaded, BFS)
     const { intlDatetime } = initLocaleDatetime(BFS)
+    const { intlRelativeTime } = initLocaleRelativeTime(BFS)
     const { intlDuration } = initLocaleDuration(onLocaleMessagesLoaded, BFS)
 
     window.BFS = {
@@ -36,6 +38,7 @@ if (window.BFS) {
             intlMsg,
             intlDatetime,
             intlDuration,
+            intlRelativeTime,
         },
     }
 }

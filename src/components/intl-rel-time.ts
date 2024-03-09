@@ -1,14 +1,11 @@
-import { Cube, ShadowRootModeEnum } from '../types'
-import { Props } from '@beforesemicolon/web-component'
 import {
     ONE_HOUR_MS,
     ONE_MINUTE_MS,
     ONE_SECOND_MS,
     ONE_DAY_MS,
-} from 'src/utils/time-in-miliseconds'
-import { config } from '../config'
+} from '../utils/time-in-miliseconds'
 
-type RelUnit =
+export type RelativeUnit =
     | 'year'
     | 'years'
     | 'quarter'
@@ -28,15 +25,15 @@ type RelUnit =
 
 export interface IntlRelTimeProps {
     live: boolean
-    showDecimals: false
+    decimals: false
     value: number | undefined
-    style: 'long' | 'short' | 'narrow' | undefined
+    timeStyle: 'long' | 'short' | 'narrow' | undefined
     numeric: boolean
-    unit: 'auto' | RelUnit
+    unit: 'auto' | RelativeUnit
     locale: string | undefined
 }
 
-const getUpdateIntervalByUnit = (unit: IntlRelTimeProps['unit']) => {
+const getUpdateIntervalByUnit = (unit?: IntlRelTimeProps['unit']) => {
     switch (unit) {
         case 'hours':
         case 'hour':
@@ -57,7 +54,7 @@ const getUnitAndValue = (
     precision = 0
 ): {
     val: number
-    unit: RelUnit
+    unit: RelativeUnit
     interval: number | null
 } => {
     const inThePast = milliseconds < 0 ? -1 : 1
@@ -125,125 +122,112 @@ const getUnitAndValue = (
     }
 }
 
-export default ({ register, host, template, state, onMount, TC }: Cube) => {
-    const defaultProps: IntlRelTimeProps = {
-        locale: undefined,
-        showDecimals: false,
-        live: false,
-        value: undefined,
-        numeric: false,
-        style: 'long',
-        unit: 'auto',
+const defaultProps: IntlRelTimeProps = {
+    locale: document.documentElement.lang,
+    decimals: false,
+    live: false,
+    value: undefined,
+    numeric: false,
+    timeStyle: 'long',
+    unit: 'auto',
+}
+
+const intlRelativeTime = (
+    value: IntlRelTimeProps['value'],
+    props: Partial<IntlRelTimeProps> = defaultProps
+) => {
+    if (typeof value !== 'number') {
+        console.error('intl-relative-time: invalid value', value)
+        return { value: '', interval: null }
     }
 
-    const intlRelTime = (
-        locale: string,
-        value: number,
-        opt: Partial<
-            Omit<IntlRelTimeProps, 'locale' | 'value' | 'live'>
-        > = defaultProps
-    ) => {
-        if (!TC.number(value)) {
-            console.error('intl-rel-time: invalid value', value)
-            return ''
-        }
+    props = { ...defaultProps, ...props }
 
-        opt = { ...defaultProps, ...opt }
-
-        const precision = opt.showDecimals ? 1 : 0
-        const relative = new Intl.RelativeTimeFormat(locale, {
-            style: opt.style,
-            numeric: opt.numeric ? 'always' : 'auto',
-        })
-
-        if (opt.unit === 'auto') {
-            const rel = getUnitAndValue(value - Date.now(), precision)
-
-            return relative.format(rel.val, rel.unit)
-        }
-
-        return relative.format(
-            Number(value.toFixed(precision)),
-            opt.unit as RelUnit
-        )
-    }
-
-    const IntlRelTime = (props: Props<IntlRelTimeProps>) => {
-        const comp = host()
-        const locale = new Intl.Locale(
-            document.documentElement.lang || config.lang
-        )
-        const [time, setTime] = state('')
-        let interval: ReturnType<typeof setTimeout>
-        const content = comp.textContent
-
-        comp.innerHTML = ''
-
-        const getTime = (): {
-            value: string | null
-            interval: number | null
-        } => {
-            const value = Number(props.value() || content || 0)
-
-            if (!value) {
-                return { value: null, interval: null }
-            }
-
-            const precision = props.showDecimals() ? 1 : 0
-            const relative = new Intl.RelativeTimeFormat(
-                props.locale() || locale.language,
-                {
-                    style: props.style(),
-                    numeric: props.numeric() ? 'always' : 'auto',
-                }
-            )
-
-            if (props.unit() === 'auto') {
-                const rel = getUnitAndValue(value - Date.now(), precision)
-
-                return {
-                    value: relative.format(rel.val, rel.unit),
-                    interval: rel.interval,
-                }
-            }
-
-            return {
-                value: relative.format(
-                    Number(value.toFixed(precision)),
-                    props.unit() as RelUnit
-                ),
-                interval: getUpdateIntervalByUnit(props.unit()),
-            }
-        }
-
-        const updateTime = () => {
-            const time = getTime()
-            time.value && setTime(time.value)
-
-            if (time.interval) {
-                interval = setTimeout(updateTime, time.interval)
-            }
-        }
-
-        onMount(() => {
-            if (props.live()) {
-                interval = setTimeout(updateTime, 0)
-
-                return () => {
-                    clearInterval(interval)
-                }
-            } else {
-                const time = getTime()
-                time.value && setTime(time.value)
-            }
-        })
-
-        template`${time}`
-    }
-
-    register<IntlRelTimeProps>(IntlRelTime, defaultProps, {
-        mode: ShadowRootModeEnum.NONE,
+    const precision = props.decimals ? 1 : 0
+    const relative = new Intl.RelativeTimeFormat(defaultProps.locale, {
+        style: props.timeStyle,
+        numeric: props.numeric ? 'always' : 'auto',
     })
 
-    return intlRelTime
+    if (props.unit === 'auto') {
+        const rel = getUnitAndValue(value - Date.now(), precision)
+
+        return {
+            value: relative.format(rel.val, rel.unit) ?? '',
+            interval: rel.interval,
+        }
+    }
+
+    return {
+        value:
+            relative.format(
+                Number(value.toFixed(precision)),
+                props.unit as RelativeUnit
+            ) ?? '',
+        interval: getUpdateIntervalByUnit(props.unit),
+    }
+}
+
+export default ({
+    html,
+    WebComponent,
+}: typeof import('@beforesemicolon/web-component')) => {
+    class IntlRelTime extends WebComponent<IntlRelTimeProps, { time: string }> {
+        static observedAttributes = [
+            'live',
+            'decimals',
+            'value',
+            'time-style',
+            'numeric',
+            'unit',
+            'locale',
+        ]
+        initialState = {
+            time: '',
+        }
+        live = defaultProps.live
+        decimals = defaultProps.decimals
+        value = defaultProps.value
+        timeStyle = defaultProps.timeStyle
+        numeric = defaultProps.numeric
+        unit = defaultProps.unit
+        locale = defaultProps.locale
+        #interval: ReturnType<typeof setTimeout> | number = 0
+
+        updateTime = () => {
+            const { value, interval } = intlRelativeTime(this.props.value(), {
+                locale: this.props.locale(),
+                decimals: this.props.decimals(),
+                timeStyle: this.props.timeStyle(),
+                numeric: this.props.numeric(),
+                unit: this.props.unit(),
+            })
+            this.setState({ time: value })
+
+            if (this.props.live() && interval) {
+                clearInterval(this.#interval)
+                this.#interval = setTimeout(this.updateTime, interval)
+            }
+        }
+
+        onMount() {
+            this.updateTime()
+        }
+
+        onDestroy() {
+            clearInterval(this.#interval)
+        }
+
+        render() {
+            return html`${this.state.time}`
+        }
+    }
+
+    customElements.define('intl-relative-time', IntlRelTime)
+
+    return {
+        intlRelativeTime: (value: number, props: Partial<IntlRelTimeProps>) => {
+            return intlRelativeTime(value, props).value
+        },
+    }
 }
