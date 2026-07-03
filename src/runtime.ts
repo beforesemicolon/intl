@@ -24,7 +24,11 @@ export interface IntlRuntimeOptions {
     fallbackMessages?: IntlMessages
     src?: string
     srcDir?: string
-    loader?: (locale: string) => Promise<IntlMessages> | IntlMessages
+    baseUrl?: string
+    loader?: (
+        locale: string,
+        signal?: AbortSignal
+    ) => Promise<IntlMessages> | IntlMessages
     parentScope?: IntlRuntime
 }
 
@@ -45,6 +49,7 @@ export interface IntlRuntime {
     setLocale(locale: string): Promise<IntlRuntimeSnapshot>
     loadLocale(locale?: string): Promise<IntlRuntimeSnapshot>
     setMessages(messages: IntlMessages, locale?: string): IntlRuntimeSnapshot
+    setFallbackMessages(messages: IntlMessages, locale?: string): IntlRuntimeSnapshot
     getMessage<T = unknown>(key: string): T | undefined
     subscribe(listener: IntlRuntimeListener): () => void
     destroy(): void
@@ -55,6 +60,8 @@ let defaultRuntime: IntlRuntime | null = null
 
 const hasDocument = () => typeof document !== 'undefined'
 const hasFetch = () => typeof fetch !== 'undefined'
+const hasLocation = () => typeof location !== 'undefined'
+const hasAbortController = () => typeof AbortController !== 'undefined'
 
 const getDocumentLocale = () => {
     if (hasDocument() && document.documentElement.lang) {
@@ -114,17 +121,34 @@ const getByPath = <T = unknown>(source: IntlMessages, path: string): T | undefin
     }, source) as T | undefined
 }
 
+const resolveSourceUrl = (
+    locale: string,
+    { src, srcDir, baseUrl }: IntlRuntimeOptions
+) => {
+    const path = src || `${srcDir?.replace(/\/$/, '')}/${locale}.json`
+
+    if (/^https?:\/\//.test(path)) {
+        return path
+    }
+
+    const base = baseUrl || (hasLocation() ? location.origin : 'http://localhost')
+    return new URL(path, base).href
+}
+
 class ScopedIntlRuntime implements IntlRuntime {
     #locale: string
     #fallbackLocale?: string
     #messages: IntlMessages
     #fallbackMessages: IntlMessages
+    #localeMessages = new Map<string, IntlMessages>()
     #loadedLocales = new Set<string>()
+    #loadingLocales = new Map<string, Promise<IntlRuntimeSnapshot>>()
     #status: IntlRuntimeStatus = 'idle'
     #error?: unknown
     #subs = new Set<IntlRuntimeListener>()
     #options: IntlRuntimeOptions
     #destroyed = false
+    #abortController?: AbortController
 
     readonly parentScope?: IntlRuntime
     readonly formatterCache = new Map<string, unknown>()
@@ -142,8 +166,14 @@ class ScopedIntlRuntime implements IntlRuntime {
         )
 
         if (options.messages) {
+            this.#localeMessages.set(this.#locale, options.messages)
             this.#loadedLocales.add(this.#locale)
             this.#status = 'ready'
+        }
+
+        if (options.fallbackMessages && this.#fallbackLocale) {
+            this.#localeMessages.set(this.#fallbackLocale, options.fallbackMessages)
+            this.#loadedLocales.add(this.#fallbackLocale)
         }
     }
 
@@ -199,12 +229,73 @@ class ScopedIntlRuntime implements IntlRuntime {
         return snapshot
     }
 
+    #clearCaches = () => {
+        this.messageCache.clear()
+        this.formatterCache.clear()
+    }
+
+    #applyLocaleMessages = (locale: string) => {
+        const parentMessages = this.parentScope?.messages
+        const currentMessages = this.#localeMessages.get(locale) || {}
+        this.#messages = mergeMessages(parentMessages, currentMessages)
+
+        const fallbackMessages = this.#fallbackLocale
+            ? this.#localeMessages.get(this.#fallbackLocale)
+            : undefined
+
+        this.#fallbackMessages = mergeMessages(
+            this.parentScope?.fallbackMessages,
+            fallbackMessages,
+            this.#fallbackMessages
+        )
+        this.#clearCaches()
+    }
+
+    #loadMessages = async (
+        locale: string,
+        signal?: AbortSignal
+    ): Promise<IntlMessages> => {
+        if (this.#options.loader) {
+            return this.#options.loader(locale, signal)
+        }
+
+        if (this.#options.src || this.#options.srcDir) {
+            if (!hasFetch()) {
+                throw new Error('[intl] fetch is not available for locale loading.')
+            }
+
+            const url = resolveSourceUrl(locale, this.#options)
+            const response = await fetch(url, { signal })
+
+            if (!response.ok) {
+                throw new Error(
+                    `[intl] Loading "${url}" failed with status code ${response.status}`
+                )
+            }
+
+            return (await response.json()) as IntlMessages
+        }
+
+        return {}
+    }
+
     setMessages = (messages: IntlMessages, locale = this.#locale) => {
-        this.#messages = mergeMessages(this.parentScope?.messages, messages)
+        this.#localeMessages.set(locale, messages)
         this.#loadedLocales.add(locale)
+        this.#applyLocaleMessages(this.#locale)
         this.#status = 'ready'
         this.#error = undefined
-        this.messageCache.clear()
+        return this.#notify()
+    }
+
+    setFallbackMessages = (messages: IntlMessages, locale = this.#fallbackLocale) => {
+        if (locale) {
+            this.#localeMessages.set(locale, messages)
+            this.#loadedLocales.add(locale)
+        }
+
+        this.#fallbackMessages = mergeMessages(this.parentScope?.fallbackMessages, messages)
+        this.#clearCaches()
         return this.#notify()
     }
 
@@ -232,44 +323,95 @@ class ScopedIntlRuntime implements IntlRuntime {
         }
 
         if (this.#loadedLocales.has(locale)) {
+            this.#applyLocaleMessages(this.#locale)
             this.#status = 'ready'
+            this.#error = undefined
             return this.#notify()
         }
 
+        const existingLoad = this.#loadingLocales.get(locale)
+        if (existingLoad) {
+            return existingLoad
+        }
+
+        if (hasAbortController()) {
+            this.#abortController?.abort()
+            this.#abortController = new AbortController()
+        }
+
+        const signal = this.#abortController?.signal
         this.#status = 'loading'
         this.#error = undefined
         this.#notify()
 
-        try {
-            let messages: IntlMessages | undefined
+        const load = (async () => {
+            try {
+                const messages = await this.#loadMessages(locale, signal)
 
-            if (this.#options.loader) {
-                messages = await this.#options.loader(locale)
-            } else if (this.#options.src || this.#options.srcDir) {
-                if (!hasFetch()) {
-                    throw new Error('[intl] fetch is not available for locale loading.')
+                if (signal?.aborted || this.#destroyed) {
+                    return this.snapshot()
                 }
 
-                const src = this.#options.src || `${this.#options.srcDir?.replace(/\/$/, '')}/${locale}.json`
-                const response = await fetch(new URL(src, location.origin).href)
+                this.#localeMessages.set(locale, messages || {})
+                this.#loadedLocales.add(locale)
 
-                if (!response.ok) {
-                    throw new Error(
-                        `[intl] Loading "${src}" failed with status code ${response.status}`
+                if (locale === this.#fallbackLocale) {
+                    this.#fallbackMessages = mergeMessages(
+                        this.parentScope?.fallbackMessages,
+                        messages || {}
                     )
                 }
 
-                messages = (await response.json()) as IntlMessages
-            } else {
-                messages = {}
-            }
+                if (locale === this.#locale) {
+                    this.#applyLocaleMessages(locale)
+                }
 
-            return this.setMessages(messages || {}, locale)
-        } catch (error) {
-            this.#status = 'error'
-            this.#error = error
-            return this.#notify()
-        }
+                if (
+                    this.#fallbackLocale &&
+                    this.#fallbackLocale !== locale &&
+                    !this.#loadedLocales.has(this.#fallbackLocale)
+                ) {
+                    try {
+                        const fallbackMessages = await this.#loadMessages(
+                            this.#fallbackLocale,
+                            signal
+                        )
+
+                        if (!signal?.aborted && !this.#destroyed) {
+                            this.#localeMessages.set(
+                                this.#fallbackLocale,
+                                fallbackMessages || {}
+                            )
+                            this.#loadedLocales.add(this.#fallbackLocale)
+                            this.#fallbackMessages = mergeMessages(
+                                this.parentScope?.fallbackMessages,
+                                fallbackMessages || {}
+                            )
+                            this.#applyLocaleMessages(this.#locale)
+                        }
+                    } catch {
+                        // Fallback locale loading should not fail the primary locale load.
+                    }
+                }
+
+                this.#status = 'ready'
+                this.#error = undefined
+                return this.#notify()
+            } catch (error) {
+                if (signal?.aborted || this.#destroyed) {
+                    return this.snapshot()
+                }
+
+                this.#status = 'error'
+                this.#error = error
+                return this.#notify()
+            } finally {
+                this.#loadingLocales.delete(locale)
+            }
+        })()
+
+        this.#loadingLocales.set(locale, load)
+        return load
     }
 
     setLocale = async (locale: string) => {
@@ -278,8 +420,7 @@ class ScopedIntlRuntime implements IntlRuntime {
         }
 
         this.#locale = locale
-        this.formatterCache.clear()
-        this.messageCache.clear()
+        this.#clearCaches()
         return this.loadLocale(locale)
     }
 
@@ -294,10 +435,13 @@ class ScopedIntlRuntime implements IntlRuntime {
 
     destroy = () => {
         this.#destroyed = true
+        this.#abortController?.abort()
         this.#subs.clear()
+        this.#loadingLocales.clear()
         this.formatterCache.clear()
         this.messageCache.clear()
         this.#loadedLocales.clear()
+        this.#localeMessages.clear()
     }
 }
 
