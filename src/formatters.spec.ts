@@ -1,3 +1,4 @@
+import '@formatjs/intl-durationformat/polyfill'
 import { createIntl, resetIntl } from './runtime'
 import {
     formatDateTime,
@@ -118,5 +119,51 @@ describe('formatter functions', () => {
         expect(formatPlural(3, { locale: 'en-US', type: 'ordinal' })).toBe(
             '3few'
         )
+    })
+
+    it('reuses formatter cache entries per runtime scope', () => {
+        const scope = createIntl({ locale: 'en-US' })
+
+        formatNumber(1, { scope, style: 'decimal' })
+        formatDateTime('2026-01-01T00:00:00Z', {
+            scope,
+            dateStyle: 'short',
+            timeZone: 'UTC',
+        })
+        formatDuration(1_000, { scope, fields: 'seconds', style: 'long' })
+        formatRelativeTime(-1, {
+            scope,
+            unit: 'day',
+            numeric: 'always',
+        })
+        formatList(['A', 'B'], { scope, type: 'conjunction' })
+        formatName('US', { scope, type: 'region' })
+        formatPlural(1, { scope, one: 'item', other: 'items' })
+
+        expect(scope.formatterCache.size).toBe(7)
+
+        formatNumber(2, { scope, style: 'decimal' })
+        formatDateTime('2026-01-02T00:00:00Z', {
+            scope,
+            dateStyle: 'short',
+            timeZone: 'UTC',
+        })
+        formatDuration(2_000, { scope, fields: 'seconds', style: 'long' })
+        formatRelativeTime(-2, {
+            scope,
+            unit: 'day',
+            numeric: 'always',
+        })
+        formatList(['C', 'D'], { scope, type: 'conjunction' })
+        formatName('PT', { scope, type: 'region' })
+        formatPlural(2, { scope, one: 'item', other: 'items' })
+
+        expect(scope.formatterCache.size).toBe(7)
+
+        const otherScope = createIntl({ locale: 'en-US' })
+
+        formatNumber(1, { scope: otherScope, style: 'decimal' })
+
+        expect(otherScope.formatterCache.size).toBe(1)
     })
 })

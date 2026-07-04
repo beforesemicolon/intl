@@ -754,19 +754,29 @@ Components:
 
 ---
 
-## Phase 11 — Formatter Cache
+## Phase 11 — Formatter Cache — Complete
+
+Status: complete. Formatter functions share the runtime-owned formatter cache per scope, reuse cache entries when formatter options are stable, and keep caches isolated across runtime scopes. Focused coverage now exercises cache reuse across number, date/time, duration, relative time, list, display names, and plural formatters.
+
+Verification:
+
+```sh
+npx jest --config jest.config.cjs --runInBand src/formatters.spec.ts src/runtime.spec.ts
+```
+
+Result: 23 focused formatter cache and runtime tests passing.
 
 Add shared formatter cache per runtime scope.
 
 ### Cache Targets
 
-- `Intl.NumberFormat`
-- `Intl.DateTimeFormat`
-- `Intl.RelativeTimeFormat`
-- `Intl.ListFormat`
-- `Intl.DisplayNames`
-- `Intl.PluralRules`
-- `Intl.DurationFormat` when available
+- [x] `Intl.NumberFormat`
+- [x] `Intl.DateTimeFormat`
+- [x] `Intl.RelativeTimeFormat`
+- [x] `Intl.ListFormat`
+- [x] `Intl.DisplayNames`
+- [x] `Intl.PluralRules`
+- [x] `Intl.DurationFormat` when available
 
 ### Cache Key
 
