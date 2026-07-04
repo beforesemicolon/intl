@@ -475,25 +475,35 @@ Result: 22 focused formatter and runtime tests passing.
 
 ---
 
-## Phase 4 — `<intl-locale>` Provider
+## Phase 4 — `<intl-locale>` Provider — Complete
 
 Refactor `<intl-locale>` to use runtime scopes.
 
 Updated gate: replace the current global message-loading implementation with a provider-backed runtime before relying on scoped locale behavior in other components.
 
+Status: complete. `<intl-locale>` creates provider-backed runtime scopes, supports nested providers, exposes nearest-provider runtime lookup for descendants, initializes the default runtime for root providers, and supports ready-gated rendering.
+
+Verification:
+
+```sh
+npx jest --config jest.config.cjs --runInBand src/components/intl-locale.spec.ts src/runtime.spec.ts src/formatters.spec.ts
+```
+
+Result: 32 focused provider, runtime, and formatter tests passing.
+
 ### Requirements
 
-- Creates scoped runtime.
-- Supports nested providers.
-- Allows locale override.
-- Uses nearest parent provider as parent scope.
-- Provides scope to descendants.
-- Initializes default runtime if needed.
-- Can update document `<html lang>` and `<html dir>` only if `update-document` is true.
-- Renders slotted content after ready, unless fallback rendering is enabled.
-- Loads `messages`, `src`, `src-dir`, and `loader` through `createIntl()` / `loadLocale()`.
-- Exposes the provider runtime to descendants without using a process-wide messages store.
-- Subscribes child rendering to runtime updates and cleans up subscriptions on unmount.
+- [x] Creates scoped runtime.
+- [x] Supports nested providers.
+- [x] Allows locale override.
+- [x] Uses nearest parent provider as parent scope.
+- [x] Provides scope to descendants.
+- [x] Initializes default runtime if needed.
+- [x] Can update document `<html lang>` and `<html dir>` only if `update-document` is true.
+- [x] Renders slotted content after ready, unless fallback rendering is enabled.
+- [x] Loads `messages`, `src`, `src-dir`, and `loader` through `createIntl()` / `loadLocale()`.
+- [x] Exposes the provider runtime to descendants without using a process-wide messages store.
+- [x] Subscribes child rendering to runtime updates and cleans up subscriptions on unmount.
 
 ---
 
