@@ -377,9 +377,19 @@ Create a core `IntlRuntime` class or factory. It should not depend on Web Compon
 
 ---
 
-## Phase 2 — Locale Loading
+## Phase 2 — Locale Loading — Complete
 
 Build message loading into runtime.
+
+Status: complete. Runtime locale loading is implemented in `src/runtime.ts`; `<intl-locale>` now delegates locale file loading to an `IntlRuntime` instance and dispatches locale lifecycle events.
+
+Verification:
+
+```sh
+npm test -- --runInBand src/runtime.spec.ts src/components/intl-locale.spec.ts
+```
+
+Result: 20 focused runtime and provider tests passing.
 
 ### Supported Sources
 
@@ -415,12 +425,12 @@ createIntl({
 
 ### Rules
 
-- Cache loaded locales.
-- Abort stale fetches.
-- Support fallback locale.
-- Support parent-scope fallback.
-- Expose loading/error state.
-- Dispatch `locale-load`, `locale-error`, and `locale-change` events from component provider.
+- [x] Cache loaded locales.
+- [x] Abort stale fetches.
+- [x] Support fallback locale.
+- [x] Support parent-scope fallback.
+- [x] Expose loading/error state.
+- [x] Dispatch `locale-load`, `locale-error`, and `locale-change` events from component provider.
 
 ---
 

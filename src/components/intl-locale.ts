@@ -1,156 +1,78 @@
-let messages = {
-    _locale_: {
-        duration: {
-            year: {
-                single: 'year',
-                plural: 'years',
-                narrow: 'yr',
-                short: 'year',
-            },
-            month: {
-                single: 'month',
-                plural: 'months',
-                narrow: 'm',
-                short: 'month',
-            },
-            week: {
-                single: 'week',
-                plural: 'weeks',
-                narrow: 'week',
-                short: 'week',
-            },
-            day: { single: 'day', plural: 'days', narrow: 'day', short: 'day' },
-            hour: { single: 'hour', plural: 'hours', narrow: 'h', short: 'hr' },
-            minute: {
-                single: 'minute',
-                plural: 'minutes',
-                narrow: 'min',
-                short: 'min',
-            },
-            second: {
-                single: 'second',
-                plural: 'seconds',
-                narrow: 's',
-                short: 'sec',
-            },
-            millisecond: {
-                single: 'millisecond',
-                plural: 'milliseconds',
-                narrow: 'ms',
-                short: 'mils',
-            },
-            nanosecond: {
-                single: 'nanosecond',
-                plural: 'nanoseconds',
-                narrow: 'ns',
-                short: 'nano',
-            },
-        },
-        plural: {
-            other: 'th',
-            zero: 'th',
-            one: 'st',
-            two: 'nd',
-            few: 'rd',
-            many: 'th',
-        },
-    },
-}
-
-export type LocaleMessage = typeof messages & {
-    [key: string]: LocaleMessage | string
-}
-
-export type LocaleListener = (lang: string, msgs: LocaleMessage) => void
+import { createIntl, IntlRuntime, IntlRuntimeSnapshot } from '../runtime'
 
 interface IntlLocaleProps {
+    locale: string
+    fallbackLocale: string
     src: string
     srcDir: string
-    messages: LocaleMessage
 }
 
 export default ({
-    html,
     WebComponent,
-    when,
 }: typeof import('@beforesemicolon/web-component')) => {
-    const subs: Set<LocaleListener> = new Set()
-    const lang = document.documentElement.lang
-    let ready = false
-
-    class IntlLocale extends WebComponent<IntlLocaleProps, { ready: boolean }> {
-        static observedAttributes = ['src', 'src-dir', 'messages']
+    class IntlLocale extends WebComponent<IntlLocaleProps> {
+        static observedAttributes = ['locale', 'fallback-locale', 'src', 'src-dir']
+        locale = ''
+        fallbackLocale = ''
         src = ''
         srcDir = ''
-        messages = null
-        initialState = {
-            ready: false,
+        runtime?: IntlRuntime
+
+        dispatchLocaleEvent = (type: string, snapshot: IntlRuntimeSnapshot) => {
+            this.dispatchEvent(
+                new CustomEvent(type, {
+                    bubbles: true,
+                    composed: true,
+                    detail: snapshot,
+                })
+            )
         }
 
-        broadcast = () => {
-            subs.forEach((sub) => sub(lang, messages as LocaleMessage))
-            subs.clear()
-            ready = true
-            this.setState({ ready: true })
+        createRuntime = () => {
+            this.runtime?.destroy()
+            this.runtime = createIntl({
+                locale: this.props.locale() || undefined,
+                fallbackLocale: this.props.fallbackLocale() || undefined,
+                src: this.props.src() || undefined,
+                srcDir: this.props.srcDir() || undefined,
+            })
+
+            return this.runtime
         }
 
         loadMessages = async () => {
-            if (this.props.src()) {
-                const res = await fetch(
-                    new URL(this.props.src(), location.origin).href
-                )
+            const runtime = this.runtime || this.createRuntime()
+            const previousLocale = runtime.locale
+            const snapshot = await runtime.loadLocale()
 
-                if (res.status === 200) {
-                    const data = (await res.json()) as LocaleMessage
-                    messages = { ...messages, ...data }
-                } else {
-                    throw new Error(
-                        `[intl-locale] Loading "${this.props.src()}" locale messages failed with status code ${
-                            res.status
-                        }`
-                    )
-                }
-            } else if (this.props.srcDir()) {
-                const src = `${this.props
-                    .srcDir()
-                    .replace(/\/$/, '')}/${lang}.json`
-
-                const res = await fetch(new URL(src, location.origin).href)
-
-                if (res.status === 200) {
-                    const data = (await res.json()) as LocaleMessage
-                    messages = { ...messages, ...data }
-                } else {
-                    throw new Error(
-                        `[intl-locale] Loading "${src}" locale messages failed with status code ${res.status}`
-                    )
-                }
+            if (snapshot.status === 'error') {
+                this.dispatchLocaleEvent('locale-error', snapshot)
+                throw snapshot.error
             }
 
-            this.broadcast()
+            this.dispatchLocaleEvent('locale-load', snapshot)
+
+            if (snapshot.locale !== previousLocale || snapshot.status === 'ready') {
+                this.dispatchLocaleEvent('locale-change', snapshot)
+            }
+
+            return snapshot
         }
 
         onMount() {
-            if (this.props.messages()) {
-                messages = this.props.messages()
-                this.broadcast()
-            } else {
-                this.loadMessages().catch(console.error)
-            }
+            this.loadMessages().catch(err => {
+                console.error(err)
+            })
+        }
+
+        onDestroy() {
+            this.runtime?.destroy()
         }
 
         render() {
-            return html`${when(this.state.ready, html`<slot></slot>`, '')}`
+            return '<slot></slot>'
         }
     }
 
     customElements.define('intl-locale', IntlLocale)
-
-    return (sub: LocaleListener) => {
-        if (ready) {
-            sub(lang, messages as LocaleMessage)
-        } else {
-            subs.add(sub)
-        }
-    }
 }
