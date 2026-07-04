@@ -1,183 +1,176 @@
-import {Cube} from "../types";
-import * as cube from '../cube';
-import initDuration, {IntlDurationProps} from 'src/components/intl-duration';
-import initLocale from 'src/components/intl-locale';
-import {render} from "../testing";
-import {TC} from "../utils";
-import {html, state} from "@beforesemicolon/web-component";
+import '@formatjs/intl-durationformat/polyfill'
+import initLocale from './intl-locale'
+import initDuration from './intl-duration'
+import * as WC from '@beforesemicolon/web-component'
+import { resetIntl } from '../runtime'
 
-const CUBE = {
-	...cube,
-	TC,
-	state
-} as unknown as Cube
+initLocale(WC)
+const { intlDuration } = initDuration(WC)
+const { html } = WC
 
-initLocale(CUBE)
-const d = initDuration(CUBE)
+const nextFrame = () => new Promise((resolve) => setTimeout(resolve, 0))
+
+const formatExpected = (
+    locale: string,
+    parts: Record<string, number>,
+    style: 'long' | 'short' | 'narrow' = 'long'
+) => {
+    const DurationFormat = Intl as typeof Intl & {
+        DurationFormat: new (
+            locale: string,
+            options: { style: string }
+        ) => { format(parts: Record<string, number>): string }
+    }
+
+    return new DurationFormat.DurationFormat(locale, { style }).format(parts)
+}
 
 describe('intl-duration', () => {
-	const msgs = {
-		title: 'Greetings {name}',
-		description: 'Welcome to the test app',
-	};
-	
-	beforeEach(() => {
-		jest.spyOn(window, 'fetch').mockImplementationOnce(() => {
-			return Promise.resolve({
-				status: 200,
-				json: () => Promise.resolve(msgs)
-			} as Response)
-		});
-	})
-	
-	it('should render nothing if no value', async () => {
-		const cont = await render(html`
-			<intl-locale src="/en.json">
-				<intl-duration></intl-duration>
-			</intl-locale>`);
-		
-		expect(cont.find('intl-duration').map(d => d.content)).toEqual([""])
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-		expect(d(msgs)).toEqual("")
-	});
-	
-	it('should render all fields', async () => {
-		const cont = await render(html`
-			<intl-locale src="/en.json">
-				<intl-duration>1694326144082</intl-duration>
-				<intl-duration value="1694326144082"></intl-duration>
-			</intl-locale>`);
-		
-		expect(cont.find('intl-duration').map(d => d.content)).toEqual([
-			"53 years, 8 months, 25 days, 6 hours, 9 minutes, and 4 seconds",
-			"53 years, 8 months, 25 days, 6 hours, 9 minutes, and 4 seconds"
-		])
-		// no pluralization
-		expect([
-			{value: 1694326144082},
-			{value: 1694326144082},
-		].map(({value}) => d(msgs, value))).toEqual([
-			"53 year, 8 month, 25 day, 6 hour, 9 minute, and 4 second",
-			"53 year, 8 month, 25 day, 6 hour, 9 minute, and 4 second"
-		])
-	});
-	
-	it('should render individual fields', async () => {
-		const cont = await render(html`
-			<intl-locale src="/en.json">
-				<intl-duration fields="year">1694326144082</intl-duration>
-				<intl-duration fields="year">3.156e+10</intl-duration>
-				<intl-duration fields="month">1694326144082</intl-duration>
-				<intl-duration fields="month">2.628e+9</intl-duration>
-				<intl-duration fields="day">1694326144082</intl-duration>
-				<intl-duration fields="day">8.64e+7</intl-duration>
-				<intl-duration fields="hour">1694326144082</intl-duration>
-				<intl-duration fields="hour">3.6e+6</intl-duration>
-				<intl-duration fields="minute">1694326144082</intl-duration>
-				<intl-duration fields="minute">60000</intl-duration>
-				<intl-duration fields="second">1694326144082</intl-duration>
-				<intl-duration fields="second">1000</intl-duration>
-			</intl-locale>`);
-		
-		expect(cont.find('intl-duration').map(d => d.content)).toEqual([
-			"53 years",
-			"1 year",
-			"653 months",
-			"1 month",
-			"19610 days",
-			"1 day",
-			"470646 hours",
-			"1 hour",
-			"28238769 minutes",
-			"1 minute",
-			"1694326144 seconds",
-			"1 second"
-		])
-		expect([
-			{fields: "year", value: 1694326144082},
-			{fields: "year", value: 3.156e+10},
-			{fields: "month", value: 1694326144082},
-			{fields: "month", value: 2.628e+9},
-			{fields: "day", value: 1694326144082},
-			{fields: "day", value: 8.64e+7},
-			{fields: "hour", value: 1694326144082},
-			{fields: "hour", value: 3.6e+6},
-			{fields: "minute", value: 1694326144082},
-			{fields: "minute", value: 60000},
-			{fields: "second", value: 1694326144082},
-			{fields: "second", value: 1000},
-		].map(({value, fields}) => d(msgs, value, fields as IntlDurationProps['fields'])))
-			.toEqual([
-			"53 year",
-			"1 year",
-			"653 month",
-			"1 month",
-			"19610 day",
-			"1 day",
-			"470646 hour",
-			"1 hour",
-			"28238769 minute",
-			"1 minute",
-			"1694326144 second",
-			"1 second"
-		])
-	});
-	
-	it('should return empty if the field provided has no value', async () => {
-		const cont = await render(html`
-			<intl-locale src="/en.json">
-				<intl-duration fields="year">2.628e+9</intl-duration>
-				<intl-duration fields="month">8.64e+7</intl-duration>
-				<intl-duration fields="day">3.6e+6</intl-duration>
-				<intl-duration fields="hour">60000</intl-duration>
-				<intl-duration fields="minute">1000</intl-duration>
-			</intl-locale>`);
-		
-		expect(cont.find('intl-duration').map(d => d.content)).toEqual([
-			"",
-			"",
-			"",
-			"",
-			""
-		])
-		expect([
-			{fields:"year", value:2.628e+9},
-			{fields:"month", value:8.64e+7},
-			{fields:"day", value:3.6e+6},
-			{fields:"hour", value:60000},
-			{fields:"minute", value:1000},
-		].map(({value, fields}) => d(msgs, value, fields as IntlDurationProps['fields']))).toEqual([
-			"",
-			"",
-			"",
-			"",
-			""
-		])
-	});
-	
-	it('should handle style', async () => {
-		const cont = await render(html`
-			<intl-locale src="/en.json">
-				<intl-duration fields="hour" style="long">3.6e+6</intl-duration>
-				<intl-duration fields="hour" style="short">3.6e+6</intl-duration>
-				<intl-duration fields="hour" style="narrow">3.6e+6</intl-duration>
-			</intl-locale>`);
-		
-		expect(cont.find('intl-duration').map(d => d.content)).toEqual([
-			"1 hour",
-			"1 hr",
-			"1h"
-		])
-		expect([
-			{fields: "hour", style: "long", value: 3.6e+6},
-			{fields: "hour", style: "short", value: 3.6e+6},
-			{fields: "hour", style: "narrow", value: 3.6e+6},
-		].map(({value, fields, style}) => d(msgs, value, fields as IntlDurationProps['fields'], style as IntlDurationProps['style'])))
-			.toEqual([
-				"1 hour",
-				"1 hour",
-				"1hour"
-			])
-	});
+    beforeEach(() => {
+        resetIntl()
+        document.documentElement.lang = 'en-US'
+    })
+
+    afterEach(() => {
+        resetIntl()
+    })
+
+    it('formats durations programmatically', () => {
+        expect(
+            intlDuration({
+                value: 3_600_000,
+                locale: 'en-US',
+                fields: 'hours minutes',
+            })
+        ).toBe(formatExpected('en-US', { hours: 1, minutes: 0 }))
+    })
+
+    it('renders selected duration fields', async () => {
+        html`
+            <intl-duration value="90061000" fields="hours minutes seconds">
+            </intl-duration>
+        `.render(document.body)
+        await nextFrame()
+
+        const duration = document.body.querySelector(
+            'intl-duration'
+        ) as HTMLElement & { contentRoot?: HTMLElement }
+
+        expect(duration.contentRoot?.textContent).toBe(
+            formatExpected('en-US', { hours: 25, minutes: 1, seconds: 1 })
+        )
+    })
+
+    it('maps singular field aliases at the component boundary', async () => {
+        html`
+            <intl-duration value="3600000" fields="hour"></intl-duration>
+        `.render(document.body)
+        await nextFrame()
+
+        const duration = document.body.querySelector(
+            'intl-duration'
+        ) as HTMLElement & { contentRoot?: HTMLElement }
+
+        expect(duration.contentRoot?.textContent).toBe(
+            formatExpected('en-US', { hours: 1 })
+        )
+    })
+
+    it('supports duration styles', async () => {
+        html`
+            <intl-duration
+                value="3600000"
+                fields="hours"
+                time-style="long"
+            ></intl-duration>
+            <intl-duration
+                value="3600000"
+                fields="hours"
+                time-style="short"
+            ></intl-duration>
+            <intl-duration
+                value="3600000"
+                fields="hours"
+                time-style="narrow"
+            ></intl-duration>
+        `.render(document.body)
+        await nextFrame()
+
+        const durations = [
+            ...document.body.querySelectorAll('intl-duration'),
+        ] as Array<HTMLElement & { contentRoot?: HTMLElement }>
+
+        expect(durations.map((duration) => duration.contentRoot?.textContent)).toEqual(
+            [
+                formatExpected('en-US', { hours: 1 }, 'long'),
+                formatExpected('en-US', { hours: 1 }, 'short'),
+                formatExpected('en-US', { hours: 1 }, 'narrow'),
+            ]
+        )
+    })
+
+    it('uses the nearest locale provider and rerenders on locale changes', async () => {
+        html`
+            <intl-locale locale="en-US">
+                <intl-duration value="3600000" fields="hours"></intl-duration>
+            </intl-locale>
+        `.render(document.body)
+        await nextFrame()
+        await nextFrame()
+
+        const provider = document.querySelector('intl-locale') as
+            | HTMLElement & { runtime?: { setLocale(locale: string): Promise<unknown> } }
+            | null
+        const runtime = provider?.runtime
+        const duration = document.body.querySelector(
+            'intl-duration'
+        ) as HTMLElement & { contentRoot?: HTMLElement }
+
+        expect(duration.contentRoot?.textContent).toBe(
+            formatExpected('en-US', { hours: 1 })
+        )
+
+        await runtime?.setLocale('fr-FR')
+        await nextFrame()
+
+        expect(duration.contentRoot?.textContent).toBe(
+            formatExpected('fr-FR', { hours: 1 })
+        )
+    })
+
+    it('lets explicit locale override the provider locale', async () => {
+        html`
+            <intl-locale locale="en-US">
+                <intl-duration
+                    value="3600000"
+                    locale="fr-FR"
+                    fields="hours"
+                ></intl-duration>
+            </intl-locale>
+        `.render(document.body)
+        await nextFrame()
+        await nextFrame()
+
+        const duration = document.body.querySelector(
+            'intl-duration'
+        ) as HTMLElement & { contentRoot?: HTMLElement }
+
+        expect(duration.contentRoot?.textContent).toBe(
+            formatExpected('fr-FR', { hours: 1 })
+        )
+    })
+
+    it('renders empty content for invalid values', async () => {
+        html`<intl-duration value="bad-value"></intl-duration>`.render(
+            document.body
+        )
+        await nextFrame()
+
+        const duration = document.body.querySelector(
+            'intl-duration'
+        ) as HTMLElement & { contentRoot?: HTMLElement }
+
+        expect(duration.contentRoot?.textContent).toBe('')
+        expect(intlDuration({ value: 'bad-value' })).toBe('')
+    })
 })

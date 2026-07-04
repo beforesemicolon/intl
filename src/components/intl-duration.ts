@@ -1,207 +1,191 @@
-import { millisecondsToTimeParts } from '../utils/milliseconds-to-time-parts'
-import type { StateGetter } from '@beforesemicolon/web-component'
-import type { LocaleListener, LocaleMessage } from './intl-locale'
+import '@formatjs/intl-durationformat/polyfill'
+import { formatDuration, FormatterOptions } from '../formatters'
+import { getIntl, IntlRuntime } from '../runtime'
+import { getIntlLocaleRuntime } from './intl-locale'
 
-const allFields = new Set(['second', 'minute', 'hour', 'day', 'month', 'year'])
-
-export interface IntlDurationProps {
-    value: number | undefined
-    timeStyle: 'narrow' | 'short' | 'long'
-    fields: '*' | 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year'
+interface IntlDurationProps {
+    locale: string
+    value: number | string | undefined
+    timeStyle: 'long' | 'short' | 'narrow' | 'digital'
+    style: 'long' | 'short' | 'narrow' | 'digital'
+    fields: '*' | string
 }
 
-export default (
-    onLocaleMessagesLoaded: (sub: LocaleListener) => void,
-    {
-        html,
-        WebComponent,
-        val,
-        helper,
-    }: typeof import('@beforesemicolon/web-component')
-) => {
-    let messages = {} as LocaleMessage
-    let ready = false
-    const name = new Intl.DisplayNames('en', {
-        style: 'long',
-        type: 'dateTimeField',
-    })
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const list = new Intl.ListFormat('en', {
-        style: 'long',
-        type: 'conjunction',
-    })
+type DurationOptions = FormatterOptions & Record<string, unknown>
 
-    const getText = (
-        value: number,
-        key: keyof LocaleMessage['_locale_']['duration'],
-        style: IntlDurationProps['timeStyle']
-    ) => {
-        const _ = messages['_locale_'].duration
+const fieldAliases: Record<string, string> = {
+    year: 'years',
+    month: 'months',
+    week: 'weeks',
+    day: 'days',
+    hour: 'hours',
+    minute: 'minutes',
+    second: 'seconds',
+    millisecond: 'milliseconds',
+    microsecond: 'microseconds',
+    nanosecond: 'nanoseconds',
+}
 
-        if (_ && _[key]) {
-            if (style === 'narrow') {
-                return _[key].narrow
-            }
+const validFields = new Set([
+    'years',
+    'months',
+    'weeks',
+    'days',
+    'hours',
+    'minutes',
+    'seconds',
+    'milliseconds',
+    'microseconds',
+    'nanoseconds',
+])
 
-            if (style === 'short') {
-                return _[key].short
-            }
+const readValue = <T>(value: T | (() => T)) => {
+    return typeof value === 'function' ? (value as () => T)() : value
+}
 
-            return value === 1 ? _[key].single : _[key].plural
-        }
+const addDefined = (options: DurationOptions, key: string, value: unknown) => {
+    if (value !== undefined && value !== null && value !== '') {
+        options[key] = value
+    }
+}
 
-        return name.of(key)
+const normalizeFields = (fields: unknown) => {
+    if (!fields || fields === '*') {
+        return '*'
     }
 
-    const intlDuration = helper(
-        (
-            ready: StateGetter<boolean> | boolean,
-            _value:
-                | StateGetter<IntlDurationProps['value']>
-                | IntlDurationProps['value'],
-            _fields:
-                | StateGetter<IntlDurationProps['fields']>
-                | IntlDurationProps['fields'] = '*',
-            _style:
-                | StateGetter<IntlDurationProps['timeStyle']>
-                | IntlDurationProps['timeStyle'] = 'long'
-        ) => {
-            if (ready) {
-                const value = val(_value)
-                const fields = val(_fields)
-                const style = val<IntlDurationProps['timeStyle']>(_style)
+    return String(fields)
+        .trim()
+        .split(/\s+/)
+        .map((field) => fieldAliases[field] || field)
+        .filter((field) => validFields.has(field))
+}
 
-                if (typeof value !== 'number' || typeof fields !== 'string') {
-                    console.error(
-                        "intl.duration: Invalid 'value' or 'fields'. Received: value=",
-                        value,
-                        ', fields=',
-                        fields,
-                        ''
-                    )
-                    return ''
-                }
+const resolveDurationValue = (value: unknown) => {
+    const durationValue = Number(readValue(value))
+    return Number.isNaN(durationValue) ? undefined : durationValue
+}
 
-                const parts =
-                    fields.trim() === '*'
-                        ? allFields
-                        : new Set(
-                              (fields || '').split(/\s+/g).map((s) => s.trim())
-                          )
-                const tp = millisecondsToTimeParts(value, parts)
-                const gap = style === 'narrow' ? '' : ' '
+const buildOptions = (
+    props: Partial<
+        Record<
+            keyof IntlDurationProps,
+            | IntlDurationProps[keyof IntlDurationProps]
+            | (() => IntlDurationProps[keyof IntlDurationProps])
+        >
+    >,
+    runtime?: IntlRuntime
+) => {
+    const options: DurationOptions = {
+        scope: runtime,
+        fields: normalizeFields(readValue(props.fields)),
+        style: readValue(props.timeStyle) || readValue(props.style) || 'long',
+    }
 
-                return list.format([
-                    ...(parts.has('year') && tp.year
-                        ? [
-                              `${[tp.year]}${gap}${getText(
-                                  tp.year,
-                                  'year',
-                                  style
-                              )}`,
-                          ]
-                        : []),
-                    ...(parts.has('month') && tp.month
-                        ? [
-                              `${[tp.month]}${gap}${getText(
-                                  tp.month,
-                                  'month',
-                                  style
-                              )}`,
-                          ]
-                        : []),
-                    ...(parts.has('day') && tp.day
-                        ? [`${[tp.day]}${gap}${getText(tp.day, 'day', style)}`]
-                        : []),
-                    ...(parts.has('hour') && tp.hour
-                        ? [
-                              `${[tp.hour]}${gap}${getText(
-                                  tp.hour,
-                                  'hour',
-                                  style
-                              )}`,
-                          ]
-                        : []),
-                    ...(parts.has('minute') && tp.minute
-                        ? [
-                              `${[tp.minute]}${gap}${getText(
-                                  tp.minute,
-                                  'minute',
-                                  style
-                              )}`,
-                          ]
-                        : []),
-                    ...(parts.has('second') && tp.second
-                        ? [
-                              `${[tp.second]}${gap}${getText(
-                                  tp.second,
-                                  'second',
-                                  style
-                              )}`,
-                          ]
-                        : []),
-                ])
-            }
+    addDefined(options, 'locale', readValue(props.locale))
 
-            return ''
-        }
-    )
+    return options
+}
 
-    onLocaleMessagesLoaded((_, msgs) => {
-        messages = msgs
-        ready = true
-    })
-
+export default ({
+    html,
+    WebComponent,
+}: typeof import('@beforesemicolon/web-component')) => {
     class IntlDuration extends WebComponent<
         IntlDurationProps,
-        { ready: boolean }
+        { content: string }
     > {
-        static observedAttributes = ['value', 'time-style', 'fields']
-        initialState = {
-            ready: false,
-        }
+        static observedAttributes = ['value', 'time-style', 'fields', 'locale']
         value = undefined
-        timeStyle = 'long'
+        timeStyle = 'long' as IntlDurationProps['timeStyle']
         fields = '*'
+        locale = ''
+        initialState = {
+            content: '',
+        }
+        runtime?: IntlRuntime
+        unsubscribe?: () => void
+        subscribeTimer?: ReturnType<typeof setTimeout>
 
-        onMount() {
-            onLocaleMessagesLoaded(() => {
-                this.setState({ ready: true })
+        updateDuration = () => {
+            const value = resolveDurationValue(
+                this.textContent?.trim() || this.props.value()
+            )
+
+            if (value === undefined) {
+                console.error(
+                    'intl-duration: invalid value',
+                    this.props.value()
+                )
+                this.setState({ content: '' })
+                return
+            }
+
+            this.setState({
+                content: formatDuration(
+                    value,
+                    buildOptions(
+                        this.props,
+                        this.runtime
+                    ) as unknown as FormatterOptions & {
+                        fields: '*' | string | string[]
+                        style: 'long' | 'short' | 'narrow' | 'digital'
+                    }
+                ),
             })
         }
+
+        subscribeToRuntime = () => {
+            this.unsubscribe?.()
+            const provider = this.closest('intl-locale')
+            const providerRuntime = getIntlLocaleRuntime(this)
+
+            if (provider && !providerRuntime) {
+                this.subscribeTimer = setTimeout(this.subscribeToRuntime, 0)
+                return
+            }
+
+            this.runtime = providerRuntime || getIntl()
+            this.unsubscribe = this.runtime.subscribe(() => {
+                this.updateDuration()
+            })
+        }
+
+        onMount() {
+            this.subscribeToRuntime()
+        }
+
+        onUpdate() {
+            this.updateDuration()
+        }
+
+        onDestroy() {
+            clearTimeout(this.subscribeTimer)
+            this.unsubscribe?.()
+        }
+
         render() {
-            return html`${intlDuration(
-                this.state.ready,
-                this.props.value,
-                this.props.fields,
-                this.props.timeStyle
-            )}`
+            return html`${this.state.content}`
         }
     }
 
     customElements.define('intl-duration', IntlDuration)
 
     return {
-        intlDuration: (props: Partial<IntlDurationProps>) => {
-            props = {
-                value: undefined,
-                timeStyle: 'long',
-                fields: '*',
-                ...props,
-            }
-            if (!ready) {
-                throw new Error(
-                    'You are calling "intlDuration" before locale messages got loaded.'
-                )
+        intlDuration: (props: Partial<IntlDurationProps> = {}) => {
+            const value = resolveDurationValue(props.value ?? 0)
+
+            if (value === undefined) {
+                return ''
             }
 
-            return intlDuration(
-                true,
-                props.value,
-                props.fields,
-                props.timeStyle
-            ).value
+            return formatDuration(
+                value,
+                buildOptions(props) as unknown as FormatterOptions & {
+                    fields: '*' | string | string[]
+                    style: 'long' | 'short' | 'narrow' | 'digital'
+                }
+            )
         },
     }
 }

@@ -667,17 +667,27 @@ Rules:
 
 ---
 
-## Phase 9 — Duration
+## Phase 9 — Duration — Complete
+
+Status: complete. `<intl-duration>` now delegates to `formatDuration`, uses the nearest provider runtime, re-renders on runtime updates, supports explicit locale overrides, and maps singular field aliases to plural `Intl.DurationFormat` part keys at the component boundary. Duration utility tests now use the plural keys consumed by the formatter.
+
+Verification:
+
+```sh
+npx jest --config jest.config.cjs --runInBand src/components/intl-duration.spec.ts src/utils/milliseconds-to-time-parts.spec.ts src/components/intl-locale.spec.ts src/formatters.spec.ts src/runtime.spec.ts
+```
+
+Result: 48 focused duration, utility, provider, formatter, and runtime tests passing.
 
 ### `formatDuration`
 
 Support:
 
-- `Intl.DurationFormat` when available
-- fallback implementation
-- selected units
-- narrow/short/long styles
-- localized list formatting
+- [x] `Intl.DurationFormat` when available
+- [x] fallback implementation
+- [x] selected units
+- [x] narrow/short/long styles
+- [x] localized list formatting
 
 Updated from local review: `@formatjs/intl-durationformat` is now part of the local dependency direction. Confirm the intended browser/runtime support matrix, then make the fallback explicit in `formatDuration` tests instead of hiding the behavior inside the component.
 
@@ -689,9 +699,9 @@ Updated from local review: `@formatjs/intl-durationformat` is now part of the lo
 
 Rules:
 
-- Use nearest locale scope.
-- No hardcoded English unless fallback locale requires it.
-- Keep duration unit names aligned with `Intl.DurationFormat` plural option keys (`years`, `months`, `weeks`, `days`, `hours`, `minutes`, `seconds`, `milliseconds`, `microseconds`, `nanoseconds`) and map component aliases at the boundary.
+- [x] Use nearest locale scope.
+- [x] No hardcoded English unless fallback locale requires it.
+- [x] Keep duration unit names aligned with `Intl.DurationFormat` plural option keys (`years`, `months`, `weeks`, `days`, `hours`, `minutes`, `seconds`, `milliseconds`, `microseconds`, `nanoseconds`) and map component aliases at the boundary.
 
 ---
 
