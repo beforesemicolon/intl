@@ -3,7 +3,7 @@ import { formatDuration, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
 
-interface IntlDurationProps {
+export interface IntlDurationProps {
     locale: string
     value: number | string | undefined
     timeStyle: 'long' | 'short' | 'narrow' | 'digital'
@@ -169,7 +169,9 @@ export default ({
         }
     }
 
-    customElements.define('intl-duration', IntlDuration)
+    if (!customElements.get('intl-duration')) {
+        customElements.define('intl-duration', IntlDuration)
+    }
 
     return {
         intlDuration: (props: Partial<IntlDurationProps> = {}) => {

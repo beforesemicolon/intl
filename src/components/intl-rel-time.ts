@@ -7,7 +7,7 @@ import {
 } from '../utils/time-in-miliseconds'
 import { getIntlLocaleRuntime } from './intl-locale'
 
-interface IntlRelTimeProps {
+export interface IntlRelTimeProps {
     live: boolean | string
     decimals: boolean | string
     precision: number | string | undefined

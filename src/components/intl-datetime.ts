@@ -2,7 +2,7 @@ import { formatDateTime, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
 
-interface IntlDatetimeProps {
+export interface IntlDatetimeProps {
     value: string | number | Date | undefined
     locale: string
     dateStyle: Intl.DateTimeFormatOptions['dateStyle']
@@ -253,7 +253,9 @@ export default ({
         }
     }
 
-    customElements.define('intl-datetime', IntlDatetime)
+    if (!customElements.get('intl-datetime')) {
+        customElements.define('intl-datetime', IntlDatetime)
+    }
 
     return {
         intlDatetime: (props: Partial<IntlDatetimeProps> = {}) => {

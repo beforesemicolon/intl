@@ -1,4 +1,8 @@
-import { formatMessage, MessageFormatOptions, MessageValues } from '../formatters'
+import {
+    formatMessage,
+    MessageFormatOptions,
+    MessageValues,
+} from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
 
@@ -81,7 +85,9 @@ export default ({
         }
     }
 
-    customElements.define('intl-msg', IntlMsg)
+    if (!customElements.get('intl-msg')) {
+        customElements.define('intl-msg', IntlMsg)
+    }
 
     return {
         intlMsg: (

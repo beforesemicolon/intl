@@ -2,7 +2,7 @@ import { formatNumber, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
 
-interface IntlNumberProps {
+export interface IntlNumberProps {
     value: number | string | undefined
     locale: string
     type: Intl.NumberFormatOptions['style']
@@ -70,7 +70,11 @@ const parseGrouping = (value: unknown) => {
 
 const buildOptions = (
     props: Partial<
-        Record<keyof IntlNumberProps, IntlNumberProps[keyof IntlNumberProps] | (() => IntlNumberProps[keyof IntlNumberProps])>
+        Record<
+            keyof IntlNumberProps,
+            | IntlNumberProps[keyof IntlNumberProps]
+            | (() => IntlNumberProps[keyof IntlNumberProps])
+        >
     >,
     runtime?: IntlRuntime
 ) => {
@@ -134,7 +138,10 @@ export default ({
     html,
     WebComponent,
 }: typeof import('@beforesemicolon/web-component')) => {
-    class IntlNumber extends WebComponent<IntlNumberProps, { content: string }> {
+    class IntlNumber extends WebComponent<
+        IntlNumberProps,
+        { content: string }
+    > {
         static observedAttributes = [
             'value',
             'locale',
@@ -198,8 +205,10 @@ export default ({
             this.setState({
                 content: formatNumber(
                     value,
-                    buildOptions(this.props, this.runtime) as Intl.NumberFormatOptions &
-                        FormatterOptions
+                    buildOptions(
+                        this.props,
+                        this.runtime
+                    ) as Intl.NumberFormatOptions & FormatterOptions
                 ),
             })
         }
@@ -238,7 +247,9 @@ export default ({
         }
     }
 
-    customElements.define('intl-number', IntlNumber)
+    if (!customElements.get('intl-number')) {
+        customElements.define('intl-number', IntlNumber)
+    }
 
     return {
         intlNumber: (props: Partial<IntlNumberProps> = {}) => {
@@ -250,7 +261,8 @@ export default ({
 
             return formatNumber(
                 value,
-                buildOptions(props) as Intl.NumberFormatOptions & FormatterOptions
+                buildOptions(props) as Intl.NumberFormatOptions &
+                    FormatterOptions
             )
         },
     }

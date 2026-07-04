@@ -2,7 +2,7 @@ import { formatName, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
 
-interface IntlNameProps {
+export interface IntlNameProps {
     value: string | undefined
     type: Intl.DisplayNamesOptions['type']
     nameStyle: Intl.DisplayNamesOptions['style']
@@ -132,7 +132,9 @@ export default ({
         }
     }
 
-    customElements.define('intl-name', IntlName)
+    if (!customElements.get('intl-name')) {
+        customElements.define('intl-name', IntlName)
+    }
 
     return {
         intlName: (props: Partial<IntlNameProps> = {}) => {

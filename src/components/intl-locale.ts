@@ -122,7 +122,10 @@ export default ({
 
             this.dispatchLocaleEvent('locale-load', snapshot)
 
-            if (snapshot.locale !== previousLocale || snapshot.status === 'ready') {
+            if (
+                snapshot.locale !== previousLocale ||
+                snapshot.status === 'ready'
+            ) {
                 this.dispatchLocaleEvent('locale-change', snapshot)
             }
 
@@ -130,7 +133,7 @@ export default ({
         }
 
         onMount() {
-            this.loadMessages().catch(err => {
+            this.loadMessages().catch((err) => {
                 console.error(err)
             })
         }
@@ -167,5 +170,7 @@ export default ({
         }
     }
 
-    customElements.define('intl-locale', IntlLocale)
+    if (!customElements.get('intl-locale')) {
+        customElements.define('intl-locale', IntlLocale)
+    }
 }

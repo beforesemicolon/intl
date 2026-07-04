@@ -1,9 +1,11 @@
-import './components/intl-locale'
 import initLocale from './components/intl-locale'
 import initLocaleMsg from './components/intl-msg'
 import initLocaleDatetime from './components/intl-datetime'
 import initLocaleDuration from './components/intl-duration'
 import initLocaleRelativeTime from './components/intl-rel-time'
+import initLocaleList from './components/intl-list'
+import initLocaleName from './components/intl-name'
+import initLocalePlural from './components/intl-plural'
 import type { WebComponent } from '@beforesemicolon/web-component'
 
 declare global {
@@ -26,19 +28,25 @@ if (window.BFS) {
     const BFS = { ...window.BFS, ...window.BFS?.MARKUP }
 
     const onLocaleMessagesLoaded = initLocale(BFS)
-    const { intlMsg } = initLocaleMsg(onLocaleMessagesLoaded, BFS)
     const { intlDatetime } = initLocaleDatetime(BFS)
+    const { intlDuration } = initLocaleDuration(BFS)
+    const { intlMsg } = initLocaleMsg(BFS)
     const { intlRelativeTime } = initLocaleRelativeTime(BFS)
-    const { intlDuration } = initLocaleDuration(onLocaleMessagesLoaded, BFS)
+    const { intlList } = initLocaleList(BFS)
+    const { intlName } = initLocaleName(BFS)
+    const { intlPlural } = initLocalePlural(BFS)
 
     window.BFS = {
         ...(window.BFS || {}),
         INTL: {
             onLocaleMessagesLoaded,
-            intlMsg,
             intlDatetime,
             intlDuration,
+            intlMsg,
             intlRelativeTime,
+            intlList,
+            intlName,
+            intlPlural,
         },
     }
 }

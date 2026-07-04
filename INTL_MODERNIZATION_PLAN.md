@@ -786,7 +786,17 @@ Add shared formatter cache per runtime scope.
 
 ---
 
-## Phase 12 — Component Registration
+## Phase 12 — Component Registration — Complete
+
+Status: complete. Each component now has an independent source entry file under `src/components/*`, package exports expose those component paths, component registration is idempotent, and the root bundle re-exports the component entry helpers while registering the full component set. The browser client also exposes the migrated list/name/plural helpers.
+
+Verification:
+
+```sh
+npx jest --config jest.config.cjs --runInBand src/components/registration.spec.ts src/runtime.spec.ts src/formatters.spec.ts
+```
+
+Result: 26 focused registration, formatter, and runtime tests passing.
 
 Make each component independently loadable.
 
@@ -794,11 +804,11 @@ Updated from local review: builder-based scripts are a good step, but package ex
 
 ### Rules
 
-- Each component has its own entry file.
-- Each component registers only itself.
-- Full bundle imports all component entry files.
-- Runtime/function modules do not auto-register components.
-- Root package import may export formatter/runtime APIs, but it should not be the only path to component registration.
+- [x] Each component has its own entry file.
+- [x] Each component registers only itself.
+- [x] Full bundle imports all component entry files.
+- [x] Runtime/function modules do not auto-register components.
+- [x] Root package import may export formatter/runtime APIs, but it should not be the only path to component registration.
 
 Example:
 

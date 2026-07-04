@@ -2,7 +2,7 @@ import { formatPlural, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
 
-interface IntlPluralProps {
+export interface IntlPluralProps {
     value: number | string | undefined
     type: Intl.PluralRuleType
     locale: string
@@ -156,7 +156,9 @@ export default ({
         }
     }
 
-    customElements.define('intl-plural', IntlPlural)
+    if (!customElements.get('intl-plural')) {
+        customElements.define('intl-plural', IntlPlural)
+    }
 
     return {
         intlPlural: (props: Partial<IntlPluralProps> = {}) => {

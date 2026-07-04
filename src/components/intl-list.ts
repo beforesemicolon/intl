@@ -2,7 +2,7 @@ import { formatList, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
 
-interface IntlListProps {
+export interface IntlListProps {
     value: string[] | string | undefined
     locale: string
     type: 'conjunction' | 'disjunction' | 'unit' | 'and' | 'or' | 'none'
@@ -121,7 +121,9 @@ export default ({
         }
     }
 
-    customElements.define('intl-list', IntlList)
+    if (!customElements.get('intl-list')) {
+        customElements.define('intl-list', IntlList)
+    }
 
     return {
         intlList: (props: Partial<IntlListProps> = {}) => {
