@@ -890,23 +890,34 @@ Keep temporarily:
 
 ---
 
-## Phase 15 — Testing
+## Phase 15 — Testing — Complete
+
+Status: complete. The modernization suite now covers runtime creation, nested scopes, parent fallback, locale overrides, message loading, stale-load aborts, formatter functions, component rendering, nearest-provider resolution, lazy component imports, formatter caching, relative-time cleanup, accessibility output, and deprecation warnings.
+
+Verification:
+
+```sh
+npx tsc --noEmit
+npm test -- --runInBand
+```
+
+Result: TypeScript checking passed; 15 suites and 96 tests passing.
 
 ### Required Tests
 
-- runtime creation
-- nested runtime scopes
-- parent fallback
-- locale override
-- message loading
-- abort stale loads
-- formatter functions
-- component rendering
-- component nearest-provider resolution
-- lazy component imports
-- formatter caching
-- relative-time cleanup
-- accessibility output
+- [x] runtime creation
+- [x] nested runtime scopes
+- [x] parent fallback
+- [x] locale override
+- [x] message loading
+- [x] abort stale loads
+- [x] formatter functions
+- [x] component rendering
+- [x] component nearest-provider resolution
+- [x] lazy component imports
+- [x] formatter caching
+- [x] relative-time cleanup
+- [x] accessibility output
 
 ### Immediate Test Updates From Local Review
 
