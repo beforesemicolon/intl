@@ -9,7 +9,7 @@ export * from './runtime'
 export * from './formatters'
 
 export const onLocaleMessagesLoaded = initLocale(WC)
-export const { intlMsg } = initLocaleMsg(onLocaleMessagesLoaded, WC)
+export const { intlMsg } = initLocaleMsg(WC)
 export const { intlDuration } = initLocaleDuration(onLocaleMessagesLoaded, WC)
 export const { intlDatetime } = initLocaleDatetime(WC)
 export const { intlRelativeTime } = initLocaleRelativeTime(WC)

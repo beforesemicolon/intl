@@ -1,136 +1,95 @@
-import { LocaleListener, LocaleMessage } from './intl-locale'
-import { StateGetter } from '@beforesemicolon/web-component'
+import { formatMessage, MessageFormatOptions, MessageValues } from '../formatters'
+import { getIntl, IntlRuntime } from '../runtime'
+import { getIntlLocaleRuntime } from './intl-locale'
 
-export interface IntlMsgProps {
+interface IntlMsgProps {
     id: string
-    values: LocaleMessage
+    key: string
+    values: MessageValues
 }
 
-export default (
-    onLocaleMessagesLoaded: (sub: LocaleListener) => void,
-    {
-        html,
-        WebComponent,
-        helper,
-        element,
-        val,
-    }: typeof import('@beforesemicolon/web-component')
-) => {
-    let locale = new Intl.Locale(document.documentElement.lang)
-    let messages = {} as LocaleMessage
-    let ready = false
+export default ({
+    html,
+    HtmlTemplate,
+    WebComponent,
+}: typeof import('@beforesemicolon/web-component')) => {
+    const toTemplate = (text: string) => {
+        return new HtmlTemplate([text] as unknown as TemplateStringsArray, [])
+    }
 
-    const text = helper(
-        (
-            ready: StateGetter<boolean> | boolean,
-            _id: StateGetter<IntlMsgProps['id']> | IntlMsgProps['id'],
-            _values:
-                | StateGetter<IntlMsgProps['values']>
-                | IntlMsgProps['values'],
-            asHtml = true
-        ) =>
-            () => {
-                if (val(ready)) {
-                    const id = val<string>(_id)
-                    const values = val<IntlMsgProps['values']>(_values)
-                    const txtParts: Array<string> = []
-                    const txtValues: Array<Element> = []
-                    const text = messages[id]
-
-                    if (text === undefined) {
-                        console.error(
-                            `[intl-msg] text for id of "${id}" was not found. Rendering the "id" itself as backup.`
-                        )
-                        return id
-                    }
-
-                    if (asHtml) {
-                        const pattern = /\{\s*([a-z0-9]+)\s*\}/g
-                        let txt = String(text)
-                        let match = null
-
-                        while ((match = pattern.exec(String(txt))) !== null) {
-                            const [, key] = match
-                            const before = txt.substring(0, match.index)
-
-                            before && txtParts.push(before)
-                            txtValues.push(
-                                element('slot', {
-                                    attributes: {
-                                        name: key,
-                                    },
-                                    textContent: values[key] as string,
-                                })
-                            )
-                            txt = txt.substring(pattern.lastIndex)
-                        }
-
-                        txtParts.push(txt)
-
-                        const markup = html(
-                            txtParts as unknown as TemplateStringsArray,
-                            txtValues
-                        )
-
-                        return markup
-                    }
-
-                    return (text as string).replace(
-                        /\{\s*([a-z0-9]+)\s*\}/g,
-                        (_: string, key: string) => {
-                            return values[key] as string
-                        }
-                    )
-                }
-
-                return ''
-            }
-    )
-
-    onLocaleMessagesLoaded((lang, msgs) => {
-        locale = new Intl.Locale(lang)
-        messages = msgs
-        ready = true
-    })
-
-    class IntlMsg extends WebComponent<IntlMsgProps, { ready: boolean }> {
-        static observedAttributes = ['id', 'values']
+    class IntlMsg extends WebComponent<IntlMsgProps, { content: string }> {
+        static observedAttributes = ['id', 'key', 'values']
         id = ''
+        key = ''
         values = {}
         initialState = {
-            ready: false,
+            content: '',
+        }
+        runtime?: IntlRuntime
+        unsubscribe?: () => void
+
+        getMessageKey = () => {
+            return this.props.key() || this.props.id()
         }
 
-        onMount() {
-            onLocaleMessagesLoaded(() => {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                this.setAttribute('dir', locale.textInfo.direction)
-                this.setState({ ready: true })
+        updateMessage = () => {
+            const key = this.getMessageKey()
+            const values = this.props.values() || {}
+
+            if (!key || this.runtime?.status !== 'ready') {
+                this.setState({ content: '' })
+                return
+            }
+
+            const content = formatMessage(key, values, {
+                scope: this.runtime,
+                missing: (missingKey) => {
+                    console.error(
+                        `[intl-msg] text for key of "${missingKey}" was not found. Rendering the key itself as backup.`
+                    )
+                    return missingKey
+                },
+            })
+
+            this.setState({ content })
+        }
+
+        subscribeToRuntime = () => {
+            this.unsubscribe?.()
+            this.runtime = getIntlLocaleRuntime(this) || getIntl()
+            this.unsubscribe = this.runtime.subscribe((snapshot) => {
+                this.lang = snapshot.locale
+                this.dir = snapshot.direction
+                this.updateMessage()
             })
         }
 
+        onMount() {
+            this.subscribeToRuntime()
+        }
+
+        onUpdate() {
+            this.updateMessage()
+        }
+
+        onDestroy() {
+            this.unsubscribe?.()
+        }
+
         render() {
-            return html`${text(
-                this.state.ready,
-                this.props.id,
-                this.props.values
-            )}`
+            return html`${() => toTemplate(this.state.content())}`
         }
     }
 
     customElements.define('intl-msg', IntlMsg)
 
     return {
-        intlMsg: (id: string, values = {} as LocaleMessage) => {
-            if (!ready) {
-                throw new Error(
-                    'You are calling "intlMsg" before locale messages got loaded.'
-                )
-            }
-
-            // @ts-expect-error the helper has a value property
-            return text(true, id, values, false).value
+        intlMsg: (
+            key: string,
+            values: MessageValues = {},
+            options: MessageFormatOptions = {}
+        ) => {
+            return formatMessage(key, values, options)
         },
     }
 }

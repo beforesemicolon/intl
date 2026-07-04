@@ -507,17 +507,27 @@ Result: 32 focused provider, runtime, and formatter tests passing.
 
 ---
 
-## Phase 5 — `<intl-msg>` / `formatMessage`
+## Phase 5 — `<intl-msg>` / `formatMessage` — Complete
+
+Status: complete. `formatMessage` resolves messages through `IntlRuntime.getMessage()`, and `<intl-msg>` now uses the nearest provider runtime, supports `key` with `id` as a compatibility alias, renders rich message markup, and re-renders on runtime updates.
+
+Verification:
+
+```sh
+npx jest --config jest.config.cjs --runInBand src/components/intl-msg.spec.ts src/components/intl-locale.spec.ts src/formatters.spec.ts src/runtime.spec.ts
+```
+
+Result: 36 focused message, provider, formatter, and runtime tests passing.
 
 ### `formatMessage` Features
 
-- nested keys: `home.hero.title`
-- interpolation: `{name}`
-- fallback values
-- missing-key behavior
-- parent-scope fallback
-- fallback-locale fallback
-- rich text token support
+- [x] nested keys: `home.hero.title`
+- [x] interpolation: `{name}`
+- [x] fallback values
+- [x] missing-key behavior
+- [x] parent-scope fallback
+- [x] fallback-locale fallback
+- [x] rich text token support
 
 Updated from local review: the current `src/messages.ts` state store is useful as a temporary compatibility layer, but it should not become the long-term message registry. Message lookup must move to `IntlRuntime.getMessage()` so nested providers, fallback locale, and parent-scope fallback all behave consistently.
 
@@ -530,11 +540,11 @@ Updated from local review: the current `src/messages.ts` state store is useful a
 
 Rules:
 
-- Component finds nearest locale scope.
-- Calls `formatMessage`.
-- Re-renders on scope update.
-- Supports `id` as deprecated alias for `key`.
-- Prefer `key` in new API and tests; keep `id` only as a compatibility alias with a deprecation path.
+- [x] Component finds nearest locale scope.
+- [x] Calls `formatMessage`.
+- [x] Re-renders on scope update.
+- [x] Supports `id` as deprecated alias for `key`.
+- [x] Prefer `key` in new API and tests; keep `id` only as a compatibility alias with a deprecation path.
 
 ---
 
