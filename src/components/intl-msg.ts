@@ -4,6 +4,7 @@ import {
     MessageValues,
 } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
+import { warnDeprecatedAlias } from '../utils/deprecation'
 import { getIntlLocaleRuntime } from './intl-locale'
 
 interface IntlMsgProps {
@@ -34,7 +35,14 @@ export default ({
         unsubscribe?: () => void
 
         getMessageKey = () => {
-            return this.props.key() || this.props.id()
+            const key = this.props.key()
+            const id = this.props.id()
+
+            if (!key && id) {
+                warnDeprecatedAlias('id', 'key')
+            }
+
+            return key || id
         }
 
         updateMessage = () => {

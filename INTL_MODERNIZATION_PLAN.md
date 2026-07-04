@@ -28,24 +28,24 @@ Latest upstream `main` now includes the first runtime foundation in `src/runtime
 The local changes are generally moving toward a richer intl package, but they are currently taking a component/type-first path rather than the planned runtime/function-first path:
 
 - Good direction:
-  - Broader typed prop coverage was added for date/time, duration, list, name, and number components.
-  - Formatter helper behavior is being extracted inside component modules and tested through returned helper functions such as `intlNumber`, `intlDatetime`, `intlDuration`, `intlList`, `intlName`, and `intlMsg`.
-  - Component tests were expanded substantially.
-  - The dependency update adds `@formatjs/intl-durationformat`, which supports the duration fallback strategy in Phase 9.
-  - The builder-based package build scripts are closer to the lazy module output this plan wants.
+    - Broader typed prop coverage was added for date/time, duration, list, name, and number components.
+    - Formatter helper behavior is being extracted inside component modules and tested through returned helper functions such as `intlNumber`, `intlDatetime`, `intlDuration`, `intlList`, `intlName`, and `intlMsg`.
+    - Component tests were expanded substantially.
+    - The dependency update adds `@formatjs/intl-durationformat`, which supports the duration fallback strategy in Phase 9.
+    - The builder-based package build scripts are closer to the lazy module output this plan wants.
 - Architectural gap:
-  - Components still resolve locale through `getLocale()` and, for messages, a separate global `messages` state in `src/messages.ts`.
-  - Components do not yet use `getIntl()`, nearest provider scope, parent-scope fallback, runtime subscriptions, or runtime formatter caches.
-  - The extracted formatter helpers are not yet exported as pure package-level formatter functions, so components are still the owner of formatting behavior.
-  - `<intl-locale>` currently loads messages into the global message state and does not create a scoped runtime provider.
-  - `src/index.ts` exports the runtime, but the main component registrations still register multiple components from the root entrypoint and do not yet provide per-component lazy entry files.
+    - Components still resolve locale through `getLocale()` and, for messages, a separate global `messages` state in `src/messages.ts`.
+    - Components do not yet use `getIntl()`, nearest provider scope, parent-scope fallback, runtime subscriptions, or runtime formatter caches.
+    - The extracted formatter helpers are not yet exported as pure package-level formatter functions, so components are still the owner of formatting behavior.
+    - `<intl-locale>` currently loads messages into the global message state and does not create a scoped runtime provider.
+    - `src/index.ts` exports the runtime, but the main component registrations still register multiple components from the root entrypoint and do not yet provide per-component lazy entry files.
 - Dependency caution:
-  - Regenerating `package-lock.json` with the merged manifest produces an existing peer warning: `@beforesemicolon/builder@1.4.0` depends on `global-jsdom@9.2.0`, whose peer range is `jsdom >=23 <24`, while the local manifest uses `jsdom@25.0.1`.
-  - Before finalizing the dependency modernization, either align `jsdom` to the builder peer range, upgrade the builder/global-jsdom path, or document why the peer override is acceptable.
+    - Regenerating `package-lock.json` with the merged manifest produces an existing peer warning: `@beforesemicolon/builder@1.4.0` depends on `global-jsdom@9.2.0`, whose peer range is `jsdom >=23 <24`, while the local manifest uses `jsdom@25.0.1`.
+    - Before finalizing the dependency modernization, either align `jsdom` to the builder peer range, upgrade the builder/global-jsdom path, or document why the peer override is acceptable.
 - Verification after merge:
-  - `npm test -- --runInBand` now reaches the suite after pinning npm scripts to `jest.config.cjs`, but it does not pass yet.
-  - Passing suites include runtime, locale, message, duration, and name tests.
-  - Current failures are concentrated in date/time locale output expectations, number rounding behavior, stale plural/relative-time tests that reference removed helper modules, `intl-list` typing against `ObjectLiteral`, and the singular/plural key mismatch in `millisecondsToTimeParts`.
+    - `npm test -- --runInBand` now reaches the suite after pinning npm scripts to `jest.config.cjs`, but it does not pass yet.
+    - Passing suites include runtime, locale, message, duration, and name tests.
+    - Current failures are concentrated in date/time locale output expectations, number rounding behavior, stale plural/relative-time tests that reference removed helper modules, `intl-list` typing against `ObjectLiteral`, and the singular/plural key mismatch in `millisecondsToTimeParts`.
 
 Decision: preserve the local component/type/test work, but redirect the next implementation pass around the runtime APIs now present on `main`. The plan below is updated to make runtime integration the next gate before adding more component surface area.
 
@@ -73,13 +73,13 @@ Scopes are not global-only. A page can have multiple scoped intl runtimes.
 
 ```html
 <intl-locale locale="en-US" src-dir="/locales">
-  <app-shell>
-    <intl-msg key="dashboard.title"></intl-msg>
+    <app-shell>
+        <intl-msg key="dashboard.title"></intl-msg>
 
-    <intl-locale locale="pt-CV" src-dir="/locales">
-      <intl-msg key="dashboard.title"></intl-msg>
-    </intl-locale>
-  </app-shell>
+        <intl-locale locale="pt-CV" src-dir="/locales">
+            <intl-msg key="dashboard.title"></intl-msg>
+        </intl-locale>
+    </app-shell>
 </intl-locale>
 ```
 
@@ -95,9 +95,9 @@ Creates a scoped runtime manually.
 
 ```ts
 const intl = createIntl({
-  locale: 'en-US',
-  fallbackLocale: 'en',
-  srcDir: '/locales',
+    locale: 'en-US',
+    fallbackLocale: 'en',
+    srcDir: '/locales',
 })
 ```
 
@@ -134,8 +134,8 @@ Initializes the default global runtime scope. This is used by script-first apps.
 
 ```ts
 initIntl({
-  locale: 'en-US',
-  srcDir: '/locales',
+    locale: 'en-US',
+    srcDir: '/locales',
 })
 ```
 
@@ -229,12 +229,12 @@ Locale resolution order:
 
 ```html
 <intl-locale
-  locale="en-US"
-  fallback-locale="en"
-  src="/locales/en-US.json"
-  src-dir="/locales"
-  scope="checkout"
-  inherit
+    locale="en-US"
+    fallback-locale="en"
+    src="/locales/en-US.json"
+    src-dir="/locales"
+    scope="checkout"
+    inherit
 >
 </intl-locale>
 ```
@@ -273,11 +273,11 @@ Nested providers are allowed. Child provider uses parent as fallback unless disa
 
 ```html
 <intl-locale locale="en-US">
-  <intl-msg key="hello"></intl-msg>
-
-  <intl-locale locale="pt-CV">
     <intl-msg key="hello"></intl-msg>
-  </intl-locale>
+
+    <intl-locale locale="pt-CV">
+        <intl-msg key="hello"></intl-msg>
+    </intl-locale>
 </intl-locale>
 ```
 
@@ -293,28 +293,28 @@ The package must support granular loading.
 
 ```json
 {
-  "exports": {
-    ".": "./dist/index.js",
-    "./runtime": "./dist/runtime.js",
-    "./message": "./dist/message.js",
-    "./number": "./dist/number.js",
-    "./datetime": "./dist/datetime.js",
-    "./duration": "./dist/duration.js",
-    "./relative-time": "./dist/relative-time.js",
-    "./list": "./dist/list.js",
-    "./name": "./dist/name.js",
-    "./plural": "./dist/plural.js",
+    "exports": {
+        ".": "./dist/index.js",
+        "./runtime": "./dist/runtime.js",
+        "./message": "./dist/message.js",
+        "./number": "./dist/number.js",
+        "./datetime": "./dist/datetime.js",
+        "./duration": "./dist/duration.js",
+        "./relative-time": "./dist/relative-time.js",
+        "./list": "./dist/list.js",
+        "./name": "./dist/name.js",
+        "./plural": "./dist/plural.js",
 
-    "./components/locale": "./dist/components/locale.js",
-    "./components/msg": "./dist/components/msg.js",
-    "./components/number": "./dist/components/number.js",
-    "./components/datetime": "./dist/components/datetime.js",
-    "./components/duration": "./dist/components/duration.js",
-    "./components/relative-time": "./dist/components/relative-time.js",
-    "./components/list": "./dist/components/list.js",
-    "./components/name": "./dist/components/name.js",
-    "./components/plural": "./dist/components/plural.js"
-  }
+        "./components/locale": "./dist/components/locale.js",
+        "./components/msg": "./dist/components/msg.js",
+        "./components/number": "./dist/components/number.js",
+        "./components/datetime": "./dist/components/datetime.js",
+        "./components/duration": "./dist/components/duration.js",
+        "./components/relative-time": "./dist/components/relative-time.js",
+        "./components/list": "./dist/components/list.js",
+        "./components/name": "./dist/components/name.js",
+        "./components/plural": "./dist/components/plural.js"
+    }
 }
 ```
 
@@ -323,20 +323,32 @@ The package must support granular loading.
 Full bundle:
 
 ```html
-<script type="module" src="https://unpkg.com/@beforesemicolon/intl/dist/client.js"></script>
+<script
+    type="module"
+    src="https://unpkg.com/@beforesemicolon/intl/dist/client.js"
+></script>
 ```
 
 Only locale + message:
 
 ```html
-<script type="module" src="https://unpkg.com/@beforesemicolon/intl/dist/components/locale.js"></script>
-<script type="module" src="https://unpkg.com/@beforesemicolon/intl/dist/components/msg.js"></script>
+<script
+    type="module"
+    src="https://unpkg.com/@beforesemicolon/intl/dist/components/locale.js"
+></script>
+<script
+    type="module"
+    src="https://unpkg.com/@beforesemicolon/intl/dist/components/msg.js"
+></script>
 ```
 
 Only number formatter:
 
 ```html
-<script type="module" src="https://unpkg.com/@beforesemicolon/intl/dist/components/number.js"></script>
+<script
+    type="module"
+    src="https://unpkg.com/@beforesemicolon/intl/dist/components/number.js"
+></script>
 ```
 
 ### Lazy Component Registration
@@ -395,31 +407,31 @@ Result: 20 focused runtime and provider tests passing.
 
 ```ts
 createIntl({
-  locale: 'en-US',
-  messages: {},
+    locale: 'en-US',
+    messages: {},
 })
 ```
 
 ```ts
 createIntl({
-  locale: 'en-US',
-  src: '/locales/en-US.json',
+    locale: 'en-US',
+    src: '/locales/en-US.json',
 })
 ```
 
 ```ts
 createIntl({
-  locale: 'en-US',
-  srcDir: '/locales',
+    locale: 'en-US',
+    srcDir: '/locales',
 })
 ```
 
 ```ts
 createIntl({
-  locale: 'en-US',
-  loader: async (locale) => {
-    return import(`/locales/${locale}.json`)
-  },
+    locale: 'en-US',
+    loader: async (locale) => {
+        return import(`/locales/${locale}.json`)
+    },
 })
 ```
 
@@ -739,8 +751,8 @@ Uses `Intl.PluralRules`.
 
 ```ts
 formatPlural(2, {
-  one: 'item',
-  other: 'items',
+    one: 'item',
+    other: 'items',
 })
 ```
 
@@ -781,7 +793,7 @@ Add shared formatter cache per runtime scope.
 ### Cache Key
 
 ```ts
-`${formatterType}:${locale}:${stableStringify(options)}`
+;`${formatterType}:${locale}:${stableStringify(options)}`
 ```
 
 ---
@@ -843,18 +855,29 @@ Result: TypeScript checking passed; 14 suites and 94 tests passing.
 
 ---
 
-## Phase 14 — Developer Experience
+## Phase 14 — Developer Experience — Complete
+
+Status: complete. The README now documents the current runtime and formatter APIs, component-first usage, nested providers, lazy component imports, CDN/browser usage, and temporary compatibility aliases. Component prop types are exported for generated declarations, and previous phases tightened runtime/component errors and TypeScript coverage.
+
+Verification:
+
+```sh
+npx tsc --noEmit
+npm test -- --runInBand
+```
+
+Result: TypeScript checking passed; 14 suites and 94 tests passing.
 
 ### Improve
 
-- Clear prop names.
-- Dev-only deprecation warnings.
-- Strong TypeScript types.
-- Better errors.
-- Better README.
-- API examples.
-- CDN examples.
-- Migration guide.
+- [x] Clear prop names.
+- [x] Dev-only deprecation warnings.
+- [x] Strong TypeScript types.
+- [x] Better errors.
+- [x] Better README.
+- [x] API examples.
+- [x] CDN examples.
+- [x] Migration guide.
 
 ### Deprecated Aliases
 

@@ -1,5 +1,6 @@
 import { formatDateTime, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
+import { warnDeprecatedAlias } from '../utils/deprecation'
 import { getIntlLocaleRuntime } from './intl-locale'
 
 export interface IntlDatetimeProps {
@@ -104,16 +105,21 @@ const buildOptions = (
     addDefined(options, 'locale', readValue(props.locale))
     addDefined(options, 'dateStyle', readValue(props.dateStyle))
     addDefined(options, 'timeStyle', readValue(props.timeStyle))
-    addDefined(
-        options,
-        'timeZone',
-        readValue(props.timeZone) || readValue(props.timezone)
-    )
-    addDefined(
-        options,
-        'timeZoneName',
-        readValue(props.timeZoneName) || readValue(props.timezoneName)
-    )
+    const timeZone = readValue(props.timeZone)
+    const timezone = readValue(props.timezone)
+    const timeZoneName = readValue(props.timeZoneName)
+    const timezoneName = readValue(props.timezoneName)
+
+    if (!timeZone && timezone) {
+        warnDeprecatedAlias('timezone', 'time-zone')
+    }
+
+    if (!timeZoneName && timezoneName) {
+        warnDeprecatedAlias('timezone-name', 'time-zone-name')
+    }
+
+    addDefined(options, 'timeZone', timeZone || timezone)
+    addDefined(options, 'timeZoneName', timeZoneName || timezoneName)
     addDefined(options, 'calendar', readValue(props.calendar))
     addDefined(options, 'hourCycle', readValue(props.hourCycle))
     addDefined(options, 'hour12', parseBoolean(readValue(props.hour12)))
