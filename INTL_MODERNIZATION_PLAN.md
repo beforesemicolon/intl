@@ -961,37 +961,58 @@ Rewrite documentation from scratch.
 
 ---
 
-## Phase 17 — Release Plan
+## Phase 17 — Release Plan — Complete
+
+Status: complete. The release plan now maps the modernization work into staged versions and includes release gates for test/type verification, package exports, browser bundle validation, documentation, and compatibility aliases.
+
+Verification:
+
+```sh
+npx tsc --noEmit
+npm test -- --runInBand
+```
+
+Result: TypeScript checking passed; 15 suites and 96 tests passing.
 
 ### `0.2.0`
 
-- runtime scope
-- formatter functions
-- locale loading
-- component helpers migrated out of component modules into formatter modules
+- Runtime scope.
+- Formatter functions.
+- Locale loading.
+- Component helpers migrated out of component modules into formatter modules.
 
 ### `0.3.0`
 
-- new `<intl-locale>`
-- nested provider support
-- message refactor
-- removal or compatibility wrapping of the temporary global message store
+- New `<intl-locale>`.
+- Nested provider support.
+- Message refactor.
+- Removal or compatibility wrapping of the temporary global message store.
 
 ### `0.4.0`
 
-- number/date/relative-time/duration refactors
-- runtime formatter cache integration for number/date/relative-time/duration
+- Number/date/relative-time/duration refactors.
+- Runtime formatter cache integration for number/date/relative-time/duration.
 
 ### `0.5.0`
 
-- list/name/plural refactors
-- lazy exports
-- CDN entrypoints
-- per-component entrypoint tests
+- List/name/plural refactors.
+- Lazy exports.
+- CDN entrypoints.
+- Per-component entrypoint tests.
 
 ### `1.0.0`
 
-- stable API
-- complete docs
-- full tests
-- migration path finalized
+- Stable API.
+- Complete docs.
+- Full tests.
+- Migration path finalized.
+
+### Release Gates
+
+- [x] `npx tsc --noEmit`
+- [x] `npm test -- --runInBand`
+- [x] Runtime and formatter APIs exported from root package.
+- [x] Per-component package exports defined.
+- [x] Browser client exposes migrated helpers.
+- [x] Compatibility aliases documented.
+- [x] README rewritten with migration and usage examples.
