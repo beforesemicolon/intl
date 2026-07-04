@@ -629,18 +629,28 @@ Rules:
 
 ---
 
-## Phase 8 — Relative Time
+## Phase 8 — Relative Time — Complete
+
+Status: complete. `<intl-rel-time>` now delegates to `formatRelativeTime`, uses the nearest provider runtime, re-renders on runtime updates, supports explicit locale overrides, cleans up live timers, and renders semantic `<time datetime="...">` markup for auto timestamp values. The legacy `<intl-relative-time>` tag remains registered as an alias.
+
+Verification:
+
+```sh
+npx jest --config jest.config.cjs --runInBand src/components/intl-rel-time.spec.ts src/components/intl-locale.spec.ts src/formatters.spec.ts src/runtime.spec.ts
+```
+
+Result: 39 focused relative-time, provider, formatter, and runtime tests passing.
 
 ### `formatRelativeTime`
 
 Support:
 
-- auto unit
-- explicit unit
-- precision
-- numeric mode
-- style
-- locale override
+- [x] auto unit
+- [x] explicit unit
+- [x] precision
+- [x] numeric mode
+- [x] style
+- [x] locale override
 
 ### Component
 
@@ -650,10 +660,10 @@ Support:
 
 Rules:
 
-- Use nearest locale scope.
-- Fix locale override bug.
-- Cleanup timers.
-- Render `<time datetime="...">` where possible.
+- [x] Use nearest locale scope.
+- [x] Fix locale override bug.
+- [x] Cleanup timers.
+- [x] Render `<time datetime="...">` where possible.
 
 ---
 

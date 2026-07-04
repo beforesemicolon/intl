@@ -1,182 +1,157 @@
-import {Cube} from "../types";
-import * as cube from '../cube';
-import initRelTime from 'src/components/intl-rel-time';
-import {render, wait, waitFor} from "../testing";
-import {html, state} from "@beforesemicolon/web-component";
-import {
-	ONE_HOUR_MS,
-	ONE_MINUTE_MS,
-	ONE_MONTH_MS,
-	ONE_SECOND_MS,
-	ONE_WEEK_MS,
-	ONE_YEAR_MS,
-	ONE_DAY_MS
-} from "src/utils/time-in-miliseconds";
-import {TC} from '../utils';
+import initLocale from './intl-locale'
+import initRelTime from './intl-rel-time'
+import * as WC from '@beforesemicolon/web-component'
+import { resetIntl } from '../runtime'
+import { ONE_SECOND_MS } from '../utils/time-in-miliseconds'
 
-const CUBE = {
-	...cube,
-	state,
-	TC
-} as unknown as Cube
+initLocale(WC)
+const { intlRelativeTime } = initRelTime(WC)
+const { html } = WC
 
-const rel = initRelTime(CUBE)
+const nextFrame = () => new Promise((resolve) => setTimeout(resolve, 0))
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+const getTime = (element: Element | null) =>
+    (element as Element & { contentRoot?: HTMLElement } | null)?.contentRoot?.querySelector(
+        'time'
+    )
 
 describe('intl-rel-time', () => {
-	
-	it('should be empty for non numeric value', async () => {
-		const cont = await render(html`
-			<intl-locale src="/en.json">
-				<intl-rel-time></intl-rel-time>
-			</intl-locale>`);
-		
-		expect(cont.find('intl-rel-time').map(d => d.content)).toEqual([
-			"",
-		])
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-		expect(rel('en', ''))
-	});
-	
-	it('should handle specific unit', async () => {
-		const cont = await render(html`
-			<intl-rel-time unit="years">20</intl-rel-time>
-			<intl-rel-time unit="quarter" value="20"></intl-rel-time>
-			<intl-rel-time unit="weeks">20</intl-rel-time>
-			<intl-rel-time unit="day">20</intl-rel-time>
-			<intl-rel-time unit="hour" value="20"></intl-rel-time>
-			<intl-rel-time unit="minute">20</intl-rel-time>
-			<intl-rel-time unit="seconds">20</intl-rel-time>
-		`);
-		
-		const expected = [
-			"in 20 years",
-			"in 20 quarters",
-			"in 20 weeks",
-			"in 20 days",
-			"in 20 hours",
-			"in 20 minutes",
-			"in 20 seconds"
-		]
-		
-		expect(cont.find('intl-rel-time').map(d => d.content)).toEqual(expected)
-		expect([
-			{value: 20, unit: 'years'},
-			{value: 20, unit: 'quarter'},
-			{value: 20, unit: 'weeks'},
-			{value: 20, unit: 'day'},
-			{value: 20, unit: 'hour'},
-			{value: 20, unit: 'minute'},
-			{value: 20, unit: 'seconds'},
-		].map(({value, unit}) => rel('en', value, {unit} as any))).toEqual(expected)
-	});
-	
-	it('should handle auto unit', async () => {
-		const cont = await render(html`
-			<intl-rel-time>${Date.now() - ONE_SECOND_MS}</intl-rel-time>
-			<intl-rel-time>${Date.now() - ONE_MINUTE_MS}</intl-rel-time>
-			<intl-rel-time>${Date.now() - (ONE_MINUTE_MS * 30)}</intl-rel-time>
-			<intl-rel-time>${Date.now() - ONE_HOUR_MS}</intl-rel-time>
-			<intl-rel-time>${Date.now() - ONE_DAY_MS}</intl-rel-time>
-			<intl-rel-time>${Date.now() - ONE_WEEK_MS}</intl-rel-time>
-			<intl-rel-time>${Date.now() - (ONE_WEEK_MS * 2)}</intl-rel-time>
-			<intl-rel-time>${Date.now() - ONE_MONTH_MS}</intl-rel-time>
-			<intl-rel-time>${Date.now() - (ONE_MONTH_MS * 6)}</intl-rel-time>
-			<intl-rel-time>${Date.now() - ONE_YEAR_MS}</intl-rel-time>
-			<intl-rel-time>${Date.now() - (ONE_YEAR_MS * 3)}</intl-rel-time>
-		`);
-		
-		const expected = [
-			"1 second ago",
-			"1 minute ago",
-			"30 minutes ago",
-			"1 hour ago",
-			"yesterday",
-			"last week",
-			"2 weeks ago",
-			"last month",
-			"6 months ago",
-			"last year",
-			"3 years ago"
-		]
-		
-		expect(cont.find('intl-rel-time').map(d => d.content)).toEqual(expected)
-		expect([
-			{value: Date.now() - ONE_SECOND_MS},
-			{value: Date.now() - ONE_MINUTE_MS},
-			{value: Date.now() - (ONE_MINUTE_MS * 30)},
-			{value: Date.now() - ONE_HOUR_MS},
-			{value: Date.now() - ONE_DAY_MS},
-			{value: Date.now() - ONE_WEEK_MS},
-			{value: Date.now() - (ONE_WEEK_MS * 2)},
-			{value: Date.now() - ONE_MONTH_MS},
-			{value: Date.now() - (ONE_MONTH_MS * 6)},
-			{value: Date.now() - ONE_YEAR_MS},
-			{value: Date.now() - (ONE_YEAR_MS * 3)},
-		].map(({value}) => rel('en', value))).toEqual(expected)
-	});
-	
-	it('should handle style', async () => {
-		const cont = await render(html`
-			<intl-rel-time unit="year">20</intl-rel-time>
-			<intl-rel-time style="short" unit="year">20</intl-rel-time>
-			<intl-rel-time style="narrow" unit="year">20</intl-rel-time>
-		`);
-		
-		const expected = [
-			"in 20 years",
-			"in 20 yr.",
-			"in 20y"
-		]
-		
-		expect(cont.find('intl-rel-time').map(d => d.content)).toEqual(expected)
-		expect([
-			{value: 20, unit: 'year'},
-			{value: 20, unit: 'year', style: 'short'},
-			{value: 20, unit: 'year', style: 'narrow'},
-		].map(({value, unit, style}) => rel('en', value, {unit, style} as any))).toEqual(expected);
-	});
-	
-	it('should handle numeric', async () => {
-		const cont = await render(html`
-			<intl-rel-time unit="year" numeric="false">-1</intl-rel-time>
-			<intl-rel-time unit="year" numeric="true">-1</intl-rel-time>
-		`);
-		
-		const expected = [
-			"last year",
-			"1 year ago"
-		];
-		
-		expect(cont.find('intl-rel-time').map(d => d.content)).toEqual(expected)
-		expect([
-			{value: -1, unit: 'year', numeric: false},
-			{value: -1, unit: 'year', numeric: true},
-		].map(({value, unit, numeric}) => rel('en', value, {unit, numeric} as any))).toEqual(expected)
-	});
-	
-	it('should handle live', async () => {
-		const time = Date.now();
-		
-		const cont = await render(html`
-			<intl-rel-time live="true">${time}</intl-rel-time>
-		`);
-		
-		const d = cont.find('intl-rel-time')[0];
-		
-		await wait();
-		
-		expect(d.content).toEqual("now");
-		
-		await wait(1000);
-		
-		expect(d.content).toEqual("1 second ago");
-		
-		d.unmount(); // should stop
-		
-		await wait(1000);
-		
-		expect(d.content).toEqual("1 second ago"); // remains the same
-	});
-	
+    beforeEach(() => {
+        resetIntl()
+        document.documentElement.lang = 'en-US'
+        jest.useRealTimers()
+    })
+
+    afterEach(() => {
+        resetIntl()
+        jest.useRealTimers()
+    })
+
+    it('formats relative time programmatically', () => {
+        expect(
+            intlRelativeTime(20, {
+                locale: 'en-US',
+                unit: 'year',
+                numeric: 'always',
+            })
+        ).toBe('in 20 years')
+        expect(
+            intlRelativeTime(-1, {
+                locale: 'en-US',
+                unit: 'year',
+                numeric: 'auto',
+            })
+        ).toBe('last year')
+    })
+
+    it('renders semantic time markup for auto timestamp values', async () => {
+        const value = Date.now() - ONE_SECOND_MS
+
+        html`
+            <intl-rel-time value="${value}"></intl-rel-time>
+        `.render(document.body)
+        await nextFrame()
+
+        const time = getTime(document.body.querySelector('intl-rel-time'))
+
+        expect(time?.dateTime).toBe(new Date(value).toISOString())
+        expect(time?.textContent).toBe('1 second ago')
+    })
+
+    it('supports explicit units, style, numeric, and precision', async () => {
+        html`
+            <intl-rel-time unit="years" numeric="always">20</intl-rel-time>
+            <intl-rel-time unit="year" time-style="short" numeric="always">
+                20
+            </intl-rel-time>
+            <intl-rel-time unit="hour" precision="1" numeric="always">
+                1.24
+            </intl-rel-time>
+        `.render(document.body)
+        await nextFrame()
+
+        const times = [...document.body.querySelectorAll('intl-rel-time')]
+            .map(getTime)
+            .filter((time): time is HTMLTimeElement => !!time)
+
+        expect(times.map((time) => time.textContent)).toEqual([
+            'in 20 years',
+            'in 20 yr.',
+            'in 1.2 hours',
+        ])
+    })
+
+    it('uses the nearest locale provider and rerenders on locale changes', async () => {
+        html`
+            <intl-locale locale="en-US">
+                <intl-rel-time unit="year" numeric="always">20</intl-rel-time>
+            </intl-locale>
+        `.render(document.body)
+        await nextFrame()
+        await nextFrame()
+
+        const provider = document.querySelector('intl-locale') as
+            | HTMLElement & { runtime?: { setLocale(locale: string): Promise<unknown> } }
+            | null
+        const runtime = provider?.runtime
+        const time = getTime(document.body.querySelector('intl-rel-time'))
+
+        expect(time?.textContent).toBe('in 20 years')
+
+        await runtime?.setLocale('fr-FR')
+        await nextFrame()
+
+        expect(time?.textContent).toBe('dans 20 ans')
+    })
+
+    it('lets explicit locale override the provider locale', async () => {
+        html`
+            <intl-locale locale="en-US">
+                <intl-rel-time locale="fr-FR" unit="year" numeric="always">
+                    20
+                </intl-rel-time>
+            </intl-locale>
+        `.render(document.body)
+        await nextFrame()
+        await nextFrame()
+
+        expect(getTime(document.body.querySelector('intl-rel-time'))?.textContent).toBe(
+            'dans 20 ans'
+        )
+    })
+
+    it('updates live relative time and clears timers on destroy', async () => {
+        const value = Date.now()
+        const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout')
+
+        html`
+            <intl-rel-time live value="${value}"></intl-rel-time>
+        `.render(document.body)
+        await nextFrame()
+
+        const element = document.body.querySelector('intl-rel-time')
+        const time = getTime(element)
+
+        expect(time?.textContent).toBe('now')
+
+        await wait(ONE_SECOND_MS + 50)
+
+        expect(time?.textContent).toBe('1 second ago')
+
+        element?.remove()
+
+        expect(clearTimeoutSpy).toHaveBeenCalled()
+    })
+
+    it('renders empty content for invalid values', async () => {
+        html`<intl-rel-time value="bad-value"></intl-rel-time>`.render(
+            document.body
+        )
+        await nextFrame()
+
+        expect(getTime(document.body.querySelector('intl-rel-time'))?.textContent).toBe(
+            ''
+        )
+        expect(intlRelativeTime('bad-value')).toBe('')
+    })
 })
