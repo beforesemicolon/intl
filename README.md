@@ -1,7 +1,14 @@
 # @beforesemicolon/intl
 
-Web Component-first internationalization utilities for scoped locale providers,
-formatter functions, and lazy component registration.
+Scoped internationalization for formatter functions and Web Components.
+
+`@beforesemicolon/intl` gives you:
+
+- Runtime scopes with locale, fallback locale, messages, loading state, and formatter caches.
+- Formatter functions for messages, numbers, dates, durations, relative time, lists, display names, and plurals.
+- Web Components that use the nearest `<intl-locale>` provider.
+- Per-component entrypoints for lazy loading.
+- A browser bundle for script-first apps.
 
 ## Install
 
@@ -9,110 +16,206 @@ formatter functions, and lazy component registration.
 npm install @beforesemicolon/intl
 ```
 
-## Runtime
+## Script-First Usage
 
-```ts
-import { createIntl, initIntl, setLocale } from '@beforesemicolon/intl'
-
-const checkoutIntl = createIntl({
-    locale: 'en-US',
-    fallbackLocale: 'en',
-    messages: {
-        total: 'Total: {amount}',
-    },
-})
-
-initIntl({ locale: 'en-US', srcDir: '/locales' })
-setLocale('pt-CV')
-```
-
-## Formatter API
-
-Formatter functions are the source of truth. Components are thin wrappers around
-these functions.
+Initialize the default runtime and call formatter functions directly.
 
 ```ts
 import {
-    formatDateTime,
-    formatList,
     formatMessage,
     formatNumber,
-    formatPlural,
+    initIntl,
+    setLocale,
 } from '@beforesemicolon/intl'
 
-formatMessage('total', { amount: '$12.00' }, { scope: checkoutIntl })
-formatNumber(1200, { locale: 'pt-CV' })
-formatDateTime('2026-01-01T10:00:00Z', {
-    dateStyle: 'medium',
-    timeZone: 'UTC',
+initIntl({
+    locale: 'en-US',
+    fallbackLocale: 'en',
+    srcDir: '/locales',
 })
-formatList(['A', 'B', 'C'], { type: 'conjunction' })
-formatPlural(2, { one: 'item', other: 'items' })
+
+formatMessage('home.title')
+formatNumber(1200, { style: 'currency', currency: 'USD' })
+
+await setLocale('pt-CV')
 ```
 
-## Components
+## Component-First Usage
 
-```html
-<intl-locale locale="en-US" src-dir="/locales" fallback>
-    <intl-msg key="home.title"></intl-msg>
-    <intl-number value="1200" type="currency" currency="USD"></intl-number>
-    <intl-datetime
-        value="2026-01-01T10:00:00Z"
-        date-style="medium"
-        time-zone="UTC"
-    ></intl-datetime>
-
-    <intl-locale locale="pt-CV" fallback>
-        <intl-msg key="home.title"></intl-msg>
-    </intl-locale>
-</intl-locale>
-```
-
-Components use the nearest `<intl-locale>` scope, re-render on runtime updates,
-and support explicit `locale` overrides.
-
-## Lazy Component Imports
-
-Each component has an independent entrypoint.
+Register the components you use, then add `<intl-locale>` around localized UI.
 
 ```ts
 import '@beforesemicolon/intl/components/locale'
 import '@beforesemicolon/intl/components/msg'
 import '@beforesemicolon/intl/components/number'
 import '@beforesemicolon/intl/components/datetime'
-import '@beforesemicolon/intl/components/duration'
-import '@beforesemicolon/intl/components/relative-time'
-import '@beforesemicolon/intl/components/list'
-import '@beforesemicolon/intl/components/name'
-import '@beforesemicolon/intl/components/plural'
 ```
 
-## Browser Bundle
+```html
+<intl-locale locale="en-US" src-dir="/locales" fallback>
+    <h1><intl-msg key="home.title"></intl-msg></h1>
+    <intl-number value="1200" type="currency" currency="USD"></intl-number>
+    <intl-datetime
+        value="2026-01-01T10:00:00Z"
+        date-style="medium"
+        time-zone="UTC"
+    ></intl-datetime>
+</intl-locale>
+```
+
+## Nested Providers
+
+Nested `<intl-locale>` providers create child runtime scopes. Child scopes inherit
+parent messages and fallback messages unless they override them.
+
+```html
+<intl-locale locale="en-US" src-dir="/locales" fallback>
+    <intl-msg key="checkout.title"></intl-msg>
+
+    <intl-locale locale="pt-CV" src-dir="/locales" fallback>
+        <intl-msg key="checkout.title"></intl-msg>
+    </intl-locale>
+</intl-locale>
+```
+
+## Lazy CDN Usage
 
 ```html
 <script src="https://unpkg.com/@beforesemicolon/web-component/dist/client.js"></script>
 <script src="https://unpkg.com/@beforesemicolon/intl/dist/client.js"></script>
+
 <script>
-    const {
-        intlMsg,
-        intlNumber,
-        intlDatetime,
-        intlDuration,
-        intlRelativeTime,
-        intlList,
-        intlName,
-        intlPlural,
-    } = BFS.INTL
+    BFS.INTL.onLocaleMessagesLoaded
+    BFS.INTL.intlMsg('home.title')
+    BFS.INTL.intlNumber({ value: 1200, type: 'currency', currency: 'USD' })
 </script>
 ```
 
-## Compatibility Aliases
+For ESM CDNs, import component entrypoints independently:
 
-The modern API prefers explicit names, but these aliases are kept temporarily:
+```js
+import 'https://esm.sh/@beforesemicolon/intl/components/locale'
+import 'https://esm.sh/@beforesemicolon/intl/components/msg'
+```
 
-- `<intl-msg id="...">` as an alias for `key`.
-- `timezone` as an alias for `time-zone`.
-- `timezone-name` as an alias for `time-zone-name`.
-- `time-style` where older duration and relative-time markup used that name.
+## Runtime API
 
-Prefer the documented names in new code.
+```ts
+import {
+    createIntl,
+    getIntl,
+    initIntl,
+    loadLocale,
+    setLocale,
+} from '@beforesemicolon/intl'
+
+const checkoutIntl = createIntl({
+    locale: 'en-US',
+    fallbackLocale: 'en',
+    messages: { total: 'Total: {amount}' },
+})
+
+getIntl(checkoutIntl)
+await loadLocale('pt-CV', checkoutIntl)
+await setLocale('pt-CV', checkoutIntl)
+```
+
+## Function API
+
+```ts
+formatMessage(key, values?, options?)
+formatNumber(value, options?)
+formatDateTime(value, options?)
+formatDuration(value, options?)
+formatRelativeTime(value, options?)
+formatList(value, options?)
+formatName(value, options?)
+formatPlural(value, options?)
+```
+
+Each formatter accepts `locale` and `scope` options where applicable.
+
+```ts
+formatMessage('hello', { name: 'Elson' }, { scope: checkoutIntl })
+formatNumber(1200, { locale: 'pt-CV' })
+formatDateTime('2026-01-01T10:00:00Z', {
+    dateStyle: 'medium',
+    timeZone: 'UTC',
+})
+formatDuration(3600000, { fields: 'hours', style: 'short' })
+formatRelativeTime(Date.now() + 60000, { unit: 'auto' })
+formatList(['A', 'B', 'C'], { type: 'conjunction' })
+formatName('PT', { type: 'region' })
+formatPlural(2, { one: 'item', other: 'items' })
+```
+
+## Component API
+
+| Component         | Purpose                          | Common attributes                                                            |
+| ----------------- | -------------------------------- | ---------------------------------------------------------------------------- |
+| `<intl-locale>`   | Provider scope and locale loader | `locale`, `fallback-locale`, `src`, `src-dir`, `fallback`, `update-document` |
+| `<intl-msg>`      | Message lookup and interpolation | `key`, `values`                                                              |
+| `<intl-number>`   | Number, currency, percent, unit  | `value`, `type`, `currency`, `unit`, `locale`                                |
+| `<intl-datetime>` | Date/time formatting             | `value`, `date-style`, `time-style`, `time-zone`                             |
+| `<intl-duration>` | Duration formatting              | `value`, `fields`, `time-style`                                              |
+| `<intl-rel-time>` | Relative time formatting         | `value`, `unit`, `numeric`, `live`                                           |
+| `<intl-list>`     | List formatting                  | `value`, `type`, `type-style`                                                |
+| `<intl-name>`     | Display names                    | `value`, `type`, `name-style`, `language`                                    |
+| `<intl-plural>`   | Plural selection                 | `value`, `type`, `zero`, `one`, `two`, `few`, `many`, `other`                |
+
+## Message File Format
+
+Message files are JSON objects. Nested keys are addressed with dot notation.
+
+```json
+{
+    "home": {
+        "title": "Welcome",
+        "hello": "Hello {name}"
+    },
+    "checkout": {
+        "total": "Total: {amount}"
+    }
+}
+```
+
+```html
+<intl-msg key="home.hello" values='{"name":"Elson"}'></intl-msg>
+```
+
+## Fallback Behavior
+
+- Components use the nearest `<intl-locale>` runtime.
+- Explicit `locale` attributes override the provider locale for that component.
+- Child providers inherit parent messages and fallback messages.
+- `fallback-locale` is loaded when available.
+- Missing messages render the key unless a custom missing handler is provided.
+- Invalid formatter input renders an empty string and logs a component error.
+
+## Examples Per Component
+
+```html
+<intl-msg key="home.title"></intl-msg>
+<intl-number value="1200" type="currency" currency="USD"></intl-number>
+<intl-datetime value="2026-01-01T10:00:00Z" date-style="long"></intl-datetime>
+<intl-duration
+    value="3600000"
+    fields="hours"
+    time-style="short"
+></intl-duration>
+<intl-rel-time value="1780000000000" live></intl-rel-time>
+<intl-list value="book pen pencil" type="and"></intl-list>
+<intl-name value="PT" type="region"></intl-name>
+<intl-plural value="2" one="item" other="items"></intl-plural>
+```
+
+## Migration Guide
+
+Prefer these modern names in new code:
+
+- Use `<intl-msg key="...">`; `id` remains as a temporary alias.
+- Use `time-zone`; `timezone` remains as a temporary alias.
+- Use `time-zone-name`; `timezone-name` remains as a temporary alias.
+- Use package-level formatter functions instead of component-local helpers.
+- Use `@beforesemicolon/intl/components/*` entrypoints for lazy component registration.
+- Use `<intl-locale>` scopes instead of relying on `document.documentElement.lang`.

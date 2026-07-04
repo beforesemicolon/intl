@@ -930,23 +930,34 @@ Result: TypeScript checking passed; 15 suites and 96 tests passing.
 
 ---
 
-## Phase 16 — Documentation
+## Phase 16 — Documentation — Complete
+
+Status: complete. README documentation was rewritten from scratch with package overview, script-first usage, component-first usage, nested providers, lazy CDN/entrypoint usage, runtime and formatter APIs, component API table, message file format, fallback behavior, migration notes, and examples for each component.
+
+Verification:
+
+```sh
+npx tsc --noEmit
+npm test -- --runInBand
+```
+
+Result: TypeScript checking passed; 15 suites and 96 tests passing.
 
 Rewrite documentation from scratch.
 
 ### Must Include
 
-- package overview
-- script-first usage
-- component-first usage
-- nested provider usage
-- lazy CDN usage
-- function API
-- component API
-- message file format
-- fallback behavior
-- migration guide
-- examples per component
+- [x] package overview
+- [x] script-first usage
+- [x] component-first usage
+- [x] nested provider usage
+- [x] lazy CDN usage
+- [x] function API
+- [x] component API
+- [x] message file format
+- [x] fallback behavior
+- [x] migration guide
+- [x] examples per component
 
 ---
 
