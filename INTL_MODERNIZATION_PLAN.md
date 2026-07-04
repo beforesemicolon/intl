@@ -548,21 +548,31 @@ Rules:
 
 ---
 
-## Phase 6 — Number
+## Phase 6 — Number — Complete
+
+Status: complete. `<intl-number>` now delegates to `formatNumber`, uses the nearest provider runtime, re-renders on runtime updates, and supports explicit locale overrides.
+
+Verification:
+
+```sh
+npx jest --config jest.config.cjs --runInBand src/components/intl-number.spec.ts src/components/intl-locale.spec.ts src/formatters.spec.ts src/runtime.spec.ts
+```
+
+Result: 38 focused number, provider, formatter, and runtime tests passing.
 
 ### `formatNumber`
 
 Support:
 
-- decimal
-- currency
-- percent
-- unit
-- compact notation
-- rounding
-- numbering system
-- grouping
-- sign display
+- [x] decimal
+- [x] currency
+- [x] percent
+- [x] unit
+- [x] compact notation
+- [x] rounding
+- [x] numbering system
+- [x] grouping
+- [x] sign display
 
 ### Component
 
@@ -572,10 +582,10 @@ Support:
 
 Rules:
 
-- No internal formatter logic.
-- Uses `formatNumber`.
-- Uses nearest locale scope.
-- Supports explicit `locale`.
+- [x] No internal formatter logic.
+- [x] Uses `formatNumber`.
+- [x] Uses nearest locale scope.
+- [x] Supports explicit `locale`.
 
 ---
 

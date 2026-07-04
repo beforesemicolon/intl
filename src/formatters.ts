@@ -253,15 +253,19 @@ export const formatNumber = (
 
     const { locale: explicitLocale, scope, ...intlOptions } = options
     const locale = getLocale({ locale: explicitLocale, scope })
-    const formatter = getCachedFormatter(
-        'number',
-        locale,
-        intlOptions,
-        scope,
-        () => new Intl.NumberFormat(locale, intlOptions)
-    )
+    try {
+        const formatter = getCachedFormatter(
+            'number',
+            locale,
+            intlOptions,
+            scope,
+            () => new Intl.NumberFormat(locale, intlOptions)
+        )
 
-    return formatter.format(value)
+        return formatter.format(value)
+    } catch {
+        return ''
+    }
 }
 
 export const formatDateTime = (

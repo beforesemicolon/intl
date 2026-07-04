@@ -1,176 +1,257 @@
-import { Cube, ShadowRootModeEnum } from '../types'
-import { config } from '../config'
-import { conditionalField } from 'src/utils/conditional-field'
-import { Props } from '@beforesemicolon/web-component'
+import { formatNumber, FormatterOptions } from '../formatters'
+import { getIntl, IntlRuntime } from '../runtime'
+import { getIntlLocaleRuntime } from './intl-locale'
 
-export interface IntlNumberProps {
-    value: number
-    locale: string | undefined
-    type: 'decimal' | 'currency' | 'percent' | 'unit'
-    // display
-    groupingStyle: 'always' | 'auto' | false | 'min2' | true | undefined
-    signDisplay: 'auto' | 'always' | 'exceptZero' | 'never' | undefined
-    notation: 'scientific' | 'standard' | 'engineering' | 'compact' | undefined
-    system: string | undefined
-    // currency
-    currency: string | undefined
-    currencyDisplay: 'symbol' | 'narrowSymbol' | 'code' | 'name' | undefined
-    currencySign: 'accounting' | 'standard' | undefined
-    // unit | https://unicode.org/reports/tr35/tr35-general.html#Example_Units
-    unit: string | undefined
-    unitStyle: 'long' | 'short' | 'narrow' | undefined
-    // rounding
-    rounding:
-        | 'ceil'
-        | 'floor'
-        | 'expand'
-        | 'trunc'
-        | 'halfCeil'
-        | 'halfFloor'
-        | 'halfTrunc'
-        | 'halfEven'
-        | undefined
-    roundingInc:
-        | 1
-        | 2
-        | 5
-        | 10
-        | 20
-        | 25
-        | 50
-        | 100
-        | 200
-        | 250
-        | 500
-        | 1000
-        | 2000
-        | 2500
-        | 5000
-        | undefined
-    minDigits: number | undefined
-    significantDigits: string | undefined // how many total digits will be displayed
-    decimalDigits: string | undefined // how many decimal digits will be displayed
+interface IntlNumberProps {
+    value: number | string | undefined
+    locale: string
+    type: Intl.NumberFormatOptions['style']
+    currency: string
+    currencyStyle: Intl.NumberFormatOptions['currencyDisplay']
+    currencySign: Intl.NumberFormatOptions['currencySign']
+    unit: string
+    unitStyle: Intl.NumberFormatOptions['unitDisplay']
+    notation: Intl.NumberFormatOptions['notation']
+    compact: Intl.NumberFormatOptions['compactDisplay']
+    system: string
+    grouping: string | boolean
+    sign: Intl.NumberFormatOptions['signDisplay']
+    rounding: string
+    roundingIncrement: number | string | undefined
+    roundingPriority: string
+    trailingZero: string
+    minDigits: number | string | undefined
+    significantDigits: number | string | undefined
+    fractions: number | string | undefined
 }
 
-export default ({ register, host, template, TC }: Cube) => {
-    const defaultProps: IntlNumberProps = {
-        value: 0,
-        type: 'decimal',
-        currency: undefined,
-        currencyDisplay: 'narrowSymbol',
-        currencySign: undefined,
-        signDisplay: undefined,
-        notation: undefined,
-        system: undefined,
-        unit: undefined,
-        unitStyle: 'narrow',
-        groupingStyle: 'auto',
-        rounding: undefined,
-        roundingInc: undefined,
-        locale: undefined,
-        minDigits: undefined,
-        significantDigits: undefined,
-        decimalDigits: undefined,
+type NumberFormatOptions = FormatterOptions & Record<string, unknown>
+
+const readValue = <T>(value: T | (() => T)) => {
+    return typeof value === 'function' ? (value as () => T)() : value
+}
+
+const addDefined = (
+    options: NumberFormatOptions,
+    key: string,
+    value: unknown
+) => {
+    if (value !== undefined && value !== null && value !== '') {
+        options[key] = value
     }
-    const splitNumberString = (str: string): Array<number | undefined> => {
-        const [a, b]: Array<number | undefined> = String(str)
-            .split(',', 2)
-            .map((n) => {
-                n = n.trim()
+}
 
-                if (n && !isNaN(Number(n))) {
-                    return Number(n)
-                }
+const parseRange = (value: unknown) => {
+    const parts = String(value || '')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(Number)
+        .filter((part) => !Number.isNaN(part))
 
-                return undefined
-            })
-
-        if (b === undefined) {
-            return [b, a]
-        }
-
-        return [a, b]
+    if (!parts.length) {
+        return []
     }
 
-    const intlNumber = (
-        locale: string,
-        value: number,
-        opt?: Omit<IntlNumberProps, 'value' | 'locale'>
-    ) => {
-        if (!TC.number(value)) {
-            console.error('intl-number: invalid value', value)
-            return ''
-        }
+    return [parts[0], parts[1] ?? parts[0]]
+}
 
-        opt = { ...defaultProps, ...opt }
-
-        const [minFracDig, maxFracDig] = splitNumberString(
-            opt.decimalDigits || ''
-        )
-        const [minDig, maxDig] = splitNumberString(opt.significantDigits || '')
-
-        const options: Intl.NumberFormatOptions = {
-            style: opt.type,
-            ...(opt.type === 'currency'
-                ? {
-                      ...conditionalField('currency', opt.currency),
-                      ...conditionalField(
-                          'currencyDisplay',
-                          opt.currencyDisplay
-                      ),
-                      ...conditionalField('currencySign', opt.currencySign),
-                  }
-                : {}),
-            ...(opt.type === 'unit'
-                ? {
-                      ...conditionalField('unit', opt.unit),
-                      ...conditionalField('unitDisplay', opt.unitStyle),
-                  }
-                : {}),
-            ...conditionalField('signDisplay', opt.signDisplay),
-            ...conditionalField('useGrouping', opt.groupingStyle),
-            ...conditionalField('roundingMode', opt.rounding),
-            ...conditionalField('roundingIncrement', opt.roundingInc),
-            ...conditionalField('numberingSystem', opt.system),
-            ...conditionalField('notation', opt.notation),
-            ...conditionalField('minimumIntegerDigits', opt.minDigits),
-            ...conditionalField('minimumFractionDigits', minFracDig),
-            ...conditionalField('maximumFractionDigits', maxFracDig),
-            ...conditionalField('minimumSignificantDigits', minDig),
-            ...conditionalField('maximumSignificantDigits', maxDig),
-        }
-
-        return new Intl.NumberFormat(locale, options).format(value)
+const parseGrouping = (value: unknown) => {
+    if (value === 'false' || value === false) {
+        return false
     }
 
-    const IntlNumber = (props: Props<IntlNumberProps>) => {
-        const comp = host()
-        const locale = new Intl.Locale(
-            document.documentElement.lang || config.lang
-        )
-        const content = comp.textContent
+    if (value === 'true' || value === true) {
+        return true
+    }
 
-        comp.innerHTML = ''
+    return value as Intl.NumberFormatOptions['useGrouping']
+}
 
-        const numb = () => {
-            return intlNumber(
-                props.locale() || locale.language,
-                Number(props.value() || content),
-                Object.keys(props).reduce((acc, key) => {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    acc[key] = props[key]()
-                    return acc
-                }, {} as IntlNumberProps)
+const buildOptions = (
+    props: Partial<
+        Record<keyof IntlNumberProps, IntlNumberProps[keyof IntlNumberProps] | (() => IntlNumberProps[keyof IntlNumberProps])>
+    >,
+    runtime?: IntlRuntime
+) => {
+    const style = readValue(props.type) || 'decimal'
+    const options: NumberFormatOptions = {
+        scope: runtime,
+        style,
+    }
+    const locale = readValue(props.locale)
+
+    addDefined(options, 'locale', locale)
+    addDefined(options, 'currency', readValue(props.currency))
+    addDefined(options, 'currencyDisplay', readValue(props.currencyStyle))
+    addDefined(options, 'currencySign', readValue(props.currencySign))
+    addDefined(options, 'unit', readValue(props.unit))
+    addDefined(options, 'unitDisplay', readValue(props.unitStyle))
+    addDefined(options, 'notation', readValue(props.notation))
+    addDefined(options, 'compactDisplay', readValue(props.compact))
+    addDefined(options, 'numberingSystem', readValue(props.system))
+    addDefined(options, 'signDisplay', readValue(props.sign))
+    addDefined(options, 'roundingMode', readValue(props.rounding))
+    addDefined(
+        options,
+        'roundingIncrement',
+        Number(readValue(props.roundingIncrement)) || undefined
+    )
+    addDefined(options, 'roundingPriority', readValue(props.roundingPriority))
+    addDefined(options, 'trailingZeroDisplay', readValue(props.trailingZero))
+    addDefined(
+        options,
+        'minimumIntegerDigits',
+        Number(readValue(props.minDigits)) || undefined
+    )
+
+    const [minSignificantDigits, maxSignificantDigits] = parseRange(
+        readValue(props.significantDigits)
+    )
+    const [minFractionDigits, maxFractionDigits] = parseRange(
+        readValue(props.fractions)
+    )
+    const grouping = readValue(props.grouping)
+
+    addDefined(options, 'minimumSignificantDigits', minSignificantDigits)
+    addDefined(options, 'maximumSignificantDigits', maxSignificantDigits)
+    addDefined(options, 'minimumFractionDigits', minFractionDigits)
+    addDefined(options, 'maximumFractionDigits', maxFractionDigits)
+
+    if (grouping !== undefined && grouping !== '') {
+        options.useGrouping = parseGrouping(grouping)
+    }
+
+    return options
+}
+
+const resolveNumberValue = (value: unknown) => {
+    const numberValue = Number(readValue(value))
+    return Number.isNaN(numberValue) ? undefined : numberValue
+}
+
+export default ({
+    html,
+    WebComponent,
+}: typeof import('@beforesemicolon/web-component')) => {
+    class IntlNumber extends WebComponent<IntlNumberProps, { content: string }> {
+        static observedAttributes = [
+            'value',
+            'locale',
+            'type',
+            'currency',
+            'currency-style',
+            'currency-sign',
+            'unit',
+            'unit-style',
+            'notation',
+            'compact',
+            'system',
+            'grouping',
+            'sign',
+            'rounding',
+            'rounding-increment',
+            'rounding-priority',
+            'trailing-zero',
+            'min-digits',
+            'significant-digits',
+            'fractions',
+        ]
+        value = 0
+        locale = ''
+        type = 'decimal' as IntlNumberProps['type']
+        currency = ''
+        currencyStyle = ''
+        currencySign = ''
+        unit = ''
+        unitStyle = ''
+        notation = ''
+        compact = ''
+        system = ''
+        grouping = ''
+        sign = ''
+        rounding = ''
+        roundingIncrement = undefined
+        roundingPriority = ''
+        trailingZero = ''
+        minDigits = undefined
+        significantDigits = undefined
+        fractions = undefined
+        initialState = {
+            content: '',
+        }
+        runtime?: IntlRuntime
+        unsubscribe?: () => void
+        subscribeTimer?: ReturnType<typeof setTimeout>
+
+        updateNumber = () => {
+            const value = resolveNumberValue(
+                this.textContent?.trim() || this.props.value()
             )
+
+            if (value === undefined) {
+                console.error('intl-number: invalid value', this.props.value())
+                this.setState({ content: '' })
+                return
+            }
+
+            this.setState({
+                content: formatNumber(
+                    value,
+                    buildOptions(this.props, this.runtime) as Intl.NumberFormatOptions &
+                        FormatterOptions
+                ),
+            })
         }
 
-        template`${numb}`
+        subscribeToRuntime = () => {
+            this.unsubscribe?.()
+            const provider = this.closest('intl-locale')
+            const providerRuntime = getIntlLocaleRuntime(this)
+
+            if (provider && !providerRuntime) {
+                this.subscribeTimer = setTimeout(this.subscribeToRuntime, 0)
+                return
+            }
+
+            this.runtime = providerRuntime || getIntl()
+            this.unsubscribe = this.runtime.subscribe(() => {
+                this.updateNumber()
+            })
+        }
+
+        onMount() {
+            this.subscribeToRuntime()
+        }
+
+        onUpdate() {
+            this.updateNumber()
+        }
+
+        onDestroy() {
+            clearTimeout(this.subscribeTimer)
+            this.unsubscribe?.()
+        }
+
+        render() {
+            return html`${this.state.content}`
+        }
     }
 
-    register<IntlNumberProps>(IntlNumber, defaultProps, {
-        mode: ShadowRootModeEnum.NONE,
-    })
+    customElements.define('intl-number', IntlNumber)
 
-    return intlNumber
+    return {
+        intlNumber: (props: Partial<IntlNumberProps> = {}) => {
+            const value = resolveNumberValue(props.value ?? 0)
+
+            if (value === undefined) {
+                return ''
+            }
+
+            return formatNumber(
+                value,
+                buildOptions(props) as Intl.NumberFormatOptions & FormatterOptions
+            )
+        },
+    }
 }
