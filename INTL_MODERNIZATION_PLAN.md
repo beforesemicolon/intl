@@ -15,6 +15,42 @@ Modernize `@beforesemicolon/intl` into a lazy, scoped, Web Component-first inter
 
 ---
 
+## Current Status After Latest Pull + Local Changes Review
+
+Latest upstream `main` now includes the first runtime foundation in `src/runtime.ts`:
+
+- `createIntl()`, `initIntl()`, `getIntl()`, `setLocale()`, `loadLocale()`, subscription, destroy, and reset helpers.
+- Parent/child runtime support through `parentScope`.
+- Locale message loading from `messages`, `fallbackMessages`, `src`, `srcDir`, or `loader`.
+- Runtime-owned `formatterCache` and `messageCache`.
+- Runtime tests in `src/runtime.spec.ts`.
+
+The local changes are generally moving toward a richer intl package, but they are currently taking a component/type-first path rather than the planned runtime/function-first path:
+
+- Good direction:
+  - Broader typed prop coverage was added for date/time, duration, list, name, and number components.
+  - Formatter helper behavior is being extracted inside component modules and tested through returned helper functions such as `intlNumber`, `intlDatetime`, `intlDuration`, `intlList`, `intlName`, and `intlMsg`.
+  - Component tests were expanded substantially.
+  - The dependency update adds `@formatjs/intl-durationformat`, which supports the duration fallback strategy in Phase 9.
+  - The builder-based package build scripts are closer to the lazy module output this plan wants.
+- Architectural gap:
+  - Components still resolve locale through `getLocale()` and, for messages, a separate global `messages` state in `src/messages.ts`.
+  - Components do not yet use `getIntl()`, nearest provider scope, parent-scope fallback, runtime subscriptions, or runtime formatter caches.
+  - The extracted formatter helpers are not yet exported as pure package-level formatter functions, so components are still the owner of formatting behavior.
+  - `<intl-locale>` currently loads messages into the global message state and does not create a scoped runtime provider.
+  - `src/index.ts` exports the runtime, but the main component registrations still register multiple components from the root entrypoint and do not yet provide per-component lazy entry files.
+- Dependency caution:
+  - Regenerating `package-lock.json` with the merged manifest produces an existing peer warning: `@beforesemicolon/builder@1.4.0` depends on `global-jsdom@9.2.0`, whose peer range is `jsdom >=23 <24`, while the local manifest uses `jsdom@25.0.1`.
+  - Before finalizing the dependency modernization, either align `jsdom` to the builder peer range, upgrade the builder/global-jsdom path, or document why the peer override is acceptable.
+- Verification after merge:
+  - `npm test -- --runInBand` now reaches the suite after pinning npm scripts to `jest.config.cjs`, but it does not pass yet.
+  - Passing suites include runtime, locale, message, duration, and name tests.
+  - Current failures are concentrated in date/time locale output expectations, number rounding behavior, stale plural/relative-time tests that reference removed helper modules, `intl-list` typing against `ObjectLiteral`, and the singular/plural key mismatch in `millisecondsToTimeParts`.
+
+Decision: preserve the local component/type/test work, but redirect the next implementation pass around the runtime APIs now present on `main`. The plan below is updated to make runtime integration the next gate before adding more component surface area.
+
+---
+
 ## Target Architecture
 
 ### Runtime Scope
@@ -309,21 +345,31 @@ Each component module registers only itself. Importing `<intl-number>` must not 
 
 ---
 
-## Phase 1 — Runtime Scope
+## Phase 1 — Runtime Scope — Complete
 
 Build scoped runtime first.
 
+Status: complete as of the latest `main` pull. Implemented in `src/runtime.ts` and covered by `src/runtime.spec.ts`.
+
+Verification:
+
+```sh
+npm test -- --runInBand src/runtime.spec.ts
+```
+
+Result: 8 runtime tests passing.
+
 ### Deliverables
 
-- `createIntl()`
-- `initIntl()`
-- `getIntl()`
-- `setLocale()`
-- `loadLocale()`
-- `subscribe()`
-- scoped parent/child runtime model
-- default runtime fallback
-- runtime tests
+- [x] `createIntl()`
+- [x] `initIntl()`
+- [x] `getIntl()`
+- [x] `setLocale()`
+- [x] `loadLocale()`
+- [x] `subscribe()`
+- [x] scoped parent/child runtime model
+- [x] default runtime fallback
+- [x] runtime tests
 
 ### Implementation Notes
 
@@ -382,6 +428,8 @@ createIntl({
 
 Move all formatting logic into pure exported functions.
 
+Updated gate: do this before further component refactors. The current local helper functions inside component modules should be moved into formatter modules that accept `{ locale?, scope? }`, use `getIntl(scope)`, and share runtime caches.
+
 ### Required Functions
 
 - `formatMessage`
@@ -402,12 +450,16 @@ Move all formatting logic into pure exported functions.
 - Return string output.
 - Never directly manipulate DOM.
 - No component dependency.
+- Do not read locale from `document` directly except through runtime fallback.
+- Do not read message text from `src/messages.ts`; use `IntlRuntime.getMessage()`.
 
 ---
 
 ## Phase 4 — `<intl-locale>` Provider
 
 Refactor `<intl-locale>` to use runtime scopes.
+
+Updated gate: replace the current global message-loading implementation with a provider-backed runtime before relying on scoped locale behavior in other components.
 
 ### Requirements
 
@@ -419,6 +471,9 @@ Refactor `<intl-locale>` to use runtime scopes.
 - Initializes default runtime if needed.
 - Can update document `<html lang>` and `<html dir>` only if `update-document` is true.
 - Renders slotted content after ready, unless fallback rendering is enabled.
+- Loads `messages`, `src`, `src-dir`, and `loader` through `createIntl()` / `loadLocale()`.
+- Exposes the provider runtime to descendants without using a process-wide messages store.
+- Subscribes child rendering to runtime updates and cleans up subscriptions on unmount.
 
 ---
 
@@ -434,6 +489,8 @@ Refactor `<intl-locale>` to use runtime scopes.
 - fallback-locale fallback
 - rich text token support
 
+Updated from local review: the current `src/messages.ts` state store is useful as a temporary compatibility layer, but it should not become the long-term message registry. Message lookup must move to `IntlRuntime.getMessage()` so nested providers, fallback locale, and parent-scope fallback all behave consistently.
+
 ### Component
 
 ```html
@@ -447,6 +504,7 @@ Rules:
 - Calls `formatMessage`.
 - Re-renders on scope update.
 - Supports `id` as deprecated alias for `key`.
+- Prefer `key` in new API and tests; keep `id` only as a compatibility alias with a deprecation path.
 
 ---
 
@@ -551,6 +609,8 @@ Support:
 - narrow/short/long styles
 - localized list formatting
 
+Updated from local review: `@formatjs/intl-durationformat` is now part of the local dependency direction. Confirm the intended browser/runtime support matrix, then make the fallback explicit in `formatDuration` tests instead of hiding the behavior inside the component.
+
 ### Component
 
 ```html
@@ -561,6 +621,7 @@ Rules:
 
 - Use nearest locale scope.
 - No hardcoded English unless fallback locale requires it.
+- Keep duration unit names aligned with `Intl.DurationFormat` plural option keys (`years`, `months`, `weeks`, `days`, `hours`, `minutes`, `seconds`, `milliseconds`, `microseconds`, `nanoseconds`) and map component aliases at the boundary.
 
 ---
 
@@ -629,12 +690,15 @@ Add shared formatter cache per runtime scope.
 
 Make each component independently loadable.
 
+Updated from local review: builder-based scripts are a good step, but package exports and source entrypoints still need to prove that importing one component registers only that component.
+
 ### Rules
 
 - Each component has its own entry file.
 - Each component registers only itself.
 - Full bundle imports all component entry files.
 - Runtime/function modules do not auto-register components.
+- Root package import may export formatter/runtime APIs, but it should not be the only path to component registration.
 
 Example:
 
@@ -700,6 +764,15 @@ Keep temporarily:
 - relative-time cleanup
 - accessibility output
 
+### Immediate Test Updates From Local Review
+
+- Add formatter-level tests once helpers move out of component modules.
+- Add provider integration tests proving nearest `<intl-locale>` wins over document language.
+- Add nested provider tests for message fallback from child to parent.
+- Add tests proving components re-render after runtime `setLocale()` / `setMessages()`.
+- Add lazy import tests that import one component entrypoint and assert unrelated custom elements are not registered.
+- Add dependency compatibility coverage or CI notes for the `jsdom` / `global-jsdom` peer warning introduced by the builder path.
+
 ---
 
 ## Phase 16 — Documentation
@@ -729,22 +802,26 @@ Rewrite documentation from scratch.
 - runtime scope
 - formatter functions
 - locale loading
+- component helpers migrated out of component modules into formatter modules
 
 ### `0.3.0`
 
 - new `<intl-locale>`
 - nested provider support
 - message refactor
+- removal or compatibility wrapping of the temporary global message store
 
 ### `0.4.0`
 
 - number/date/relative-time/duration refactors
+- runtime formatter cache integration for number/date/relative-time/duration
 
 ### `0.5.0`
 
 - list/name/plural refactors
 - lazy exports
 - CDN entrypoints
+- per-component entrypoint tests
 
 ### `1.0.0`
 
