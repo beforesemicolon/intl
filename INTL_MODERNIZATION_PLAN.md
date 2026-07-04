@@ -818,17 +818,28 @@ import '@beforesemicolon/intl/components/number'
 
 ---
 
-## Phase 13 — Accessibility + SEO
+## Phase 13 — Accessibility + SEO — Complete
+
+Status: complete. Formatter-backed text components now render localized output in light DOM, set `lang` and `dir` from the active runtime, keep `<intl-datetime>` output as semantic `<time datetime="...">`, and add long-form `aria-label` text for abbreviated duration/list/name/relative-time output. Components that accept text-node values preserve that initial text before light-DOM rendering clears the host.
+
+Verification:
+
+```sh
+npx tsc --noEmit
+npm test -- --runInBand
+```
+
+Result: TypeScript checking passed; 14 suites and 94 tests passing.
 
 ### Requirements
 
-- No Shadow DOM for text output unless explicitly enabled.
-- Localized text should appear in real DOM.
-- Components set `lang`.
-- Components set `dir`.
-- Date components render `<time>`.
-- Short/narrow output supports `aria-label`.
-- Fallback text should be available before load when possible.
+- [x] No Shadow DOM for text output unless explicitly enabled.
+- [x] Localized text should appear in real DOM.
+- [x] Components set `lang`.
+- [x] Components set `dir`.
+- [x] Date components render `<time>`.
+- [x] Short/narrow output supports `aria-label`.
+- [x] Fallback text should be available before load when possible.
 
 ---
 

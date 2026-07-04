@@ -100,16 +100,18 @@ export default ({
         timeStyle = 'long' as IntlDurationProps['timeStyle']
         fields = '*'
         locale = ''
+        config = { shadow: false }
         initialState = {
             content: '',
         }
         runtime?: IntlRuntime
         unsubscribe?: () => void
         subscribeTimer?: ReturnType<typeof setTimeout>
+        sourceText = ''
 
         updateDuration = () => {
             const value = resolveDurationValue(
-                this.textContent?.trim() || this.props.value()
+                this.sourceText || this.props.value()
             )
 
             if (value === undefined) {
@@ -121,18 +123,26 @@ export default ({
                 return
             }
 
-            this.setState({
-                content: formatDuration(
-                    value,
-                    buildOptions(
-                        this.props,
-                        this.runtime
-                    ) as unknown as FormatterOptions & {
-                        fields: '*' | string | string[]
-                        style: 'long' | 'short' | 'narrow' | 'digital'
-                    }
-                ),
-            })
+            const options = buildOptions(
+                this.props,
+                this.runtime
+            ) as unknown as FormatterOptions & {
+                fields: '*' | string | string[]
+                style: 'long' | 'short' | 'narrow' | 'digital'
+            }
+            const content = formatDuration(value, options)
+            const label =
+                options.style && options.style !== 'long'
+                    ? formatDuration(value, { ...options, style: 'long' })
+                    : ''
+
+            if (label && label !== content) {
+                this.setAttribute('aria-label', label)
+            } else {
+                this.removeAttribute('aria-label')
+            }
+
+            this.setState({ content })
         }
 
         subscribeToRuntime = () => {
@@ -146,7 +156,9 @@ export default ({
             }
 
             this.runtime = providerRuntime || getIntl()
-            this.unsubscribe = this.runtime.subscribe(() => {
+            this.unsubscribe = this.runtime.subscribe((snapshot) => {
+                this.lang = this.props.locale() || snapshot.locale
+                this.dir = snapshot.direction
                 this.updateDuration()
             })
         }
@@ -168,6 +180,17 @@ export default ({
             return html`${this.state.content}`
         }
     }
+
+    Object.defineProperty(IntlDuration.prototype, 'connectedCallback', {
+        value: function connectedCallback(this: IntlDuration) {
+            this.sourceText = this.textContent?.trim() || ''
+            ;(
+                WebComponent.prototype as unknown as {
+                    connectedCallback(): void
+                }
+            ).connectedCallback.call(this)
+        },
+    })
 
     if (!customElements.get('intl-duration')) {
         customElements.define('intl-duration', IntlDuration)

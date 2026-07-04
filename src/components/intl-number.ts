@@ -184,16 +184,18 @@ export default ({
         minDigits = undefined
         significantDigits = undefined
         fractions = undefined
+        config = { shadow: false }
         initialState = {
             content: '',
         }
         runtime?: IntlRuntime
         unsubscribe?: () => void
         subscribeTimer?: ReturnType<typeof setTimeout>
+        sourceText = ''
 
         updateNumber = () => {
             const value = resolveNumberValue(
-                this.textContent?.trim() || this.props.value()
+                this.sourceText || this.props.value()
             )
 
             if (value === undefined) {
@@ -224,7 +226,9 @@ export default ({
             }
 
             this.runtime = providerRuntime || getIntl()
-            this.unsubscribe = this.runtime.subscribe(() => {
+            this.unsubscribe = this.runtime.subscribe((snapshot) => {
+                this.lang = this.props.locale() || snapshot.locale
+                this.dir = snapshot.direction
                 this.updateNumber()
             })
         }
@@ -246,6 +250,17 @@ export default ({
             return html`${this.state.content}`
         }
     }
+
+    Object.defineProperty(IntlNumber.prototype, 'connectedCallback', {
+        value: function connectedCallback(this: IntlNumber) {
+            this.sourceText = this.textContent?.trim() || ''
+            ;(
+                WebComponent.prototype as unknown as {
+                    connectedCallback(): void
+                }
+            ).connectedCallback.call(this)
+        },
+    })
 
     if (!customElements.get('intl-number')) {
         customElements.define('intl-number', IntlNumber)

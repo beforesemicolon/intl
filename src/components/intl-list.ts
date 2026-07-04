@@ -66,25 +66,37 @@ export default ({
         type = 'conjunction' as IntlListProps['type']
         typeStyle = 'long' as IntlListProps['typeStyle']
         locale = ''
+        config = { shadow: false }
         initialState = {
             content: '',
         }
         runtime?: IntlRuntime
         unsubscribe?: () => void
         subscribeTimer?: ReturnType<typeof setTimeout>
+        sourceText = ''
 
         updateList = () => {
             const value = resolveListValue(
-                this.textContent?.trim() || this.props.value()
+                this.sourceText || this.props.value()
             )
 
-            this.setState({
-                content: formatList(
-                    value,
-                    buildOptions(this.props, this.runtime) as FormatterOptions &
-                        Record<string, unknown>
-                ),
-            })
+            const options = buildOptions(
+                this.props,
+                this.runtime
+            ) as FormatterOptions & Record<string, unknown>
+            const content = formatList(value, options)
+            const label =
+                options.style && options.style !== 'long'
+                    ? formatList(value, { ...options, style: 'long' })
+                    : ''
+
+            if (label && label !== content) {
+                this.setAttribute('aria-label', label)
+            } else {
+                this.removeAttribute('aria-label')
+            }
+
+            this.setState({ content })
         }
 
         subscribeToRuntime = () => {
@@ -98,7 +110,9 @@ export default ({
             }
 
             this.runtime = providerRuntime || getIntl()
-            this.unsubscribe = this.runtime.subscribe(() => {
+            this.unsubscribe = this.runtime.subscribe((snapshot) => {
+                this.lang = this.props.locale() || snapshot.locale
+                this.dir = snapshot.direction
                 this.updateList()
             })
         }
@@ -120,6 +134,17 @@ export default ({
             return html`${this.state.content}`
         }
     }
+
+    Object.defineProperty(IntlList.prototype, 'connectedCallback', {
+        value: function connectedCallback(this: IntlList) {
+            this.sourceText = this.textContent?.trim() || ''
+            ;(
+                WebComponent.prototype as unknown as {
+                    connectedCallback(): void
+                }
+            ).connectedCallback.call(this)
+        },
+    })
 
     if (!customElements.get('intl-list')) {
         customElements.define('intl-list', IntlList)

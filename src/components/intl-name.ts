@@ -69,16 +69,18 @@ export default ({
         nameStyle = 'long' as IntlNameProps['nameStyle']
         language = 'dialect' as IntlNameProps['language']
         locale = ''
+        config = { shadow: false }
         initialState = {
             content: '',
         }
         runtime?: IntlRuntime
         unsubscribe?: () => void
         subscribeTimer?: ReturnType<typeof setTimeout>
+        sourceText = ''
 
         updateName = () => {
             const value = resolveNameValue(
-                this.textContent?.trim() || this.props.value()
+                this.sourceText || this.props.value()
             )
 
             if (!value) {
@@ -87,15 +89,23 @@ export default ({
                 return
             }
 
-            this.setState({
-                content: formatName(
-                    value,
-                    buildOptions(
-                        this.props,
-                        this.runtime
-                    ) as unknown as Intl.DisplayNamesOptions & FormatterOptions
-                ),
-            })
+            const options = buildOptions(
+                this.props,
+                this.runtime
+            ) as unknown as Intl.DisplayNamesOptions & FormatterOptions
+            const content = formatName(value, options)
+            const label =
+                options.style && options.style !== 'long'
+                    ? formatName(value, { ...options, style: 'long' })
+                    : ''
+
+            if (label && label !== content) {
+                this.setAttribute('aria-label', label)
+            } else {
+                this.removeAttribute('aria-label')
+            }
+
+            this.setState({ content })
         }
 
         subscribeToRuntime = () => {
@@ -109,7 +119,9 @@ export default ({
             }
 
             this.runtime = providerRuntime || getIntl()
-            this.unsubscribe = this.runtime.subscribe(() => {
+            this.unsubscribe = this.runtime.subscribe((snapshot) => {
+                this.lang = this.props.locale() || snapshot.locale
+                this.dir = snapshot.direction
                 this.updateName()
             })
         }
@@ -131,6 +143,17 @@ export default ({
             return html`${this.state.content}`
         }
     }
+
+    Object.defineProperty(IntlName.prototype, 'connectedCallback', {
+        value: function connectedCallback(this: IntlName) {
+            this.sourceText = this.textContent?.trim() || ''
+            ;(
+                WebComponent.prototype as unknown as {
+                    connectedCallback(): void
+                }
+            ).connectedCallback.call(this)
+        },
+    })
 
     if (!customElements.get('intl-name')) {
         customElements.define('intl-name', IntlName)

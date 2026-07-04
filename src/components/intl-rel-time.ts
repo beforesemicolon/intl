@@ -198,6 +198,7 @@ export default ({
         numeric = 'auto' as IntlRelTimeProps['numeric']
         unit = 'auto' as IntlRelTimeProps['unit']
         locale = ''
+        config = { shadow: false }
         initialState = {
             content: '',
             datetime: '',
@@ -206,6 +207,7 @@ export default ({
         unsubscribe?: () => void
         subscribeTimer?: ReturnType<typeof setTimeout>
         updateTimer?: ReturnType<typeof setTimeout>
+        sourceText = ''
 
         scheduleUpdate = () => {
             clearTimeout(this.updateTimer)
@@ -221,7 +223,7 @@ export default ({
 
         updateTime = () => {
             const value = resolveTimeValue(
-                this.textContent?.trim() || this.props.value()
+                this.sourceText || this.props.value()
             )
 
             if (value === undefined) {
@@ -242,8 +244,20 @@ export default ({
                     precision: number
                 }
 
+            const content = formatRelativeTime(value, options)
+            const label =
+                options.style && options.style !== 'long'
+                    ? formatRelativeTime(value, { ...options, style: 'long' })
+                    : ''
+
+            if (label && label !== content) {
+                this.setAttribute('aria-label', label)
+            } else {
+                this.removeAttribute('aria-label')
+            }
+
             this.setState({
-                content: formatRelativeTime(value, options),
+                content,
                 datetime: getDateTimeAttribute(value, String(options.unit)),
             })
             this.scheduleUpdate()
@@ -260,7 +274,9 @@ export default ({
             }
 
             this.runtime = providerRuntime || getIntl()
-            this.unsubscribe = this.runtime.subscribe(() => {
+            this.unsubscribe = this.runtime.subscribe((snapshot) => {
+                this.lang = this.props.locale() || snapshot.locale
+                this.dir = snapshot.direction
                 this.updateTime()
             })
         }
@@ -285,6 +301,17 @@ export default ({
             >`
         }
     }
+
+    Object.defineProperty(IntlRelTime.prototype, 'connectedCallback', {
+        value: function connectedCallback(this: IntlRelTime) {
+            this.sourceText = this.textContent?.trim() || ''
+            ;(
+                WebComponent.prototype as unknown as {
+                    connectedCallback(): void
+                }
+            ).connectedCallback.call(this)
+        },
+    })
 
     if (!customElements.get('intl-rel-time')) {
         customElements.define('intl-rel-time', IntlRelTime)

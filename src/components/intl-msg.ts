@@ -26,6 +26,7 @@ export default ({
         id = ''
         key = ''
         values = {}
+        config = { shadow: false }
         initialState = {
             content: '',
         }

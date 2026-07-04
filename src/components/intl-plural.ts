@@ -85,16 +85,18 @@ export default ({
         few = ''
         many = ''
         other = ''
+        config = { shadow: false }
         initialState = {
             content: '',
         }
         runtime?: IntlRuntime
         unsubscribe?: () => void
         subscribeTimer?: ReturnType<typeof setTimeout>
+        sourceText = ''
 
         updatePlural = () => {
             const value = resolvePluralValue(
-                this.textContent?.trim() || this.props.value()
+                this.sourceText || this.props.value()
             )
 
             if (value === undefined) {
@@ -133,7 +135,9 @@ export default ({
             }
 
             this.runtime = providerRuntime || getIntl()
-            this.unsubscribe = this.runtime.subscribe(() => {
+            this.unsubscribe = this.runtime.subscribe((snapshot) => {
+                this.lang = this.props.locale() || snapshot.locale
+                this.dir = snapshot.direction
                 this.updatePlural()
             })
         }
@@ -155,6 +159,17 @@ export default ({
             return html`${this.state.content}`
         }
     }
+
+    Object.defineProperty(IntlPlural.prototype, 'connectedCallback', {
+        value: function connectedCallback(this: IntlPlural) {
+            this.sourceText = this.textContent?.trim() || ''
+            ;(
+                WebComponent.prototype as unknown as {
+                    connectedCallback(): void
+                }
+            ).connectedCallback.call(this)
+        },
+    })
 
     if (!customElements.get('intl-plural')) {
         customElements.define('intl-plural', IntlPlural)
