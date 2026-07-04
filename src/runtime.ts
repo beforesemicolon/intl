@@ -56,6 +56,8 @@ export interface IntlRuntime {
 }
 
 const DEFAULT_LOCALE = 'en'
+const DEFAULT_FALLBACK_LOCALE = 'en'
+const DEFAULT_SRC_DIR = '/locales'
 let defaultRuntime: IntlRuntime | null = null
 
 const hasDocument = () => typeof document !== 'undefined'
@@ -446,7 +448,16 @@ class ScopedIntlRuntime implements IntlRuntime {
 }
 
 export const createIntl = (options: IntlRuntimeOptions = {}): IntlRuntime => {
-    return new ScopedIntlRuntime(options)
+    const defaultedOptions: IntlRuntimeOptions = {
+        ...options,
+        fallbackLocale:
+            options.fallbackLocale ??
+            options.parentScope?.fallbackLocale ??
+            DEFAULT_FALLBACK_LOCALE,
+        srcDir: options.srcDir ?? DEFAULT_SRC_DIR,
+    }
+
+    return new ScopedIntlRuntime(defaultedOptions)
 }
 
 export const initIntl = (options: IntlRuntimeOptions = {}) => {

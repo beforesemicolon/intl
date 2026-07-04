@@ -42,6 +42,26 @@ describe('intl runtime', () => {
         expect(intl.locale).toBe('pt-CV')
     })
 
+    it('defaults fallback locale to en when no fallback locale is provided', async () => {
+        const loader = jest.fn((locale: string) => {
+            if (locale === 'en') {
+                return { fallback: 'Fallback text' }
+            }
+
+            return { primary: 'Primary text' }
+        })
+        const intl = createIntl({
+            locale: 'pt-CV',
+            loader,
+        })
+
+        await intl.loadLocale()
+
+        expect(intl.fallbackLocale).toBe('en')
+        expect(loader).toHaveBeenCalledWith('en', expect.any(AbortSignal))
+        expect(intl.getMessage('fallback')).toBe('Fallback text')
+    })
+
     it('creates nested runtime scopes that inherit parent locale and messages', () => {
         const parent = createIntl({
             locale: 'en-US',
@@ -185,6 +205,22 @@ describe('intl runtime', () => {
             expect.objectContaining({ signal: expect.any(AbortSignal) })
         )
         expect(intl.getMessage('hello')).toBe('Oi')
+    })
+
+    it('defaults srcDir to /locales when loading locale messages', async () => {
+        ;(window.fetch as jest.Mock).mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ hello: 'Hello' }),
+        })
+
+        const intl = createIntl({ locale: 'en-US' })
+
+        await intl.loadLocale()
+
+        expect(window.fetch).toHaveBeenCalledWith(
+            'http://localhost/locales/en-US.json',
+            expect.objectContaining({ signal: expect.any(AbortSignal) })
+        )
     })
 
     it('loads fallback locale messages', async () => {

@@ -97,6 +97,21 @@ describe('intl-msg', () => {
         )
     })
 
+    it('should render fallback text when child text content exists', async () => {
+        initIntl({ locale: 'en', messages: {} })
+
+        html`<intl-msg key="missing">Fallback text</intl-msg>`.render(
+            document.body
+        )
+        await wait()
+
+        const el = document.body.firstElementChild as HTMLElement & {
+            contentRoot: HTMLElement
+        }
+
+        expect(el.contentRoot.textContent).toBe('Fallback text')
+    })
+
     it('should re-render when the runtime messages update', async () => {
         const runtime = initIntl({
             locale: 'en',

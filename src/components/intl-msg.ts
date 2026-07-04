@@ -33,6 +33,7 @@ export default ({
         }
         runtime?: IntlRuntime
         unsubscribe?: () => void
+        sourceText = ''
 
         getMessageKey = () => {
             const key = this.props.key()
@@ -48,9 +49,11 @@ export default ({
         updateMessage = () => {
             const key = this.getMessageKey()
             const values = this.props.values() || {}
+            const fallback = this.sourceText
+            const setFallback = () => this.setState({ content: fallback || '' })
 
             if (!key || this.runtime?.status !== 'ready') {
-                this.setState({ content: '' })
+                setFallback()
                 return
             }
 
@@ -60,7 +63,7 @@ export default ({
                     console.error(
                         `[intl-msg] text for key of "${missingKey}" was not found. Rendering the key itself as backup.`
                     )
-                    return missingKey
+                    return fallback || missingKey
                 },
             })
 
@@ -93,6 +96,15 @@ export default ({
             return html`${() => toTemplate(this.state.content())}`
         }
     }
+
+    Object.defineProperty(IntlMsg.prototype, 'connectedCallback', {
+        value: function connectedCallback(this: IntlMsg) {
+            this.sourceText = this.textContent?.trim() || ''
+            ;(
+                WebComponent.prototype as unknown as { connectedCallback(): void }
+            ).connectedCallback.call(this)
+        },
+    })
 
     if (!customElements.get('intl-msg')) {
         customElements.define('intl-msg', IntlMsg)
