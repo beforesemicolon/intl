@@ -1,69 +1,152 @@
-import { Cube, ShadowRootModeEnum } from '../types'
-import { config } from '../config'
-import { Props } from '@beforesemicolon/web-component'
+import { formatName, FormatterOptions } from '../formatters'
+import { getIntl, IntlRuntime } from '../runtime'
+import { getIntlLocaleRuntime } from './intl-locale'
 
-export interface IntlNameProps {
-    value: string
-    type:
-        | 'language'
-        | 'region'
-        | 'script'
-        | 'dateTimeField'
-        | 'currency'
-        | 'calendar'
-    style: 'long' | 'short' | 'narrow' | undefined
-    locale: string | undefined
+interface IntlNameProps {
+    value: string | undefined
+    type: Intl.DisplayNamesOptions['type']
+    nameStyle: Intl.DisplayNamesOptions['style']
+    locale: string
+    language: Intl.DisplayNamesOptions['languageDisplay']
 }
 
-export default ({ register, host, template, TC }: Cube) => {
-    const intlName = (
-        locale: string,
-        value: IntlNameProps['value'],
-        type: IntlNameProps['type'] = 'language',
-        style: IntlNameProps['style'] = 'long'
-    ) => {
-        if (!TC.string(value) || TC.empty(value)) {
-            console.error('intl-name: invalid value', value)
-            return ''
-        }
+type NameOptions = FormatterOptions & Record<string, unknown>
 
-        return new Intl.DisplayNames(locale, {
-            style: style,
-            type: type,
-        }).of(value)
+const readValue = <T>(value: T | (() => T)) => {
+    return typeof value === 'function' ? (value as () => T)() : value
+}
+
+const addDefined = (options: NameOptions, key: string, value: unknown) => {
+    if (value !== undefined && value !== null && value !== '') {
+        options[key] = value
+    }
+}
+
+const resolveNameValue = (value: unknown) => {
+    const nameValue = readValue(value)
+    return typeof nameValue === 'string' && nameValue.trim()
+        ? nameValue.trim()
+        : ''
+}
+
+const buildOptions = (
+    props: Partial<
+        Record<
+            keyof IntlNameProps,
+            | IntlNameProps[keyof IntlNameProps]
+            | (() => IntlNameProps[keyof IntlNameProps])
+        >
+    >,
+    runtime?: IntlRuntime
+) => {
+    const options: NameOptions = {
+        scope: runtime,
+        type: readValue(props.type) || 'region',
+        style: readValue(props.nameStyle) || 'long',
     }
 
-    const IntlName = (props: Props<IntlNameProps>) => {
-        const comp = host()
-        const locale = new Intl.Locale(
-            document.documentElement.lang || config.lang
-        )
-        const content = comp.textContent
+    addDefined(options, 'locale', readValue(props.locale))
+    addDefined(options, 'languageDisplay', readValue(props.language))
 
-        comp.innerHTML = ''
+    return options
+}
 
-        const name = () => {
-            return intlName(
-                props.locale() || locale.language,
-                props.value() || content || '',
-                props.type(),
-                props.style()
+export default ({
+    html,
+    WebComponent,
+}: typeof import('@beforesemicolon/web-component')) => {
+    class IntlName extends WebComponent<IntlNameProps, { content: string }> {
+        static observedAttributes = [
+            'value',
+            'type',
+            'name-style',
+            'locale',
+            'language',
+        ]
+
+        value = ''
+        type = 'region' as IntlNameProps['type']
+        nameStyle = 'long' as IntlNameProps['nameStyle']
+        language = 'dialect' as IntlNameProps['language']
+        locale = ''
+        initialState = {
+            content: '',
+        }
+        runtime?: IntlRuntime
+        unsubscribe?: () => void
+        subscribeTimer?: ReturnType<typeof setTimeout>
+
+        updateName = () => {
+            const value = resolveNameValue(
+                this.textContent?.trim() || this.props.value()
             )
+
+            if (!value) {
+                console.error('intl-name: invalid value', value)
+                this.setState({ content: '' })
+                return
+            }
+
+            this.setState({
+                content: formatName(
+                    value,
+                    buildOptions(
+                        this.props,
+                        this.runtime
+                    ) as unknown as Intl.DisplayNamesOptions & FormatterOptions
+                ),
+            })
         }
 
-        template`${name}`
+        subscribeToRuntime = () => {
+            this.unsubscribe?.()
+            const provider = this.closest('intl-locale')
+            const providerRuntime = getIntlLocaleRuntime(this)
+
+            if (provider && !providerRuntime) {
+                this.subscribeTimer = setTimeout(this.subscribeToRuntime, 0)
+                return
+            }
+
+            this.runtime = providerRuntime || getIntl()
+            this.unsubscribe = this.runtime.subscribe(() => {
+                this.updateName()
+            })
+        }
+
+        onMount() {
+            this.subscribeToRuntime()
+        }
+
+        onUpdate() {
+            this.updateName()
+        }
+
+        onDestroy() {
+            clearTimeout(this.subscribeTimer)
+            this.unsubscribe?.()
+        }
+
+        render() {
+            return html`${this.state.content}`
+        }
     }
 
-    register<IntlNameProps>(
-        IntlName,
-        {
-            value: '',
-            type: 'language',
-            style: 'long',
-            locale: undefined,
-        },
-        { mode: ShadowRootModeEnum.NONE }
-    )
+    customElements.define('intl-name', IntlName)
 
-    return intlName
+    return {
+        intlName: (props: Partial<IntlNameProps> = {}) => {
+            const value = resolveNameValue(props.value ?? '')
+
+            if (!value) {
+                return ''
+            }
+
+            return formatName(
+                value,
+                buildOptions(props) as unknown as Intl.DisplayNamesOptions &
+                    FormatterOptions
+            )
+        },
+    }
 }

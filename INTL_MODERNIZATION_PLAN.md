@@ -705,7 +705,17 @@ Rules:
 
 ---
 
-## Phase 10 — List / Name / Plural
+## Phase 10 — List / Name / Plural — Complete
+
+Status: complete. `<intl-list>`, `<intl-name>`, and `<intl-plural>` now delegate to `formatList`, `formatName`, and `formatPlural`, use the nearest provider runtime, re-render on runtime updates, and support explicit locale overrides. The root entrypoint now exports `intlList`, `intlName`, and `intlPlural` alongside the previously migrated helpers.
+
+Verification:
+
+```sh
+npx jest --config jest.config.cjs --runInBand src/components/intl-list.spec.ts src/components/intl-name.spec.ts src/components/intl-plural.spec.ts src/components/intl-locale.spec.ts src/formatters.spec.ts src/runtime.spec.ts
+```
+
+Result: 48 focused list/name/plural, provider, formatter, and runtime tests passing.
 
 ### `formatList`
 
@@ -736,11 +746,11 @@ formatPlural(2, {
 
 Components:
 
-- `<intl-list>`
-- `<intl-name>`
-- `<intl-plural>`
+- [x] `<intl-list>`
+- [x] `<intl-name>`
+- [x] `<intl-plural>`
 
-All must use nearest locale scope.
+- [x] All must use nearest locale scope.
 
 ---
 

@@ -1,98 +1,183 @@
-import { Cube } from '../types'
-import { config } from '../config'
-import { Props, ObjectLiteral } from '@beforesemicolon/web-component'
+import { formatPlural, FormatterOptions } from '../formatters'
+import { getIntl, IntlRuntime } from '../runtime'
+import { getIntlLocaleRuntime } from './intl-locale'
 
-export interface PluralRules {
-    other: string
+interface IntlPluralProps {
+    value: number | string | undefined
+    type: Intl.PluralRuleType
+    locale: string
     zero: string
     one: string
     two: string
     few: string
     many: string
+    other: string
 }
 
-export interface IntlPluralProps extends PluralRules {
-    value: number | undefined
-    type: 'cardinal' | 'ordinal' | undefined
-    locale: string | undefined
+type PluralOptions = FormatterOptions & Record<string, unknown>
+
+const readValue = <T>(value: T | (() => T)) => {
+    return typeof value === 'function' ? (value as () => T)() : value
 }
 
-export default ({ register, host, template, html, useContext, TC }: Cube) => {
-    const defaultPlurals: PluralRules = {
-        other: '',
-        zero: '',
-        one: '',
-        two: '',
-        few: '',
-        many: '',
+const addDefined = (options: PluralOptions, key: string, value: unknown) => {
+    if (value !== undefined && value !== null && value !== '') {
+        options[key] = value
     }
-    const intlPlural = (
-        msgs: ObjectLiteral,
-        locale: string,
-        value: number,
-        rules: Partial<PluralRules> = defaultPlurals,
-        type: IntlPluralProps['type'] = 'cardinal'
-    ) => {
-        if (!TC.number(value)) {
-            console.error('intl-plural: invalid value', value)
-            return ''
-        }
+}
 
-        rules = { ...defaultPlurals, ...msgs['cube-intl'].plural, ...rules }
-        const pr = new Intl.PluralRules(locale, { type })
-        const sel = pr.select(value)
+const resolvePluralValue = (value: unknown) => {
+    const pluralValue = Number(readValue(value))
+    return Number.isNaN(pluralValue) ? undefined : pluralValue
+}
 
-        if (type === 'ordinal') {
-            return `${value}${rules[sel]}`
-        }
-
-        return rules[sel]
+const buildOptions = (
+    props: Partial<
+        Record<
+            keyof IntlPluralProps,
+            | IntlPluralProps[keyof IntlPluralProps]
+            | (() => IntlPluralProps[keyof IntlPluralProps])
+        >
+    >,
+    runtime?: IntlRuntime
+) => {
+    const options: PluralOptions = {
+        scope: runtime,
+        type: readValue(props.type) || 'cardinal',
     }
 
-    const IntlPlural = (props: Props<IntlPluralProps>) => {
-        const comp = host()
-        const locale = new Intl.Locale(
-            document.documentElement.lang || config.lang
-        )
-        const msgsctx = useContext<ObjectLiteral>('intl-msg', true)
-        const content = comp.textContent
+    addDefined(options, 'locale', readValue(props.locale))
+    addDefined(options, 'zero', readValue(props.zero))
+    addDefined(options, 'one', readValue(props.one))
+    addDefined(options, 'two', readValue(props.two))
+    addDefined(options, 'few', readValue(props.few))
+    addDefined(options, 'many', readValue(props.many))
+    addDefined(options, 'other', readValue(props.other))
 
-        const plural = () => {
-            const value = Number(props.value() ?? content)
+    return options
+}
 
-            if (!TC.number(value)) {
+export default ({
+    html,
+    WebComponent,
+}: typeof import('@beforesemicolon/web-component')) => {
+    class IntlPlural extends WebComponent<
+        IntlPluralProps,
+        { content: string }
+    > {
+        static observedAttributes = [
+            'value',
+            'type',
+            'locale',
+            'zero',
+            'one',
+            'two',
+            'few',
+            'many',
+            'other',
+        ]
+        value = undefined
+        type = 'cardinal' as IntlPluralProps['type']
+        locale = ''
+        zero = ''
+        one = ''
+        two = ''
+        few = ''
+        many = ''
+        other = ''
+        initialState = {
+            content: '',
+        }
+        runtime?: IntlRuntime
+        unsubscribe?: () => void
+        subscribeTimer?: ReturnType<typeof setTimeout>
+
+        updatePlural = () => {
+            const value = resolvePluralValue(
+                this.textContent?.trim() || this.props.value()
+            )
+
+            if (value === undefined) {
+                console.error('intl-plural: invalid value', this.props.value())
+                this.setState({ content: '' })
+                return
+            }
+
+            this.setState({
+                content: formatPlural(
+                    value,
+                    buildOptions(
+                        this.props,
+                        this.runtime
+                    ) as unknown as FormatterOptions & {
+                        type: Intl.PluralRuleType
+                        zero?: string
+                        one?: string
+                        two?: string
+                        few?: string
+                        many?: string
+                        other?: string
+                    }
+                ),
+            })
+        }
+
+        subscribeToRuntime = () => {
+            this.unsubscribe?.()
+            const provider = this.closest('intl-locale')
+            const providerRuntime = getIntlLocaleRuntime(this)
+
+            if (provider && !providerRuntime) {
+                this.subscribeTimer = setTimeout(this.subscribeToRuntime, 0)
+                return
+            }
+
+            this.runtime = providerRuntime || getIntl()
+            this.unsubscribe = this.runtime.subscribe(() => {
+                this.updatePlural()
+            })
+        }
+
+        onMount() {
+            this.subscribeToRuntime()
+        }
+
+        onUpdate() {
+            this.updatePlural()
+        }
+
+        onDestroy() {
+            clearTimeout(this.subscribeTimer)
+            this.unsubscribe?.()
+        }
+
+        render() {
+            return html`${this.state.content}`
+        }
+    }
+
+    customElements.define('intl-plural', IntlPlural)
+
+    return {
+        intlPlural: (props: Partial<IntlPluralProps> = {}) => {
+            const value = resolvePluralValue(props.value ?? 0)
+
+            if (value === undefined) {
                 return ''
             }
 
-            const pr = new Intl.PluralRules(props.locale() || locale.language, {
-                type: props.type(),
-            })
-            const msg = msgsctx.value()
-            const cubeIntl = msg ? (msg['cube-intl'] as ObjectLiteral) : null
-            const sel = pr.select(value)
-            const val = props[sel]() || cubeIntl?.plural[sel] || ''
-
-            if (props.type() === 'ordinal') {
-                return html`${value}<slot name="${sel}">${val}</slot>`
-            }
-
-            return val || value
-        }
-
-        template`${plural}`
+            return formatPlural(
+                value,
+                buildOptions(props) as unknown as FormatterOptions & {
+                    type: Intl.PluralRuleType
+                    zero?: string
+                    one?: string
+                    two?: string
+                    few?: string
+                    many?: string
+                    other?: string
+                }
+            )
+        },
     }
-
-    register<IntlPluralProps>(IntlPlural, {
-        locale: undefined,
-        value: undefined,
-        other: '',
-        zero: '',
-        one: '',
-        two: '',
-        few: '',
-        many: '',
-        type: 'cardinal',
-    })
-
-    return intlPlural
 }

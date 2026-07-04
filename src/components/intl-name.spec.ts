@@ -1,109 +1,91 @@
-import {Cube} from "../types";
-import * as cube from '../cube';
-import initName from 'src/components/intl-name';
-import {render} from "../testing";
-import {html, state} from "@beforesemicolon/web-component";
-import {TC} from "../utils";
+import initLocale from './intl-locale'
+import initName from './intl-name'
+import * as WC from '@beforesemicolon/web-component'
+import { resetIntl } from '../runtime'
 
-const CUBE = {
-	...cube,
-	TC,
-	state
-} as unknown as Cube
+initLocale(WC)
+const { intlName } = initName(WC)
+const { html } = WC
 
-const n = initName(CUBE)
+const nextFrame = () => new Promise((resolve) => setTimeout(resolve, 0))
+const getContent = () =>
+    (
+        document.body.querySelector('intl-name') as HTMLElement & {
+            contentRoot?: HTMLElement
+        }
+    )?.contentRoot?.textContent
 
 describe('intl-name', () => {
-	it('should blank for no value', async () => {
-		const cont = await render(html`
-			<intl-name></intl-name>
-			<intl-name value=""></intl-name>
-		`);
-		
-		expect(cont.find('intl-name').map(d => d.content)).toEqual(["", ""])
-	});
-	
-	it('should handle language in different styles', async () => {
-		const cont = await render(html`
-			<intl-name type="language">en-US</intl-name>
-			<intl-name type="language" style="short" value="en-US"></intl-name>
-			<intl-name type="language" style="narrow">en-US</intl-name>
-		`);
-		
-		expect(cont.find('intl-name').map(d => d.content)).toEqual([
-			"American English",
-			"US English",
-			"US English"
-		])
-	});
-	
-	it('should handle region in different styles', async () => {
-		const cont = await render(html`
-			<intl-name type="region">US</intl-name>
-			<intl-name type="region" style="short" value="US"></intl-name>
-			<intl-name type="region" style="narrow">US</intl-name>
-		`);
-		
-		expect(cont.find('intl-name').map(d => d.content)).toEqual([
-			"United States",
-			"US",
-			"US"
-		])
-	});
-	
-	it('should handle script in different styles', async () => {
-		const cont = await render(html`
-			<intl-name type="script">Latn</intl-name>
-			<intl-name type="script" style="short" value="Latn"></intl-name>
-			<intl-name type="script" style="narrow">Latn</intl-name>
-		`);
-		
-		expect(cont.find('intl-name').map(d => d.content)).toEqual([
-			"Latin",
-			"Latin",
-			"Latin"
-		])
-	});
-	
-	it('should handle dateTimeField in different styles', async () => {
-		const cont = await render(html`
-			<intl-name type="dateTimeField">year</intl-name>
-			<intl-name type="dateTimeField" style="short" value="year"></intl-name>
-			<intl-name type="dateTimeField" style="narrow">year</intl-name>
-		`);
-		
-		expect(cont.find('intl-name').map(d => d.content)).toEqual([
-			"year",
-			"yr.",
-			"yr"
-		])
-	});
-	
-	it('should handle currency in different styles', async () => {
-		const cont = await render(html`
-			<intl-name type="currency">USD</intl-name>
-			<intl-name type="currency" style="short" value="USD" locale="pt"></intl-name>
-			<intl-name type="currency" style="narrow">USD</intl-name>
-		`);
-		
-		expect(cont.find('intl-name').map(d => d.content)).toEqual([
-			"US Dollar",
-			"Dólar americano",
-			"US Dollar"
-		])
-	});
-	
-	it('should handle calendar in different styles', async () => {
-		const cont = await render(html`
-			<intl-name type="calendar">gregory</intl-name>
-			<intl-name type="calendar" style="short" value="gregory"></intl-name>
-			<intl-name type="calendar" style="narrow">gregory</intl-name>
-		`);
-		
-		expect(cont.find('intl-name').map(d => d.content)).toEqual([
-			"Gregorian Calendar",
-			"Gregorian Calendar",
-			"Gregorian Calendar"
-		])
-	});
+    beforeEach(() => {
+        resetIntl()
+        document.documentElement.lang = 'en-US'
+    })
+
+    afterEach(() => {
+        resetIntl()
+    })
+
+    it('formats display names programmatically', () => {
+        expect(
+            intlName({
+                value: 'US',
+                locale: 'en-US',
+                type: 'region',
+            })
+        ).toBe('United States')
+    })
+
+    it('renders display names', async () => {
+        html`<intl-name value="USD" type="currency"></intl-name>`.render(
+            document.body
+        )
+        await nextFrame()
+
+        expect(getContent()).toBe('US Dollar')
+    })
+
+    it('uses the nearest locale provider and rerenders on locale changes', async () => {
+        html`
+            <intl-locale locale="en-US">
+                <intl-name value="US" type="region"></intl-name>
+            </intl-locale>
+        `.render(document.body)
+        await nextFrame()
+        await nextFrame()
+
+        const provider = document.querySelector('intl-locale') as
+            | HTMLElement & { runtime?: { setLocale(locale: string): Promise<unknown> } }
+            | null
+
+        expect(getContent()).toBe('United States')
+
+        await provider?.runtime?.setLocale('fr-FR')
+        await nextFrame()
+
+        expect(getContent()).toBe('États-Unis')
+    })
+
+    it('lets explicit locale override the provider locale', async () => {
+        html`
+            <intl-locale locale="en-US">
+                <intl-name
+                    value="US"
+                    locale="fr-FR"
+                    type="region"
+                ></intl-name>
+            </intl-locale>
+        `.render(document.body)
+        await nextFrame()
+        await nextFrame()
+
+        expect(getContent()).toBe('États-Unis')
+    })
+
+    it('renders empty content for invalid values', async () => {
+        html`<intl-name type="region"></intl-name>`.render(document.body)
+        await nextFrame()
+
+        expect(getContent()).toBe('')
+        expect(intlName()).toBe('')
+    })
 })

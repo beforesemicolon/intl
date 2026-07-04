@@ -1,79 +1,96 @@
-import {Cube} from "../types";
-import * as cube from '../cube';
-import initList, {IntlListProps} from 'src/components/intl-list';
-import {render} from "../testing";
-import {html, state} from "@beforesemicolon/web-component";
-import {TC} from "../utils";
+import initLocale from './intl-locale'
+import initList from './intl-list'
+import * as WC from '@beforesemicolon/web-component'
+import { resetIntl } from '../runtime'
 
-const CUBE = {
-	...cube,
-	TC,
-	state
-} as unknown as Cube
+initLocale(WC)
+const { intlList } = initList(WC)
+const { html } = WC
 
-const l = initList(CUBE)
+const nextFrame = () => new Promise((resolve) => setTimeout(resolve, 0))
+const getContent = (selector: string) =>
+    (
+        document.body.querySelector(selector) as HTMLElement & {
+            contentRoot?: HTMLElement
+        }
+    )?.contentRoot?.textContent
 
 describe('intl-list', () => {
-	const items = ['book', 'pen', 'pencil'];
-	
-	it('should handle conjunctions', async () => {
-		const cont = await render(html`
-			<intl-list items="${items}" type="conjunction"></intl-list>
-			<intl-list items="${items}" type="and"></intl-list>
-		`);
-		
-		
-		expect(cont.find('intl-list').map(d => d.content)).toEqual([
-			"book, pen, and pencil",
-			"book, pen, and pencil"
-		])
-		expect(l('en', items)).toEqual("book, pen, and pencil")
-	});
-	
-	it('should handle disjunctions', async () => {
-		const cont = await render(html`
-			<intl-list items="${items}" type="disjunction"></intl-list>
-			<intl-list items="${items}" type="or"></intl-list>
-		`);
-		
-		expect(cont.find('intl-list').map(d => d.content)).toEqual([
-			"book, pen, or pencil",
-			"book, pen, or pencil"
-		])
-		expect(l('en', items, "or")).toEqual("book, pen, or pencil")
-		expect(l('en', items, "disjunction")).toEqual("book, pen, or pencil")
-	});
-	
-	it('should handle unit', async () => {
-		const cont = await render(html`
-			<intl-list items="${items}" type="unit"></intl-list>
-			<intl-list items="${items}" type="none"></intl-list>
-		`);
-		
-		expect(cont.find('intl-list').map(d => d.content)).toEqual([
-			"book, pen, pencil",
-			"book, pen, pencil"
-		])
-		expect(l('en', items, "none")).toEqual("book, pen, pencil")
-		expect(l('en', items, "unit")).toEqual("book, pen, pencil")
-	});
-	
-	it('should handle style', async () => {
-		const cont = await render(html`
-			<intl-list items="${items}" type="and" style="long"></intl-list>
-			<intl-list items="${items}" type="and" style="short"></intl-list>
-			<intl-list items="${items}" type="and" style="narrow"></intl-list>
-		`);
-		
-		expect(cont.find('intl-list').map(d => d.content)).toEqual([
-			"book, pen, and pencil",
-			"book, pen, &amp; pencil",
-			"book, pen, pencil"
-		])
-		expect(["long", "short", "narrow"].map(style => l('en', items, "and", style as IntlListProps['style']))).toEqual([
-			"book, pen, and pencil",
-			"book, pen, & pencil",
-			"book, pen, pencil"
-		])
-	});
+    beforeEach(() => {
+        resetIntl()
+        document.documentElement.lang = 'en-US'
+    })
+
+    afterEach(() => {
+        resetIntl()
+    })
+
+    it('formats lists programmatically', () => {
+        expect(
+            intlList({
+                value: ['book', 'pen', 'pencil'],
+                locale: 'en-US',
+                type: 'conjunction',
+            })
+        ).toBe('book, pen, and pencil')
+    })
+
+    it('renders list values and type aliases', async () => {
+        html`
+            <intl-list value="book pen pencil" type="or"></intl-list>
+        `.render(document.body)
+        await nextFrame()
+
+        expect(getContent('intl-list')).toBe('book, pen, or pencil')
+    })
+
+    it('supports list styles', async () => {
+        html`
+            <intl-list
+                value="book pen pencil"
+                type="and"
+                type-style="short"
+            ></intl-list>
+        `.render(document.body)
+        await nextFrame()
+
+        expect(getContent('intl-list')).toBe('book, pen, & pencil')
+    })
+
+    it('uses the nearest locale provider and rerenders on locale changes', async () => {
+        html`
+            <intl-locale locale="en-US">
+                <intl-list value="book pen pencil" type="and"></intl-list>
+            </intl-locale>
+        `.render(document.body)
+        await nextFrame()
+        await nextFrame()
+
+        const provider = document.querySelector('intl-locale') as
+            | HTMLElement & { runtime?: { setLocale(locale: string): Promise<unknown> } }
+            | null
+
+        expect(getContent('intl-list')).toBe('book, pen, and pencil')
+
+        await provider?.runtime?.setLocale('fr-FR')
+        await nextFrame()
+
+        expect(getContent('intl-list')).toBe('book, pen et pencil')
+    })
+
+    it('lets explicit locale override the provider locale', async () => {
+        html`
+            <intl-locale locale="en-US">
+                <intl-list
+                    value="book pen pencil"
+                    locale="fr-FR"
+                    type="and"
+                ></intl-list>
+            </intl-locale>
+        `.render(document.body)
+        await nextFrame()
+        await nextFrame()
+
+        expect(getContent('intl-list')).toBe('book, pen et pencil')
+    })
 })
