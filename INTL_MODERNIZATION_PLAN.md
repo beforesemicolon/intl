@@ -589,21 +589,31 @@ Rules:
 
 ---
 
-## Phase 7 — DateTime
+## Phase 7 — DateTime — Complete
+
+Status: complete. `<intl-datetime>` now delegates to `formatDateTime`, renders semantic `<time datetime="...">` markup, uses the nearest provider runtime, re-renders on runtime updates, supports explicit locale overrides, and maps both `time-zone-name` and the deprecated `timezone-name` alias to the correct `timeZoneName` formatter option.
+
+Verification:
+
+```sh
+npx jest --config jest.config.cjs --runInBand src/components/intl-datetime.spec.ts src/components/intl-locale.spec.ts src/formatters.spec.ts src/runtime.spec.ts
+```
+
+Result: 38 focused datetime, provider, formatter, and runtime tests passing.
 
 ### `formatDateTime`
 
 Support:
 
-- `dateStyle`
-- `timeStyle`
-- `timeZone`
-- `timeZoneName`
-- `calendar`
-- `hourCycle`
-- custom date parts
+- [x] `dateStyle`
+- [x] `timeStyle`
+- [x] `timeZone`
+- [x] `timeZoneName`
+- [x] `calendar`
+- [x] `hourCycle`
+- [x] custom date parts
 
-Fix current `timezoneName` naming issue.
+- [x] Fix current `timezoneName` naming issue.
 
 ### Component
 
@@ -613,9 +623,9 @@ Fix current `timezoneName` naming issue.
 
 Rules:
 
-- Render semantic `<time datetime="...">`.
-- Use nearest locale scope.
-- Support explicit locale.
+- [x] Render semantic `<time datetime="...">`.
+- [x] Use nearest locale scope.
+- [x] Support explicit locale.
 
 ---
 
