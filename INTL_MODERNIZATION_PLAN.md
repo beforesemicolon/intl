@@ -434,34 +434,44 @@ createIntl({
 
 ---
 
-## Phase 3 — Formatter Functions
+## Phase 3 — Formatter Functions — Complete
 
 Move all formatting logic into pure exported functions.
 
 Updated gate: do this before further component refactors. The current local helper functions inside component modules should be moved into formatter modules that accept `{ locale?, scope? }`, use `getIntl(scope)`, and share runtime caches.
 
+Status: complete for the package-level formatter API. Implemented in `src/formatters.ts` and exported from `src/index.ts`. Component migration to these functions remains assigned to the component-specific phases below.
+
+Verification:
+
+```sh
+npx jest --config jest.config.cjs --runInBand src/formatters.spec.ts src/runtime.spec.ts
+```
+
+Result: 22 focused formatter and runtime tests passing.
+
 ### Required Functions
 
-- `formatMessage`
-- `formatNumber`
-- `formatDateTime`
-- `formatDuration`
-- `formatRelativeTime`
-- `formatList`
-- `formatName`
-- `formatPlural`
+- [x] `formatMessage`
+- [x] `formatNumber`
+- [x] `formatDateTime`
+- [x] `formatDuration`
+- [x] `formatRelativeTime`
+- [x] `formatList`
+- [x] `formatName`
+- [x] `formatPlural`
 
 ### Requirements
 
-- Accept explicit locale override.
-- Accept explicit runtime scope.
-- Use runtime formatter cache.
-- Validate input.
-- Return string output.
-- Never directly manipulate DOM.
-- No component dependency.
-- Do not read locale from `document` directly except through runtime fallback.
-- Do not read message text from `src/messages.ts`; use `IntlRuntime.getMessage()`.
+- [x] Accept explicit locale override.
+- [x] Accept explicit runtime scope.
+- [x] Use runtime formatter cache.
+- [x] Validate input.
+- [x] Return string output.
+- [x] Never directly manipulate DOM.
+- [x] No component dependency.
+- [x] Do not read locale from `document` directly except through runtime fallback.
+- [x] Do not read message text from `src/messages.ts`; use `IntlRuntime.getMessage()`.
 
 ---
 

@@ -6,6 +6,7 @@ import initLocaleDuration from './components/intl-duration'
 import initLocaleRelativeTime from './components/intl-rel-time'
 
 export * from './runtime'
+export * from './formatters'
 
 export const onLocaleMessagesLoaded = initLocale(WC)
 export const { intlMsg } = initLocaleMsg(onLocaleMessagesLoaded, WC)
