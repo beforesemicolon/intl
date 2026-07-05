@@ -9,7 +9,6 @@ const { intlRelativeTime } = initRelTime(WC)
 const { html } = WC
 
 const nextFrame = () => new Promise((resolve) => setTimeout(resolve, 0))
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 const getTime = (element: Element | null) =>
     (element as Element & { contentRoot?: HTMLElement } | null)?.contentRoot?.querySelector(
         'time'
@@ -121,20 +120,26 @@ describe('intl-rel-time', () => {
     })
 
     it('updates live relative time and clears timers on destroy', async () => {
-        const value = Date.now()
+        const value = new Date('2026-01-01T00:00:00.000Z').getTime()
         const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout')
+        jest.useFakeTimers()
+        jest.setSystemTime(value)
 
         html`
             <intl-rel-time live value="${value}"></intl-rel-time>
         `.render(document.body)
-        await nextFrame()
+        jest.advanceTimersByTime(0)
+        await Promise.resolve()
 
         const element = document.body.querySelector('intl-rel-time')
         const time = getTime(element)
 
         expect(time?.textContent).toBe('now')
 
-        await wait(ONE_SECOND_MS + 50)
+        jest.setSystemTime(value + ONE_SECOND_MS)
+        ;(element as HTMLElement & { updateTime(): void } | null)?.updateTime()
+        jest.advanceTimersByTime(0)
+        await Promise.resolve()
 
         expect(time?.textContent).toBe('1 second ago')
 

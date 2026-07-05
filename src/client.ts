@@ -37,7 +37,7 @@ if (window.BFS) {
     const { intlPlural } = initLocalePlural(BFS)
 
     window.BFS = {
-        ...(window.BFS || {}),
+        ...window.BFS,
         INTL: {
             onLocaleMessagesLoaded,
             intlDatetime,

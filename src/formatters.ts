@@ -58,7 +58,10 @@ type ListFormatter = {
 }
 
 const IntlWithListFormat = Intl as typeof Intl & {
-    ListFormat?: new (locale: string, options?: ListFormatOptions) => ListFormatter
+    ListFormat?: new (
+        locale: string,
+        options?: ListFormatOptions
+    ) => ListFormatter
 }
 
 const durationFields = new Set([
@@ -146,7 +149,11 @@ const normalizeDurationFields = (fields: DurationFormatOptions['fields']) => {
 const getRelativeUnitAndValue = (
     milliseconds: number,
     precision: number
-): { value: number; unit: Intl.RelativeTimeFormatUnit; interval: number | null } => {
+): {
+    value: number
+    unit: Intl.RelativeTimeFormatUnit
+    interval: number | null
+} => {
     const sign = milliseconds < 0 ? -1 : 1
     const abs = Math.abs(milliseconds)
     const days = Number((abs / ONE_DAY_MS).toFixed(precision))
@@ -304,16 +311,26 @@ export const formatDuration = (
         return ''
     }
 
-    const { locale: explicitLocale, scope, fields = '*', style = 'long' } = options
+    const {
+        locale: explicitLocale,
+        scope,
+        fields = '*',
+        style = 'long',
+    } = options
     const locale = getLocale({ locale: explicitLocale, scope })
     const selectedFields = normalizeDurationFields(fields)
-    const parts = millisecondsToTimeParts(value, selectedFields) as DurationParts
-    const DurationFormat = (Intl as typeof Intl & {
-        DurationFormat?: new (
-            locale: string,
-            options: { style?: string }
-        ) => { format(parts: DurationParts): string }
-    }).DurationFormat
+    const parts = millisecondsToTimeParts(
+        value,
+        selectedFields
+    ) as DurationParts
+    const DurationFormat = (
+        Intl as typeof Intl & {
+            DurationFormat?: new (
+                locale: string,
+                options: { style?: string }
+            ) => { format(parts: DurationParts): string }
+        }
+    ).DurationFormat
 
     if (!DurationFormat) {
         return fallbackDurationFormat(parts, style)
@@ -386,7 +403,7 @@ export const formatList = (
     const normalizedOptions = {
         ...intlOptions,
         type: intlOptions.type
-            ? listTypeAliases[intlOptions.type] ?? intlOptions.type
+            ? (listTypeAliases[intlOptions.type] ?? intlOptions.type)
             : intlOptions.type,
     } as ListFormatOptions
 
@@ -436,7 +453,12 @@ export const formatPlural = (
         return ''
     }
 
-    const { locale: explicitLocale, scope, type = 'cardinal', ...rules } = options
+    const {
+        locale: explicitLocale,
+        scope,
+        type = 'cardinal',
+        ...rules
+    } = options
     const locale = getLocale({ locale: explicitLocale, scope })
     const formatter = getCachedFormatter(
         'plural',

@@ -101,7 +101,9 @@ export default ({
         value: function connectedCallback(this: IntlMsg) {
             this.sourceText = this.textContent?.trim() || ''
             ;(
-                WebComponent.prototype as unknown as { connectedCallback(): void }
+                WebComponent.prototype as unknown as {
+                    connectedCallback(): void
+                }
             ).connectedCallback.call(this)
         },
     })

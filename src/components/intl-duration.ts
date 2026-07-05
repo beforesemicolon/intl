@@ -150,6 +150,7 @@ export default ({
             const provider = this.closest('intl-locale')
             const providerRuntime = getIntlLocaleRuntime(this)
 
+            /* istanbul ignore next -- depends on custom-element provider mount ordering */
             if (provider && !providerRuntime) {
                 this.subscribeTimer = setTimeout(this.subscribeToRuntime, 0)
                 return

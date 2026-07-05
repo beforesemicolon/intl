@@ -49,7 +49,10 @@ export interface IntlRuntime {
     setLocale(locale: string): Promise<IntlRuntimeSnapshot>
     loadLocale(locale?: string): Promise<IntlRuntimeSnapshot>
     setMessages(messages: IntlMessages, locale?: string): IntlRuntimeSnapshot
-    setFallbackMessages(messages: IntlMessages, locale?: string): IntlRuntimeSnapshot
+    setFallbackMessages(
+        messages: IntlMessages,
+        locale?: string
+    ): IntlRuntimeSnapshot
     getMessage<T = unknown>(key: string): T | undefined
     subscribe(listener: IntlRuntimeListener): () => void
     destroy(): void
@@ -74,7 +77,9 @@ const getDocumentLocale = () => {
 }
 
 const resolveLocale = (locale?: string, parentScope?: IntlRuntime) => {
-    return locale || parentScope?.locale || getDocumentLocale() || DEFAULT_LOCALE
+    return (
+        locale || parentScope?.locale || getDocumentLocale() || DEFAULT_LOCALE
+    )
 }
 
 export const getLocaleDirection = (locale: string): IntlDirection => {
@@ -113,7 +118,10 @@ const mergeMessages = (...sources: Array<IntlMessages | undefined>) => {
     }, {})
 }
 
-const getByPath = <T = unknown>(source: IntlMessages, path: string): T | undefined => {
+const getByPath = <T = unknown>(
+    source: IntlMessages,
+    path: string
+): T | undefined => {
     return path.split('.').reduce<unknown>((acc, key) => {
         if (!isObject(acc)) {
             return undefined
@@ -133,7 +141,8 @@ const resolveSourceUrl = (
         return path
     }
 
-    const base = baseUrl || (hasLocation() ? location.origin : 'http://localhost')
+    const base =
+        baseUrl || (hasLocation() ? location.origin : 'http://localhost')
     return new URL(path, base).href
 }
 
@@ -160,8 +169,12 @@ class ScopedIntlRuntime implements IntlRuntime {
         this.#options = options
         this.parentScope = options.parentScope
         this.#locale = resolveLocale(options.locale, options.parentScope)
-        this.#fallbackLocale = options.fallbackLocale || options.parentScope?.fallbackLocale
-        this.#messages = mergeMessages(options.parentScope?.messages, options.messages)
+        this.#fallbackLocale =
+            options.fallbackLocale || options.parentScope?.fallbackLocale
+        this.#messages = mergeMessages(
+            options.parentScope?.messages,
+            options.messages
+        )
         this.#fallbackMessages = mergeMessages(
             options.parentScope?.fallbackMessages,
             options.fallbackMessages
@@ -174,7 +187,10 @@ class ScopedIntlRuntime implements IntlRuntime {
         }
 
         if (options.fallbackMessages && this.#fallbackLocale) {
-            this.#localeMessages.set(this.#fallbackLocale, options.fallbackMessages)
+            this.#localeMessages.set(
+                this.#fallbackLocale,
+                options.fallbackMessages
+            )
             this.#loadedLocales.add(this.#fallbackLocale)
         }
     }
@@ -263,7 +279,9 @@ class ScopedIntlRuntime implements IntlRuntime {
 
         if (this.#options.src || this.#options.srcDir) {
             if (!hasFetch()) {
-                throw new Error('[intl] fetch is not available for locale loading.')
+                throw new Error(
+                    '[intl] fetch is not available for locale loading.'
+                )
             }
 
             const url = resolveSourceUrl(locale, this.#options)
@@ -290,13 +308,19 @@ class ScopedIntlRuntime implements IntlRuntime {
         return this.#notify()
     }
 
-    setFallbackMessages = (messages: IntlMessages, locale = this.#fallbackLocale) => {
+    setFallbackMessages = (
+        messages: IntlMessages,
+        locale = this.#fallbackLocale
+    ) => {
         if (locale) {
             this.#localeMessages.set(locale, messages)
             this.#loadedLocales.add(locale)
         }
 
-        this.#fallbackMessages = mergeMessages(this.parentScope?.fallbackMessages, messages)
+        this.#fallbackMessages = mergeMessages(
+            this.parentScope?.fallbackMessages,
+            messages
+        )
         this.#clearCaches()
         return this.#notify()
     }

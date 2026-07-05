@@ -1,6 +1,7 @@
 import {
     createIntl,
     destroyIntl,
+    getLocaleDirection,
     getIntl,
     initIntl,
     loadLocale,
@@ -42,6 +43,26 @@ describe('intl runtime', () => {
         expect(intl.locale).toBe('pt-CV')
     })
 
+    it('falls back locale direction to ltr when direction cannot be resolved', () => {
+        expect(getLocaleDirection('not-a-valid-locale@@')).toBe('ltr')
+    })
+
+    it('covers empty keys and non-object path access in messages', () => {
+        const intl = createIntl({
+            locale: 'en-US',
+            messages: {
+                flat: 'Flat',
+                nested: { value: 'Nested' },
+            },
+        })
+
+        expect(intl.getMessage('')).toBeUndefined()
+        expect(intl.getMessage('flat')).toBe('Flat')
+        expect(intl.getMessage('flat.value')).toBeUndefined()
+        expect(intl.getMessage('nested.value')).toBe('Nested')
+        expect(intl.getMessage('nested.value.missing')).toBeUndefined()
+    })
+
     it('defaults fallback locale to en when no fallback locale is provided', async () => {
         const loader = jest.fn((locale: string) => {
             if (locale === 'en') {
@@ -60,6 +81,63 @@ describe('intl runtime', () => {
         expect(intl.fallbackLocale).toBe('en')
         expect(loader).toHaveBeenCalledWith('en', expect.any(AbortSignal))
         expect(intl.getMessage('fallback')).toBe('Fallback text')
+    })
+
+    it('supports explicit fallback messages and fallback locale from constructor options', () => {
+        const intl = createIntl({
+            locale: 'en-US',
+            fallbackLocale: 'en',
+            fallbackMessages: { nested: { hello: 'Fallback' } },
+        })
+
+        expect(intl.fallbackLocale).toBe('en')
+        expect(intl.getMessage('nested.hello')).toBe('Fallback')
+        expect(intl.getMessage('missing')).toBeUndefined()
+    })
+
+    it('sets fallback messages without requiring an explicit locale', () => {
+        const intl = createIntl({
+            locale: 'en-US',
+            fallbackLocale: 'en',
+        })
+
+        intl.setFallbackMessages({ fallback: 'Fallback message' })
+
+        expect(intl.getMessage('fallback')).toBe('Fallback message')
+        expect(intl.fallbackMessages.fallback).toBe('Fallback message')
+    })
+
+    it('loads locale messages from explicit absolute src URLs', async () => {
+        ;(window.fetch as jest.Mock).mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ hello: 'Hello' }),
+        })
+
+        const intl = createIntl({
+            locale: 'en-US',
+            src: 'https://cdn.example.com/en.json',
+            srcDir: '',
+        })
+
+        await intl.loadLocale()
+
+        expect(window.fetch).toHaveBeenCalledWith(
+            'https://cdn.example.com/en.json',
+            expect.objectContaining({ signal: expect.any(AbortSignal) })
+        )
+        expect(intl.getMessage('hello')).toBe('Hello')
+    })
+
+    it('uses empty source config to return empty locale messages', async () => {
+        const intl = createIntl({
+            locale: 'en-US',
+            srcDir: '',
+        })
+
+        await intl.loadLocale()
+
+        expect(intl.status).toBe('ready')
+        expect(intl.getMessage('anything')).toBeUndefined()
     })
 
     it('creates nested runtime scopes that inherit parent locale and messages', () => {
@@ -104,6 +182,9 @@ describe('intl runtime', () => {
     })
 
     it('initializes and returns the default runtime', () => {
+        expect(initIntl().locale).toBe('en')
+        resetIntl()
+
         const intl = initIntl({
             locale: 'en-US',
             messages: { hello: 'Hello' },
@@ -125,6 +206,163 @@ describe('intl runtime', () => {
         await setLocale('pt-CV')
         expect(intl.locale).toBe('pt-CV')
         expect(intl.getMessage('hello')).toBe('pt-CV')
+    })
+
+    it('reuses an in-flight locale load when called repeatedly', async () => {
+        const loader = jest.fn(
+            () =>
+                new Promise<Record<string, string>>((resolve) => {
+                    setTimeout(() => resolve({ ok: 'value' }), 0)
+                })
+        )
+        const intl = createIntl({
+            locale: 'en-US',
+            loader,
+        })
+
+        const pending1 = intl.loadLocale()
+        const pending2 = intl.loadLocale()
+
+        const [snapshot1, snapshot2] = await Promise.all([pending1, pending2])
+
+        expect(snapshot1).toEqual(snapshot2)
+        expect(loader).toHaveBeenCalledWith('en-US', expect.any(AbortSignal))
+        expect(loader).toHaveBeenCalledWith('en', expect.any(AbortSignal))
+        expect(loader).toHaveBeenCalledTimes(2)
+    })
+
+    it('reads from cached messages on second lookup', () => {
+        const intl = createIntl({
+            locale: 'en-US',
+            messages: {
+                nested: {
+                    title: 'Title',
+                },
+            },
+        })
+
+        expect(intl.getMessage('nested')).toEqual({ title: 'Title' })
+        expect(intl.getMessage('nested.title')).toBe('Title')
+
+        const nested = intl.messages.nested as Record<string, string>
+        nested.title = 'Updated Title'
+
+        expect(intl.getMessage('nested.title')).toBe('Title')
+        expect(intl.getMessage('nested')).toEqual({ title: 'Updated Title' })
+    })
+
+    it('returns the current snapshot when loading a locale on a destroyed runtime', async () => {
+        const loader = jest.fn(() => ({ title: 'Loaded' }))
+        const intl = createIntl({
+            locale: 'en-US',
+            loader,
+        })
+
+        intl.destroy()
+
+        const snapshot = await intl.loadLocale()
+
+        expect(snapshot.status).toBe('idle')
+        expect(loader).not.toHaveBeenCalled()
+    })
+
+    it('supports nested object message merges across parent-child runtime scopes', () => {
+        const parent = createIntl({
+            locale: 'en-US',
+            messages: {
+                nested: {
+                    title: 'Parent',
+                    shared: {
+                        section: 'shared',
+                    },
+                },
+            },
+        })
+
+        const child = createIntl({
+            parentScope: parent,
+            messages: {
+                nested: {
+                    body: 'Child',
+                    shared: {
+                        item: 'child-shared',
+                    },
+                },
+            },
+        })
+
+        expect(child.getMessage('nested.title')).toBe('Parent')
+        expect(child.getMessage('nested.body')).toBe('Child')
+        expect(child.getMessage('nested.shared.item')).toBe('child-shared')
+        expect(child.getMessage('nested.shared.section')).toBe('shared')
+    })
+
+    it('returns an error snapshot when fetch is not available for source loading', async () => {
+        const originalFetch = window.fetch
+        delete (window as unknown as { fetch?: typeof fetch }).fetch
+
+        const intl = createIntl({
+            locale: 'en-US',
+            src: '/locales/en-US.json',
+        })
+
+        const snapshot = await intl.loadLocale()
+
+        expect(snapshot.status).toBe('error')
+        expect(snapshot.error).toBeInstanceOf(Error)
+        expect((snapshot.error as Error).message).toContain(
+            'fetch is not available for locale loading.'
+        )
+
+        window.fetch = originalFetch
+    })
+
+    it('returns in-flight locale load snapshot when runtime is destroyed', async () => {
+        const aborts: AbortSignal[] = []
+        const intl = createIntl({
+            locale: 'en-US',
+            loader: (_locale, signal) => {
+                if (signal) {
+                    aborts.push(signal)
+                }
+
+                return new Promise((_, reject) => {
+                    signal?.addEventListener('abort', () => reject(new Error('aborted')))
+                })
+            },
+        })
+
+        const snapshotPromise = intl.loadLocale()
+        await Promise.resolve()
+
+        intl.destroy()
+
+        const snapshot = await snapshotPromise
+
+        expect(snapshot).toBeDefined()
+        expect(snapshot.status).toBe('loading')
+        expect(aborts.some((signal) => signal.aborted)).toBe(true)
+    })
+
+    it('returns existing snapshot when setLocale receives unchanged locale', async () => {
+        const intl = createIntl({
+            locale: 'en-US',
+            messages: { hello: 'Hello' },
+        })
+
+        const snapshot = await intl.setLocale('en-US')
+
+        expect(snapshot.locale).toBe('en-US')
+        expect(snapshot.status).toBe('ready')
+    })
+
+    it('allows setLocale to skip updates when locale is empty', async () => {
+        const intl = createIntl({
+            locale: 'en-US',
+        })
+        const snapshot = await intl.setLocale('')
+
+        expect(snapshot.locale).toBe('en-US')
     })
 
     it('notifies subscribers and returns an unsubscribe function', async () => {
@@ -152,7 +390,13 @@ describe('intl runtime', () => {
     })
 
     it('loads locale messages from a loader and caches loaded locales', async () => {
-        const loader = jest.fn((locale: string) => ({ hello: locale }))
+        const loader = jest.fn((locale: string) => {
+            if (locale === 'en') {
+                return { fallback: 'Fallback text' }
+            }
+
+            return { hello: locale }
+        })
         const intl = createIntl({
             locale: 'en-US',
             loader,
@@ -161,7 +405,7 @@ describe('intl runtime', () => {
         await intl.loadLocale()
         await intl.loadLocale()
 
-        expect(loader).toHaveBeenCalledTimes(1)
+        expect(loader).toHaveBeenCalledTimes(2)
         expect(intl.status).toBe('ready')
         expect(intl.loadedLocales.has('en-US')).toBe(true)
         expect(intl.getMessage('hello')).toBe('en-US')
@@ -275,7 +519,19 @@ describe('intl runtime', () => {
 
     it('aborts stale locale loads', async () => {
         const signals: AbortSignal[] = []
-        const resolvers = new Map<string, (messages: Record<string, unknown>) => void>()
+        const waitForLoader = async (locale: string) => {
+            while (!resolvers.get(locale)?.length) {
+                await new Promise((resolve) => setTimeout(resolve, 0))
+            }
+
+            return resolvers.get(locale) as Array<
+                (messages: Record<string, unknown>) => void
+            >
+        }
+        const resolvers = new Map<
+            string,
+            Array<(messages: Record<string, unknown>) => void>
+        >()
         const intl = createIntl({
             locale: 'en-US',
             loader: (locale, signal) => {
@@ -284,7 +540,9 @@ describe('intl runtime', () => {
                 }
 
                 return new Promise((resolve) => {
-                    resolvers.set(locale, resolve)
+                    const list = resolvers.get(locale) || []
+                    list.push(resolve)
+                    resolvers.set(locale, list)
                 })
             },
         })
@@ -292,8 +550,9 @@ describe('intl runtime', () => {
         const staleLoad = intl.loadLocale()
         const currentLoad = intl.setLocale('pt-CV')
 
-        resolvers.get('en-US')?.({ hello: 'stale' })
-        resolvers.get('pt-CV')?.({ hello: 'current' })
+        ;(await waitForLoader('en-US')).shift()?.({ hello: 'stale' })
+        ;(await waitForLoader('pt-CV')).shift()?.({ hello: 'current' })
+        ;(await waitForLoader('en')).shift()?.({ fallback: 'fallback' })
 
         await staleLoad
         await currentLoad
@@ -301,5 +560,6 @@ describe('intl runtime', () => {
         expect(signals[0].aborted).toBe(true)
         expect(intl.locale).toBe('pt-CV')
         expect(intl.getMessage('hello')).toBe('current')
+        expect(intl.getMessage('fallback')).toBe('fallback')
     })
 })
