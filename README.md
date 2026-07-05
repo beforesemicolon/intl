@@ -209,13 +209,10 @@ Message files are JSON objects. Nested keys are addressed with dot notation.
 <intl-plural value="2" one="item" other="items"></intl-plural>
 ```
 
-## Migration Guide
+## Recommended Usage
 
-Prefer these modern names in new code:
-
-- Use `<intl-msg key="...">`; `id` remains as a temporary alias.
-- Use `time-zone`; `timezone` remains as a temporary alias.
-- Use `time-zone-name`; `timezone-name` remains as a temporary alias.
-- Use package-level formatter functions instead of component-local helpers.
+- Use `<intl-msg key="...">` for message lookup.
+- Use `time-zone` and `time-zone-name` for date-time options.
+- Use package-level formatter functions when JavaScript code needs the same formatting behavior as components.
 - Use `@beforesemicolon/intl/components/*` entrypoints for lazy component registration.
-- Use `<intl-locale>` scopes instead of relying on `document.documentElement.lang`.
+- Use `<intl-locale>` scopes when a page or subtree needs explicit locale state.

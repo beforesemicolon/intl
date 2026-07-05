@@ -139,6 +139,11 @@ dist
 .pnp.*
 
 # files
+.DS_Store
 index.html
 en.json
 
+# dirs
+website
+coverage_tmp
+coverage_tmp_json
