@@ -352,71 +352,96 @@ describe('formatter functions', () => {
         const descriptor = Object.getOwnPropertyDescriptor(
             Intl,
             property
-        ) as PropertyDescriptor
+        ) as PropertyDescriptor | undefined
         const originalValue = (Intl as typeof Intl & Record<T, unknown>)[
             property
         ]
+        const globalIntlDescriptor = Object.getOwnPropertyDescriptor(
+            globalThis,
+            'Intl'
+        ) as PropertyDescriptor | undefined
+        const originalIntl = globalThis.Intl
+        let usedGlobalReplacement = false
+
+        const withValue = (value: unknown) => {
+            if (!descriptor) {
+                ;(Intl as typeof Intl & Record<T, unknown>)[property] = value as never
+                return
+            }
+
+            try {
+                Object.defineProperty(Intl, property, {
+                    ...descriptor,
+                    value,
+                    configurable: true,
+                    writable: true,
+                })
+                return
+            } catch (error) {
+                if (descriptor.writable) {
+                    ;(Intl as typeof Intl & Record<T, unknown>)[
+                        property
+                    ] = value as never
+                    return
+                }
+
+                const shadowIntl = Object.create(Intl) as typeof Intl
+                Object.defineProperty(shadowIntl, property, {
+                    value,
+                    writable: true,
+                    configurable: true,
+                    enumerable: false,
+                })
+
+                if (globalIntlDescriptor) {
+                    Object.defineProperty(globalThis, 'Intl', {
+                        ...globalIntlDescriptor,
+                        value: shadowIntl,
+                    })
+                } else {
+                    globalThis.Intl = shadowIntl
+                }
+
+                usedGlobalReplacement = true
+            }
+        }
 
         const restore = () => {
-            if (!descriptor || descriptor.writable) {
+            if (usedGlobalReplacement) {
+                if (globalIntlDescriptor) {
+                    Object.defineProperty(globalThis, 'Intl', globalIntlDescriptor)
+                } else {
+                    globalThis.Intl = originalIntl
+                }
+
+                return
+            }
+
+            if (!descriptor) {
                 ;(Intl as typeof Intl & Record<T, unknown>)[
                     property
                 ] = originalValue as never
                 return
             }
 
-            if (!descriptor || descriptor.configurable) {
-                Object.defineProperty(Intl, property, {
-                    ...descriptor,
-                    value: originalValue,
-                    writable: true,
-                    configurable: true,
-                })
-            }
-        }
-
-        if (descriptor && descriptor.writable) {
-            try {
-                ;(Intl as typeof Intl & Record<T, unknown>)[
-                    property
-                ] = temporaryValue as never
-                callback()
-            } finally {
+            if (descriptor.configurable || descriptor.writable) {
                 try {
-                    restore()
+                    Object.defineProperty(Intl, property, {
+                        ...descriptor,
+                        value: originalValue,
+                        configurable: true,
+                        writable: descriptor.writable ?? false,
+                    })
                 } catch {
-                    // Some environments expose Intl constructors as read-only.
+                    // Some environments expose Intl constructors as non-writable.
                 }
             }
-
-            return
         }
 
-        if (!descriptor || descriptor.configurable) {
-            try {
-                Object.defineProperty(Intl, property, {
-                    ...descriptor,
-                    value: temporaryValue,
-                    writable: true,
-                    configurable: true,
-                })
-            } catch {
-                callback()
-                return
-            }
-
-            try {
-                callback()
-            } finally {
-                try {
-                    restore()
-                } catch {
-                    // Some environments expose Intl constructors as read-only.
-                }
-            }
-
-            return
+        try {
+            withValue(temporaryValue)
+            callback()
+        } finally {
+            restore()
         }
-
-        callback()
     }
