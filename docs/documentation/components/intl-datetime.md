@@ -10,6 +10,8 @@ layout: document
 
 `<intl-datetime>` formats a date value and renders a `<time>` element with a machine-readable `datetime` attribute.
 
+Native references: [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat) and [`<time>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/time)
+
 ```html
 <intl-datetime date-style="full">2026-01-01T10:00:00Z</intl-datetime>
 ```
@@ -39,53 +41,210 @@ layout: document
 
 When `date-style` or `time-style` is set, field-level options such as `weekday`, `year`, and `hour` are not applied.
 
-## Style shortcuts
+## `value`
+
+Use child text for static dates.
 
 ```html
+<intl-datetime>2026-01-01T10:00:00Z</intl-datetime>
+```
+
+Use the property from JavaScript when the value is dynamic.
+
+```html
+<intl-datetime id="last-updated" date-style="medium">2026-01-01</intl-datetime>
+
+<script>
+    document.getElementById('last-updated').value = new Date()
+</script>
+```
+
+## `locale`
+
+Use `locale` for a one-off override.
+
+```html
+<intl-datetime locale="en-US" date-style="long">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime locale="fr-FR" date-style="long">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime locale="ja-JP" date-style="long">2026-01-01T10:00:00Z</intl-datetime>
+```
+
+## `date-style`
+
+`date-style` provides browser-defined date presets.
+
+```html
+<intl-datetime date-style="full">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime date-style="long">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime date-style="medium">2026-01-01T10:00:00Z</intl-datetime>
 <intl-datetime date-style="short">2026-01-01T10:00:00Z</intl-datetime>
-<intl-datetime date-style="full" time-style="short" time-zone="UTC">
-    2026-01-01T10:00:00Z
-</intl-datetime>
 ```
 
-## Field-level formatting
+## `time-style`
+
+`time-style` provides browser-defined time presets.
 
 ```html
-<intl-datetime
-    weekday="long"
-    year="numeric"
-    month="long"
-    day="2-digit"
-    hour="2-digit"
-    minute="2-digit"
->
-    2026-01-01T10:00:00Z
-</intl-datetime>
+<intl-datetime time-style="full">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime time-style="long">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime time-style="medium">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime time-style="short">2026-01-01T10:00:00Z</intl-datetime>
 ```
 
-## Locale override
+## `time-zone`
+
+`time-zone` controls which time zone the date is rendered in.
 
 ```html
-<intl-datetime locale="fr-FR" date-style="long">
+<intl-datetime time-style="short" time-zone="UTC">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime time-style="short" time-zone="America/New_York">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime time-style="short" time-zone="Asia/Tokyo">2026-01-01T10:00:00Z</intl-datetime>
+```
+
+## `time-zone-name`
+
+Use `time-zone-name` when the rendered text should include the zone label.
+
+```html
+<intl-datetime hour="numeric" time-zone="UTC" time-zone-name="short">
+    2026-01-01T10:00:00Z
+</intl-datetime>
+
+<intl-datetime hour="numeric" time-zone="UTC" time-zone-name="long">
     2026-01-01T10:00:00Z
 </intl-datetime>
 ```
 
-## JavaScript API equivalent
+## `calendar`
 
-```ts
-import { intlDatetime, formatDateTime } from '@beforesemicolon/intl'
+`calendar` requests a calendar system supported by the browser.
 
-intlDatetime({
-    value: '2026-01-01T10:00:00Z',
-    dateStyle: 'full',
-    timeStyle: 'short',
-    timeZone: 'UTC',
-})
-
-formatDateTime('2026-01-01T10:00:00Z', {
-    dateStyle: 'full',
-    timeStyle: 'short',
-    timeZone: 'UTC',
-})
+```html
+<intl-datetime calendar="gregory" date-style="full">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime calendar="buddhist" date-style="full">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime calendar="japanese" date-style="full">2026-01-01T10:00:00Z</intl-datetime>
 ```
+
+## `hour-cycle`
+
+`hour-cycle` requests a specific clock cycle.
+
+```html
+<intl-datetime hour="numeric" minute="2-digit" hour-cycle="h12">
+    2026-01-01T22:30:00Z
+</intl-datetime>
+
+<intl-datetime hour="numeric" minute="2-digit" hour-cycle="h23">
+    2026-01-01T22:30:00Z
+</intl-datetime>
+```
+
+## `hour12`
+
+`hour12` forces 12-hour or 24-hour output.
+
+```html
+<intl-datetime hour="numeric" minute="2-digit" hour12="true">
+    2026-01-01T22:30:00Z
+</intl-datetime>
+
+<intl-datetime hour="numeric" minute="2-digit" hour12="false">
+    2026-01-01T22:30:00Z
+</intl-datetime>
+```
+
+## `weekday`
+
+`weekday` controls the weekday field.
+
+```html
+<intl-datetime weekday="long">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime weekday="short">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime weekday="narrow">2026-01-01T10:00:00Z</intl-datetime>
+```
+
+## `era`
+
+`era` controls the era field.
+
+```html
+<intl-datetime era="long" year="numeric">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime era="short" year="numeric">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime era="narrow" year="numeric">2026-01-01T10:00:00Z</intl-datetime>
+```
+
+## `year`
+
+`year` controls the year field.
+
+```html
+<intl-datetime year="numeric">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime year="2-digit">2026-01-01T10:00:00Z</intl-datetime>
+```
+
+## `month`
+
+`month` controls the month field.
+
+```html
+<intl-datetime month="numeric">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime month="2-digit">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime month="long">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime month="short">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime month="narrow">2026-01-01T10:00:00Z</intl-datetime>
+```
+
+## `day`
+
+`day` controls the day field.
+
+```html
+<intl-datetime day="numeric">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime day="2-digit">2026-01-01T10:00:00Z</intl-datetime>
+```
+
+## `day-period`
+
+`day-period` controls localized day-period labels in browsers that support it.
+
+```html
+<intl-datetime hour="numeric" day-period="long">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime hour="numeric" day-period="short">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime hour="numeric" day-period="narrow">2026-01-01T10:00:00Z</intl-datetime>
+```
+
+## `hour`
+
+`hour` controls the hour field.
+
+```html
+<intl-datetime hour="numeric">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime hour="2-digit">2026-01-01T10:00:00Z</intl-datetime>
+```
+
+## `minute`
+
+`minute` controls the minute field.
+
+```html
+<intl-datetime hour="numeric" minute="numeric">2026-01-01T10:05:00Z</intl-datetime>
+<intl-datetime hour="numeric" minute="2-digit">2026-01-01T10:05:00Z</intl-datetime>
+```
+
+## `second`
+
+`second` controls the second field.
+
+```html
+<intl-datetime hour="numeric" minute="2-digit" second="numeric">
+    2026-01-01T10:05:09Z
+</intl-datetime>
+
+<intl-datetime hour="numeric" minute="2-digit" second="2-digit">
+    2026-01-01T10:05:09Z
+</intl-datetime>
+```
+
+## See also
+
+- [intlDateTime](/documentation/formatters/intl-date-time)

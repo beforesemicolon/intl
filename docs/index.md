@@ -10,7 +10,7 @@ layout: landing
 
 === copy
 
-Drop-in localization primitives for Web Components. Format messages, numbers, dates, durations, relative time, lists, display names, and plurals with scoped locale runtimes.
+Drop-in localization primitives for Web Components. Format messages, numbers, dates, durations, relative time, lists, display names, and plurals with scoped locale runtimes that can switch language without a page refresh.
 
 === stat
 
@@ -84,13 +84,13 @@ Use declarative custom elements for markup-heavy views and runtime-aware formatt
 
 ### Scoped locale runtime
 
-Set locale and messages once with `<intl-locale>`, then nest independent runtime scopes anywhere in the DOM.
+Set locale and messages once with `<intl-locale>`, switch language with `setLocale()`, and nest independent runtime scopes anywhere in the DOM.
 
 === feature icon=terminal
 
 ### Formatter APIs
 
-Call `formatMessage`, `formatNumber`, `formatDateTime`, `formatDuration`, `formatRelativeTime`, `formatList`, `formatName`, and `formatPlural` directly.
+Call `intlMsg`, `intlNumber`, `intlDateTime`, `intlDuration`, `intlRelTime`, `intlList`, `intlName`, and `intlPlural` directly.
 
 === feature icon=webComponents
 
@@ -167,23 +167,23 @@ Each example works with the same runtime and component model, so teams can mix m
 </intl-locale>
 ```
 
-=== example label="Runtime messages" color=orange filename=runtime.js lang=javascript
+=== example label="Language switcher" color=orange filename=language-switcher.html lang=html
 
-```js
-import { initIntl, formatMessage } from '@beforesemicolon/intl'
+```html
+<intl-locale id="page-locale" locale="en" src-dir="/locales">
+    <select id="language">
+        <option value="en">English</option>
+        <option value="fr">French</option>
+    </select>
 
-const runtime = initIntl({
-    locale: 'en-US',
-    fallbackLocale: 'en',
-    messages: {
-        checkout: {
-            title: 'Checkout',
-            cta: 'Continue as {name}',
-        },
-    },
-})
+    <h1><intl-msg key="hero.title">Welcome</intl-msg></h1>
+</intl-locale>
 
-formatMessage('checkout.cta', { name: 'Sam' }, { scope: runtime })
+<script>
+    language.addEventListener('change', () => {
+        pageLocale.runtime.setLocale(language.value)
+    })
+</script>
 ```
 
 === example label="Full composition" color=primary filename=checkout.html lang=html

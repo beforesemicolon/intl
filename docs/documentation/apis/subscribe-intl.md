@@ -1,6 +1,6 @@
 ---
 name: subscribeIntl
-order: 6.06
+order: 7.06
 title: subscribeIntl - Intl by Before Semicolon
 description: Subscribe to Intl runtime snapshots when locale, loading status, or messages change.
 layout: document
@@ -8,13 +8,16 @@ layout: document
 
 ## `subscribeIntl`
 
-`subscribeIntl(listener, scope?)` runs `listener` immediately with the current snapshot, then runs it again whenever the runtime changes.
+`subscribeIntl(listener, scope?)` subscribes to live runtime snapshots.
+
+It is useful for UI that must react to locale, loading, or message load state outside components.
 
 ```ts
 import { subscribeIntl } from '@beforesemicolon/intl'
 
 const unsubscribe = subscribeIntl((snapshot) => {
-    console.log(snapshot.locale, snapshot.status)
+  console.log(snapshot.locale)
+  console.log(snapshot.status)
 })
 ```
 
@@ -22,31 +25,58 @@ const unsubscribe = subscribeIntl((snapshot) => {
 
 ```ts
 function subscribeIntl(
-    listener: (snapshot: IntlRuntimeSnapshot) => void,
-    scope?: IntlRuntime
+  listener: (snapshot: IntlRuntimeSnapshot) => void,
+  scope?: IntlRuntime
 ): () => void
 ```
 
-## Snapshot fields
+## Callback contract
 
-| Field | Type | Description |
-|---|---|---|
-| `locale` | `string` | Active locale. |
-| `fallbackLocale` | `string \| undefined` | Configured fallback locale. |
-| `messages` | `IntlMessages` | Active messages after parent and current messages are merged. |
-| `fallbackMessages` | `IntlMessages` | Fallback messages after inheritance. |
-| `direction` | `'ltr' \| 'rtl'` | Text direction for the active locale. |
-| `loadedLocales` | `Set<string>` | Locales already loaded into the runtime. |
-| `status` | `'idle' \| 'loading' \| 'ready' \| 'error'` | Current loading state. |
-| `error` | `unknown` | Last load error, if any. |
-| `parentScope` | `IntlRuntime \| undefined` | Parent runtime for inherited messages. |
+`subscribeIntl` does two things immediately:
+
+1. adds the listener
+2. calls it once with the current snapshot
+
+It then calls the listener for all future locale/message/state updates.
+
+## Snapshot fields in practice
+
+- `locale` / `fallbackLocale` for current and fallback language resolution
+- `direction` for `ltr` / `rtl` layout behavior
+- `messages` and `fallbackMessages` for resolved message layers
+- `loadedLocales` for cache-awareness
+- `status` lifecycle (`idle`, `loading`, `ready`, `error`)
+- `error` for failed loads
+- `parentScope` when runtime inherits from another runtime
+
+```ts
+const unsubscribe = subscribeIntl((snapshot) => {
+  if (snapshot.status === 'loading') {
+    showSpinner()
+    return
+  }
+
+  if (snapshot.status === 'error') {
+    showWarning(snapshot.error)
+    return
+  }
+
+  if (snapshot.status === 'ready') {
+    render(snapshot.locale)
+  }
+})
+```
 
 ## Cleanup
 
-```ts
-const unsubscribe = subscribeIntl(render)
+Always unsubscribe when the listener is no longer needed.
 
-window.addEventListener('beforeunload', unsubscribe, { once: true })
+```ts
+const cleanup = subscribeIntl((snapshot) => {
+  // component paint function
+})
+
+window.addEventListener('unload', cleanup)
 ```
 
-Always call the returned function when the subscriber is no longer needed.
+For low-level component internals, this can replace manual polling for runtime state.

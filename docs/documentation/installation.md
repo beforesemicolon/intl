@@ -8,54 +8,79 @@ layout: document
 
 ## Install
 
-### Via package manager
+`@beforesemicolon/intl` is designed to work in plain HTML, any framework, and tests.
+
+You have two options:
+
+- package manager + module usage
+- CDN + browser globals
+
+Both approaches expose the same runtime behavior.
+
+## Via package manager
 
 ```bash
 npm install @beforesemicolon/intl
 ```
 
-### Via CDN (browser build)
+Then initialize the runtime from your app entrypoint:
+
+```ts
+import {
+    initIntl,
+    intlMsg,
+    intlNumber,
+} from '@beforesemicolon/intl'
+```
+
+Use any exported helpers directly from your bundler or ESM loader.
+
+## Via CDN (browser build)
 
 ```html
 <script src="https://unpkg.com/@beforesemicolon/web-component/dist/client.js"></script>
 <script src="https://unpkg.com/@beforesemicolon/intl/dist/client.js"></script>
 ```
 
-## Browser entrypoint (components)
-
-When loading the client bundle, component runtime and custom elements are automatically prepared and exposed through `window.BFS.INTL`.
+When loaded this way, helper functions are available on `window.BFS.INTL`:
 
 ```html
 <script>
-  const { INTL } = window.BFS
-
-  // Optional: format messages programmatically in your scripts
-  const title = INTL.intlMsg('checkout.title', { total: '$100' })
+  const { initIntl, intlMsg, intlNumber } = window.BFS.INTL
 </script>
 ```
 
-## Module usage
-
-```ts
-import {
-    initIntl,
-    formatNumber,
-    intlNumber,
-    onLocaleMessagesLoaded,
-} from '@beforesemicolon/intl'
-```
-
-## Minimal setup
+## Minimal runtime setup
 
 ```html
 <intl-locale locale="en-US" fallback-locale="en" src-dir="/locales">
     <intl-msg key="hello">Hello</intl-msg>
-    <intl-number value="1200" type="currency" currency="USD"></intl-number>
+    <intl-number type="currency" currency="USD">1200</intl-number>
 </intl-locale>
 ```
 
-## Notes
+`src-dir` loads `/locales/{locale}.json` by default (`/locales/en-US.json`).
 
-- `intl-locale` will attempt to load locale files from `src` or `src-dir`.
-- If you do not pass `fallbackLocale`, default is `en`.
-- If no `locale` is provided, browser `html[lang]` is used.
+## How to choose a setup
+
+| Scenario | Setup |
+|---|---|
+| Static pages | Use CDN scripts and `intl-*` tags |
+| SPA or app framework | Use module imports and `initIntl()` |
+| Tests and snapshots | Use `initIntl()` with `messages` |
+
+## Common installation notes
+
+- Use `src` for exact scoped files such as `/locales/en.checkout.json`.
+- Use `src-dir` for directory-based locale files such as `/locales/{locale}.json`.
+- `locale` omits => runtime falls back to `document.documentElement.lang`.
+- `fallback-locale` defaults to `en`.
+- Add `update-document` only on the app root locale scope.
+
+## Troubleshooting
+
+If formatting is not updating:
+
+- verify both scripts are loaded for browser/global mode
+- verify your `src`/`src-dir` URLs return valid JSON
+- ensure `intl-locale` exists in the DOM before components mount

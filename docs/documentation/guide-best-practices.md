@@ -8,146 +8,112 @@ layout: document
 
 ## Guide & Best Practices
 
-Intl works best when locale scope is explicit and formatting stays close to the UI that needs it. Use components for visible output, use API helpers for application logic, and keep message loading predictable.
+Use this guide to keep localized UIs predictable at scale. The package is most effective when locale scope and content remain explicit.
 
-## Start With One Locale Scope
-
-Wrap the localized part of the page in `<intl-locale>`. This gives child components one shared locale, fallback locale, message source, direction, and loading state.
+## 1) Start with one top-level `<intl-locale>`
 
 ```html
 <intl-locale locale="en-US" fallback-locale="en" src-dir="/locales" update-document>
     <h1><intl-msg key="checkout.title">Checkout</intl-msg></h1>
-    <p>
-        <intl-msg key="checkout.total">Total</intl-msg>
-        <intl-number type="currency" currency="USD">1299.99</intl-number>
-    </p>
+    <intl-number type="currency" currency="USD">1299.99</intl-number>
 </intl-locale>
 ```
 
-Use `update-document` when the provider represents the page language. Leave it off for embedded previews, widgets, or side-by-side locale comparisons.
+Use one top-level provider for the page when possible. It centralizes:
 
-## Prefer Child Text For Simple Values
+- message loading
+- locale fallback behavior
+- document direction updates
 
-For readable HTML, put simple formatter input inside the tag.
+## 2) Prefer readable fallback text
 
 ```html
+<intl-msg key="cta.primary">Get started</intl-msg>
 <intl-number type="currency" currency="USD">1299.99</intl-number>
-<intl-datetime date-style="full">2026-01-01T10:00:00Z</intl-datetime>
+<intl-datetime date-style="short">2026-01-01T10:00:00Z</intl-datetime>
 <intl-list type="and">shipping tax discounts</intl-list>
 ```
 
-Use the `value` attribute only when a binding layer or component wrapper needs to set it as a property or attribute.
+Keep fallback text meaningful. It helps SEO, JS-disabled rendering, and loading states.
 
-## Keep Message Fallback Text Useful
-
-`<intl-msg>` uses its text content before messages are ready or when a key is missing. Write fallback text that is good enough for the first paint.
-
-```html
-<intl-msg key="profile.save">Save profile</intl-msg>
-```
-
-Avoid empty message tags unless an empty loading state is intentional.
-
-## Use Nested Scopes For Intentional Locale Boundaries
-
-Nested providers inherit parent messages and fallback behavior, then override what they load.
+## 3) Build nested locale boundaries intentionally
 
 ```html
 <intl-locale locale="en-US" src-dir="/locales">
-    <intl-msg key="product.title">Product</intl-msg>
+    <h1><intl-msg key="product.title">Product</intl-msg></h1>
 
-    <aside>
-        <intl-locale locale="fr-FR" src-dir="/locales">
-            <intl-msg key="product.title">Produit</intl-msg>
+    <section>
+        <intl-locale locale="fr-FR">
+            <h2><intl-msg key="product.title">Produit</intl-msg></h2>
         </intl-locale>
-    </aside>
+    </section>
 </intl-locale>
 ```
 
-Use this for previews, language switchers, demos, and embedded content that should not change the whole page locale.
+Nested scopes inherit message state from parent and can override values where needed.
 
-## Use APIs For Non-DOM Work
-
-Use formatter functions when you need localized strings in business logic, tests, server-rendered fragments, document titles, analytics labels, or generated data.
+## 4) Use API helpers where component markup is not ideal
 
 ```ts
-import { createIntl, formatMessage, formatNumber } from '@beforesemicolon/intl'
+import { createIntl, intlMsg, intlNumber, intlDateTime } from '@beforesemicolon/intl'
 
-const scope = createIntl({
-    locale: 'en-US',
-    messages: {
-        email: {
-            subject: 'Receipt for {total}',
-        },
-    },
-})
-
-const total = formatNumber(1299.99, {
-    scope,
-    style: 'currency',
-    currency: 'USD',
-})
-
-formatMessage('email.subject', { total }, { scope })
-```
-
-## Use `createIntl` For Isolated Work
-
-Use `createIntl` for tests, previews, and isolated formatting jobs. Use `initIntl` for the application default runtime.
-
-```ts
 const preview = createIntl({
-    locale: 'ja-JP',
-    fallbackLocale: 'en',
-    srcDir: '/locales',
+  locale: 'ja-JP',
+  fallbackLocale: 'en',
+  messages: { invoice: { total: 'Total: {amount}' } },
 })
 
-await preview.loadLocale()
+intlMsg('invoice.total', { amount: '¥1,000' }, { scope: preview })
+intlNumber(1000, { locale: 'ja-JP', style: 'currency', currency: 'JPY' })
+intlDateTime('2026-01-01T10:00:00Z', { locale: 'ja-JP', dateStyle: 'full' })
 ```
 
-This avoids replacing the runtime used by the rest of the page.
+Use helpers for server-rendered content, labels in background jobs, and non-DOM workflows.
 
-## Load Locales Predictably
-
-Use `src-dir` when your files follow a locale-name convention.
-
-```html
-<intl-locale locale="pt-CV" fallback-locale="en" src-dir="/locales">
-    <intl-msg key="home.title">Home</intl-msg>
-</intl-locale>
-```
-
-Use a custom loader when messages come from an API, import map, or database.
+## 5) Language switching without a page reload
 
 ```ts
-const runtime = createIntl({
-    locale: 'fr-FR',
-    loader(locale, signal) {
-        return fetch(`/api/messages/${locale}`, { signal }).then((res) =>
-            res.json()
-        )
-    },
+import { setLocale } from '@beforesemicolon/intl'
+
+const selector = document.querySelector('select#locale')
+selector?.addEventListener('change', async (event) => {
+  const locale = (event.target as HTMLSelectElement).value
+  const snapshot = await setLocale(locale)
+  document.documentElement.lang = snapshot.locale
+  document.documentElement.dir = snapshot.direction
 })
 ```
 
-## Keep Formatting Options Close To Output
+Language switching works when components are subscribed to the active runtime.
 
-Readers should be able to understand the localized output from the markup alone.
+## 6) Keep translation bundles small
 
-```html
-<intl-datetime date-style="full" time-style="short" time-zone="UTC">
-    2026-01-01T10:00:00Z
-</intl-datetime>
+At build time, combine shared keys and page-specific keys into scoped bundles:
+
+```text
+locales/common.json
+locales/landing-page.json
+locales/en.landing-page.json
 ```
 
-Avoid hiding critical formatting decisions in distant scripts unless you are using the function API intentionally.
+Use `src="/locales/en.landing-page.json"` for the landing page runtime. This avoids loading unrelated pages.
 
-## Production Checklist
+## 7) Prefer SEO-safe content structure
 
-- Give every page one clear top-level locale scope.
-- Use fallback text inside `<intl-msg>`.
-- Prefer child text for simple component values.
-- Use `createIntl` for isolated runtimes and `initIntl` for the default runtime.
-- Pass `scope` to API helpers when formatting should not use the default runtime.
-- Listen for `locale-error` when remote message loading can fail.
-- Use `update-document` only for the provider that controls the page language.
+Use clear visible text in HTML and keep formatting decisions close to output:
+
+```html
+<h1><intl-msg key="hero.title">Internationalization in plain HTML.</intl-msg></h1>
+<intl-datetime date-style="full" time-style="short">2026-01-01T10:00:00Z</intl-datetime>
+```
+
+Your parser and crawler both benefit from predictable, localized output in the DOM.
+
+## Production checklist
+
+- one explicit locale provider for each major page boundary
+- `src` for exact page bundles, `src-dir` for broad locale bundles
+- use child text for simple values
+- include `fallback-locale`
+- keep `update-document` only on the top-most scope
+- keep `intl-msg` fallback text readable

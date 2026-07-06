@@ -8,7 +8,10 @@ layout: document
 
 ## `<intl-duration>`
 
-`<intl-duration>` formats a millisecond duration. It breaks the value into duration fields, then formats those fields with `Intl.DurationFormat` or the package fallback formatter.
+`<intl-duration>` formats a millisecond duration and breaks the value into duration fields.
+It uses `Intl.DurationFormat` when available, otherwise a package fallback formatter.
+
+Native reference: [Intl.DurationFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat)
 
 ```html
 <intl-duration fields="hours minutes seconds">3661000</intl-duration>
@@ -25,37 +28,63 @@ layout: document
 
 Valid fields are `years`, `months`, `weeks`, `days`, `hours`, `minutes`, `seconds`, `milliseconds`, `microseconds`, and `nanoseconds`. Singular names such as `hour` normalize to plural names.
 
-## Field selection
+## `value`
+
+Use child text for static durations.
 
 ```html
 <intl-duration fields="minutes seconds">90061</intl-duration>
-<intl-duration fields="hours">3600000</intl-duration>
-<intl-duration fields="*">90061000</intl-duration>
 ```
 
-## Styles
+Use the property from JavaScript for dynamic values.
 
 ```html
-<intl-duration fields="hours" time-style="long">3600000</intl-duration>
-<intl-duration fields="hours" time-style="short">3600000</intl-duration>
-<intl-duration fields="hours" time-style="narrow">3600000</intl-duration>
+<intl-duration id="elapsed" fields="hours minutes seconds">0</intl-duration>
+
+<script>
+    document.getElementById('elapsed').value = 3661000
+</script>
+```
+
+## `locale`
+
+Use `locale` for a one-off override.
+
+```html
+<intl-duration locale="en-US" fields="hours minutes">3661000</intl-duration>
+<intl-duration locale="fr-FR" fields="hours minutes">3661000</intl-duration>
+```
+
+## `time-style`
+
+`time-style` controls duration output length.
+
+```html
+<intl-duration fields="hours minutes" time-style="long">3661000</intl-duration>
+<intl-duration fields="hours minutes" time-style="short">3661000</intl-duration>
+<intl-duration fields="hours minutes" time-style="narrow">3661000</intl-duration>
+<intl-duration fields="hours minutes seconds" time-style="digital">3661000</intl-duration>
 ```
 
 For non-long styles, the component adds a long-form `aria-label` when the accessible label differs from the visible output.
 
-## JavaScript API equivalent
+## `fields`
 
-```ts
-import { intlDuration, formatDuration } from '@beforesemicolon/intl'
+Use `fields` to choose which units are included.
 
-intlDuration({
-    value: 3_661_000,
-    fields: 'hours minutes seconds',
-    timeStyle: 'short',
-})
-
-formatDuration(3_661_000, {
-    fields: 'hours minutes seconds',
-    style: 'short',
-})
+```html
+<intl-duration fields="minutes seconds">90061</intl-duration>
+<intl-duration fields="hours">3600000</intl-duration>
+<intl-duration fields="days hours minutes">90061000</intl-duration>
+<intl-duration fields="*">90061000</intl-duration>
 ```
+
+Singular names normalize to plural names.
+
+```html
+<intl-duration fields="hour minute second">3661000</intl-duration>
+```
+
+## See also
+
+- [intlDuration](/documentation/formatters/intl-duration)

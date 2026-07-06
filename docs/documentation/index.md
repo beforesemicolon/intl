@@ -8,36 +8,43 @@ layout: document
 
 ## Why Intl?
 
-`@beforesemicolon/intl` gives component-first applications a small, explicit localization layer. It keeps locale state, message lookup, and formatter behavior close to the HTML that needs localized output, while still exposing runtime helpers for application code and tests.
+`@beforesemicolon/intl` gives component-first applications a predictable localization layer.
 
-Use it when you want localized UI without adopting a framework-specific i18n plugin or hiding formatting behind implicit global state.
+It combines:
 
-## Component-first localization
+- runtime-aware locale scoping
+- message lookup and fallback behavior
+- formatting helpers for numbers, dates, durations, relative time, names, lists, and plurals
 
-Intl starts with Web Components:
+Everything is explicit, so you can reason about where and how localization changes.
 
-- `<intl-locale>` defines the active runtime boundary.
-- `<intl-msg>` resolves translated messages with readable fallback text.
-- Formatter components render numbers, dates, durations, relative time, lists, display names, and plurals.
-- Nested locale scopes make previews, embedded widgets, and language switchers predictable.
+## Why this over framework i18n adapters
 
-## Runtime helpers when markup is not enough
+With Intl:
 
-The same formatter behavior is available through JavaScript helpers. Use the browser components for DOM composition, then use runtime APIs for business logic, tests, server-side formatting, or places where a component would be awkward.
+- you do not need router-like global context to access locale state
+- messages and formatters can live in plain HTML with fallback text
+- runtime APIs stay available for business logic and tests
+- page-level and component-level locale boundaries are straightforward
 
-## Documentation map
+## What to read first
 
-- [Get Started](./get-started/)
-- [Installation](./installation/)
-- [Guide & Best Practices](./guide-best-practices/)
-- [APIs](./apis/create-intl/)
-- [Components](./components/intl-locale/)
+- [Get Started](./get-started)
+- [Installation](./installation)
+- [Guide & Best Practices](./guide-best-practices)
+- [Components](./components/intl-locale)
+- [APIs](./apis/create-intl)
 
-## Explicit by design
+## Core mental model
 
-Intl prefers clear runtime boundaries:
+Use `<intl-locale>` to define a boundary. Everything inside that boundary uses the same runtime configuration:
 
-- A locale scope is always known.
-- Formatters are derived from that scope.
-- Components update in response to runtime changes.
-- Text content can act as fallback or component input for simple cases.
+- active locale
+- fallback locale
+- where messages load from
+- how the runtime notifies components
+
+Use components for visible output. Use helper APIs where formatting should stay in code.
+
+When the boundary is the root of your page, add `update-document` so document language and direction stay aligned with runtime state.
+

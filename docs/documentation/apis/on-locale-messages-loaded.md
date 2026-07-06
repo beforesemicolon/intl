@@ -1,6 +1,6 @@
 ---
 name: onLocaleMessagesLoaded
-order: 6.26
+order: 7.26
 title: onLocaleMessagesLoaded - Intl by Before Semicolon
 description: Register the intl-locale component and return locale lifecycle behavior for the browser entrypoint.
 layout: document
@@ -8,32 +8,37 @@ layout: document
 
 ## `onLocaleMessagesLoaded`
 
-`onLocaleMessagesLoaded` is exported by the browser and module entrypoints after the `<intl-locale>` component is registered. Most applications listen to the DOM events emitted by `<intl-locale>` instead.
+`onLocaleMessagesLoaded` is exported from the browser bundle and used when you load `dist/client.js`.
+
+It ties locale events to the custom-element layer so DOM workflows can react to runtime lifecycle without importing the full module API.
+
+## Signature
+
+```ts
+function onLocaleMessagesLoaded(
+  options?: IntlLocaleOptions
+) // Browser entry helper
+```
+
+## Event model and lifecycle
+
+The helper powers the same locale events that `<intl-locale>` emits:
+
+- `locale-load` when a locale file fetch completes
+- `locale-change` when active locale is ready
+- `locale-error` when fetch/parsing fails
 
 ```html
 <intl-locale locale="en-US" src-dir="/locales"></intl-locale>
-
 <script>
-    document.body.addEventListener('locale-load', (event) => {
-        console.log(event.detail.locale)
-    })
+  document.body.addEventListener('locale-load', (event) => {
+    console.log('loaded', event.detail.locale)
+  })
 </script>
 ```
 
-## Locale events
+Use this in browser mode when you need global setup and want to keep logic in HTML.
 
-| Event | When it fires | Detail |
-|---|---|---|
-| `locale-load` | Locale messages finish loading. | `IntlRuntimeSnapshot` |
-| `locale-change` | Runtime is ready after loading or changing locale. | `IntlRuntimeSnapshot` |
-| `locale-error` | Runtime loading fails. | `IntlRuntimeSnapshot` with `error` |
+For explicit JS subscriptions and snapshots, prefer `subscribeIntl()`.
 
-## Browser global
-
-```html
-<script>
-    const { onLocaleMessagesLoaded } = window.BFS.INTL
-</script>
-```
-
-For application logic, prefer `subscribeIntl()` or the DOM lifecycle events above.
+Native references: [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent), [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)

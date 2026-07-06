@@ -15,7 +15,7 @@ export default {
         title: 'Intl by Before Semicolon',
         description:
             'HTML-first internationalization for Web Components with runtime scope, formatter APIs, and zero framework dependency.',
-        image: '/assets/router-banner.jpg',
+        image: '/assets/intl-banner.jpg',
     },
     site: {
         name: 'Intl',

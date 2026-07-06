@@ -1,6 +1,6 @@
 ---
 name: loadLocale
-order: 6.05
+order: 7.05
 title: loadLocale - Intl by Before Semicolon
 description: Load messages for the current or requested locale without necessarily changing the active runtime locale.
 layout: document
@@ -8,18 +8,19 @@ layout: document
 
 ## `loadLocale`
 
-`loadLocale(locale?, scope?)` loads messages using the runtime loader, `src`, or `srcDir` configuration. If `locale` is omitted, it loads the runtime's current locale.
+`loadLocale(locale?, scope?)` triggers message loading for a runtime.
+
+It never changes `runtime.locale` by itself. It only fetches and stores messages.
 
 ```ts
 import { initIntl, loadLocale } from '@beforesemicolon/intl'
 
 initIntl({
-    locale: 'en-US',
-    fallbackLocale: 'en',
-    srcDir: '/locales',
+  locale: 'en-US',
+  srcDir: '/locales',
 })
 
-await loadLocale()
+await loadLocale() // loads en-US (and fallback locale if needed)
 ```
 
 ## Signature
@@ -28,24 +29,27 @@ await loadLocale()
 function loadLocale(locale?: string, scope?: IntlRuntime): Promise<IntlRuntimeSnapshot>
 ```
 
-## Preload another locale
+## Preload and warm cache
 
 ```ts
 const runtime = initIntl({ locale: 'en-US', srcDir: '/locales' })
-
-await loadLocale('fr-FR', runtime)
+await loadLocale('fr-FR', runtime) // preload
+await loadLocale('es-ES', runtime) // preload another one
 ```
 
-This loads and caches `fr-FR` messages. It does not change `runtime.locale` unless you later call `setLocale('fr-FR', runtime)`.
+Preloading keeps a second locale ready for quick switching while keeping current runtime locale unchanged.
 
-## Handle load errors
+## Error handling
 
 ```ts
 const snapshot = await loadLocale('es-ES')
-
 if (snapshot.status === 'error') {
-    console.error(snapshot.error)
+  console.error(snapshot.error)
 }
 ```
 
-The snapshot includes `status`, `error`, `loadedLocales`, and the current message state.
+`snapshot.error` is populated when fetch fails or parsing fails.
+
+Native reference:
+[`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), [AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)
+
