@@ -1,11 +1,12 @@
 import initLocale from './intl-locale'
 import initRelTime from './intl-rel-time'
 import * as WC from '@beforesemicolon/web-component'
+import { intlRelTime } from '../formatters'
 import { resetIntl } from '../runtime'
 import { ONE_SECOND_MS } from '../utils/time-in-miliseconds'
 
 initLocale(WC)
-const { intlRelativeTime } = initRelTime(WC)
+initRelTime(WC)
 const { html } = WC
 
 const nextFrame = () => new Promise((resolve) => setTimeout(resolve, 0))
@@ -28,14 +29,14 @@ describe('intl-rel-time', () => {
 
     it('formats relative time programmatically', () => {
         expect(
-            intlRelativeTime(20, {
+            intlRelTime(20, {
                 locale: 'en-US',
                 unit: 'year',
                 numeric: 'always',
             })
         ).toBe('in 20 years')
         expect(
-            intlRelativeTime(-1, {
+            intlRelTime(-1, {
                 locale: 'en-US',
                 unit: 'year',
                 numeric: 'auto',
@@ -157,6 +158,6 @@ describe('intl-rel-time', () => {
         expect(getTime(document.body.querySelector('intl-rel-time'))?.textContent).toBe(
             ''
         )
-        expect(intlRelativeTime('bad-value')).toBe('')
+        expect(intlRelTime(Number('bad-value'))).toBe('')
     })
 })

@@ -23,59 +23,59 @@
             "default": "./dist/cjs/formatters.js",
             "types": "./dist/types/formatters.d.ts"
         },
-        "./components/locale": {
-            "import": "./dist/esm/components/locale.js",
-            "require": "./dist/cjs/components/locale.js",
-            "default": "./dist/cjs/components/locale.js",
-            "types": "./dist/types/components/locale.d.ts"
+        "./components/intl-locale": {
+            "import": "./dist/esm/components/intl-locale.js",
+            "require": "./dist/cjs/components/intl-locale.js",
+            "default": "./dist/cjs/components/intl-locale.js",
+            "types": "./dist/types/components/intl-locale.d.ts"
         },
-        "./components/msg": {
-            "import": "./dist/esm/components/msg.js",
-            "require": "./dist/cjs/components/msg.js",
-            "default": "./dist/cjs/components/msg.js",
-            "types": "./dist/types/components/msg.d.ts"
+        "./components/intl-msg": {
+            "import": "./dist/esm/components/intl-msg.js",
+            "require": "./dist/cjs/components/intl-msg.js",
+            "default": "./dist/cjs/components/intl-msg.js",
+            "types": "./dist/types/components/intl-msg.d.ts"
         },
-        "./components/number": {
-            "import": "./dist/esm/components/number.js",
-            "require": "./dist/cjs/components/number.js",
-            "default": "./dist/cjs/components/number.js",
-            "types": "./dist/types/components/number.d.ts"
+        "./components/intl-number": {
+            "import": "./dist/esm/components/intl-number.js",
+            "require": "./dist/cjs/components/intl-number.js",
+            "default": "./dist/cjs/components/intl-number.js",
+            "types": "./dist/types/components/intl-number.d.ts"
         },
-        "./components/datetime": {
-            "import": "./dist/esm/components/datetime.js",
-            "require": "./dist/cjs/components/datetime.js",
-            "default": "./dist/cjs/components/datetime.js",
-            "types": "./dist/types/components/datetime.d.ts"
+        "./components/intl-datetime": {
+            "import": "./dist/esm/components/intl-datetime.js",
+            "require": "./dist/cjs/components/intl-datetime.js",
+            "default": "./dist/cjs/components/intl-datetime.js",
+            "types": "./dist/types/components/intl-datetime.d.ts"
         },
-        "./components/duration": {
-            "import": "./dist/esm/components/duration.js",
-            "require": "./dist/cjs/components/duration.js",
-            "default": "./dist/cjs/components/duration.js",
-            "types": "./dist/types/components/duration.d.ts"
+        "./components/intl-duration": {
+            "import": "./dist/esm/components/intl-duration.js",
+            "require": "./dist/cjs/components/intl-duration.js",
+            "default": "./dist/cjs/components/intl-duration.js",
+            "types": "./dist/types/components/intl-duration.d.ts"
         },
-        "./components/relative-time": {
-            "import": "./dist/esm/components/relative-time.js",
-            "require": "./dist/cjs/components/relative-time.js",
-            "default": "./dist/cjs/components/relative-time.js",
-            "types": "./dist/types/components/relative-time.d.ts"
+        "./components/intl-rel-time": {
+            "import": "./dist/esm/components/intl-rel-time.js",
+            "require": "./dist/cjs/components/intl-rel-time.js",
+            "default": "./dist/cjs/components/intl-rel-time.js",
+            "types": "./dist/types/components/intl-rel-time.d.ts"
         },
-        "./components/list": {
-            "import": "./dist/esm/components/list.js",
-            "require": "./dist/cjs/components/list.js",
-            "default": "./dist/cjs/components/list.js",
-            "types": "./dist/types/components/list.d.ts"
+        "./components/intl-list": {
+            "import": "./dist/esm/components/intl-list.js",
+            "require": "./dist/cjs/components/intl-list.js",
+            "default": "./dist/cjs/components/intl-list.js",
+            "types": "./dist/types/components/intl-list.d.ts"
         },
-        "./components/name": {
-            "import": "./dist/esm/components/name.js",
-            "require": "./dist/cjs/components/name.js",
-            "default": "./dist/cjs/components/name.js",
-            "types": "./dist/types/components/name.d.ts"
+        "./components/intl-name": {
+            "import": "./dist/esm/components/intl-name.js",
+            "require": "./dist/cjs/components/intl-name.js",
+            "default": "./dist/cjs/components/intl-name.js",
+            "types": "./dist/types/components/intl-name.d.ts"
         },
-        "./components/plural": {
-            "import": "./dist/esm/components/plural.js",
-            "require": "./dist/cjs/components/plural.js",
-            "default": "./dist/cjs/components/plural.js",
-            "types": "./dist/types/components/plural.d.ts"
+        "./components/intl-plural": {
+            "import": "./dist/esm/components/intl-plural.js",
+            "require": "./dist/cjs/components/intl-plural.js",
+            "default": "./dist/cjs/components/intl-plural.js",
+            "types": "./dist/types/components/intl-plural.d.ts"
         }
     },
     "scripts": {
@@ -88,7 +88,7 @@
         "local": "run-p local:watch local:serve",
         "local:watch": "node build-docs.js && nodemon --exec 'node build-docs.js'",
         "local:serve": "npx http-server ./website",
-        "build:browser": "node node_modules/@beforesemicolon/builder/dist/esm/build-browser.js",
+        "build:browser": "node scripts/build-browser.js",
         "build:modules": "node node_modules/@beforesemicolon/builder/dist/esm/build-modules.js",
         "build": "npm-run-all build:package build:docs",
         "build:package": "rm -rf dist && npm-run-all lint test && tsc --emitDeclarationOnly && npm-run-all build:modules build:browser",

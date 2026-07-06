@@ -1,10 +1,11 @@
 import initLocale from './intl-locale'
 import initDate from './intl-datetime'
 import * as WC from '@beforesemicolon/web-component'
+import { intlDateTime } from '../formatters'
 import { resetIntl } from '../runtime'
 
 initLocale(WC)
-const { intlDatetime } = initDate(WC)
+initDate(WC)
 const { html } = WC
 
 const nextFrame = () => new Promise((resolve) => setTimeout(resolve, 0))
@@ -25,16 +26,14 @@ describe('intl-datetime', () => {
 
     it('formats dates programmatically', () => {
         expect(
-            intlDatetime({
-                value: '2026-01-01T10:00:00Z',
+            intlDateTime('2026-01-01T10:00:00Z', {
                 locale: 'en-US',
                 dateStyle: 'medium',
                 timeZone: 'UTC',
             })
         ).toBe('Jan 1, 2026')
         expect(
-            intlDatetime({
-                value: '2026-01-01T10:00:00Z',
+            intlDateTime('2026-01-01T10:00:00Z', {
                 locale: 'fr-FR',
                 dateStyle: 'medium',
                 timeZone: 'UTC',
@@ -146,6 +145,6 @@ describe('intl-datetime', () => {
         expect(getTime(document.body.querySelector('intl-datetime'))?.textContent).toBe(
             ''
         )
-        expect(intlDatetime({ value: 'not-a-date' })).toBe('')
+        expect(intlDateTime('not-a-date')).toBe('')
     })
 })

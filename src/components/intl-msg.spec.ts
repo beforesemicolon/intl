@@ -1,10 +1,11 @@
 import initLocale from './intl-locale'
 import initMsg from './intl-msg'
 import * as WC from '@beforesemicolon/web-component'
+import { intlMsg } from '../formatters'
 import { initIntl, resetIntl } from '../runtime'
 
 initLocale(WC)
-const { intlMsg } = initMsg(WC)
+initMsg(WC)
 
 const { html } = WC
 

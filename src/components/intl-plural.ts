@@ -1,4 +1,4 @@
-import { formatPlural, FormatterOptions } from '../formatters'
+import { intlPlural, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
 
@@ -57,7 +57,7 @@ const buildOptions = (
     return options
 }
 
-export default ({
+const initIntlPlural = ({
     html,
     WebComponent,
 }: typeof import('@beforesemicolon/web-component')) => {
@@ -106,7 +106,7 @@ export default ({
             }
 
             this.setState({
-                content: formatPlural(
+                content: intlPlural(
                     value,
                     buildOptions(
                         this.props,
@@ -175,27 +175,6 @@ export default ({
     if (!customElements.get('intl-plural')) {
         customElements.define('intl-plural', IntlPlural)
     }
-
-    return {
-        intlPlural: (props: Partial<IntlPluralProps> = {}) => {
-            const value = resolvePluralValue(props.value ?? 0)
-
-            if (value === undefined) {
-                return ''
-            }
-
-            return formatPlural(
-                value,
-                buildOptions(props) as unknown as FormatterOptions & {
-                    type: Intl.PluralRuleType
-                    zero?: string
-                    one?: string
-                    two?: string
-                    few?: string
-                    many?: string
-                    other?: string
-                }
-            )
-        },
-    }
 }
+
+export default initIntlPlural

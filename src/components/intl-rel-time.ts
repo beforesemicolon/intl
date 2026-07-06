@@ -1,4 +1,4 @@
-import { formatRelativeTime, FormatterOptions } from '../formatters'
+import { intlRelTime, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import {
     ONE_HOUR_MS,
@@ -172,7 +172,7 @@ const buildOptions = (
     return options
 }
 
-export default ({
+const initIntlRelTime = ({
     html,
     WebComponent,
 }: typeof import('@beforesemicolon/web-component')) => {
@@ -244,10 +244,10 @@ export default ({
                     precision: number
                 }
 
-            const content = formatRelativeTime(value, options)
+            const content = intlRelTime(value, options)
             const label =
                 options.style && options.style !== 'long'
-                    ? formatRelativeTime(value, { ...options, style: 'long' })
+                    ? intlRelTime(value, { ...options, style: 'long' })
                     : ''
 
             if (label && label !== content) {
@@ -324,23 +324,6 @@ export default ({
             class IntlRelativeTime extends IntlRelTime {}
         )
     }
-
-    return {
-        intlRelativeTime: (
-            value: number | string | Date,
-            props: Partial<IntlRelTimeProps> = {}
-        ) => {
-            const timeValue = resolveTimeValue(value)
-
-            if (timeValue === undefined) {
-                return ''
-            }
-
-            return formatRelativeTime(
-                timeValue,
-                buildOptions(props) as Intl.RelativeTimeFormatOptions &
-                    FormatterOptions
-            )
-        },
-    }
 }
+
+export default initIntlRelTime

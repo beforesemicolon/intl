@@ -8,14 +8,18 @@ describe('component registration entrypoints', () => {
     })
 
     it('registers a single component entry independently', async () => {
-        const { intlNumber } = await import('./number')
+        const initNumber = (await import('./intl-number')).default
+        const WC = await import('@beforesemicolon/web-component')
 
-        expect(typeof intlNumber).toBe('function')
+        expect(customElements.get('intl-number')).toBeUndefined()
+
+        initNumber(WC)
+
         expect(customElements.get('intl-number')).toBeDefined()
         expect(customElements.get('intl-msg')).toBeUndefined()
     })
 
-    it('registers all components from the root bundle', async () => {
+    it('registers all components from the root index', async () => {
         await import('../index')
 
         expect(customElements.get('intl-locale')).toBeDefined()

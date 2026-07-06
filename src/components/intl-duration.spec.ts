@@ -2,10 +2,11 @@ import '@formatjs/intl-durationformat/polyfill'
 import initLocale from './intl-locale'
 import initDuration from './intl-duration'
 import * as WC from '@beforesemicolon/web-component'
+import { intlDuration } from '../formatters'
 import { resetIntl } from '../runtime'
 
 initLocale(WC)
-const { intlDuration } = initDuration(WC)
+initDuration(WC)
 const { html } = WC
 
 const nextFrame = () => new Promise((resolve) => setTimeout(resolve, 0))
@@ -37,8 +38,7 @@ describe('intl-duration', () => {
 
     it('formats durations programmatically', () => {
         expect(
-            intlDuration({
-                value: 3_600_000,
+            intlDuration(3_600_000, {
                 locale: 'en-US',
                 fields: 'hours minutes',
             })
@@ -171,6 +171,6 @@ describe('intl-duration', () => {
         ) as HTMLElement & { contentRoot?: HTMLElement }
 
         expect(duration.contentRoot?.textContent).toBe('')
-        expect(intlDuration({ value: 'bad-value' })).toBe('')
+        expect(intlDuration(NaN)).toBe('')
     })
 })

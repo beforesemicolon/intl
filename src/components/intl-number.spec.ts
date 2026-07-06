@@ -1,10 +1,11 @@
 import initLocale, { getIntlLocaleRuntime } from './intl-locale'
 import initNumber from './intl-number'
 import * as WC from '@beforesemicolon/web-component'
+import { intlNumber } from '../formatters'
 import { resetIntl } from '../runtime'
 
 initLocale(WC)
-const { intlNumber } = initNumber(WC)
+initNumber(WC)
 
 const { html } = WC
 const wait = () => new Promise((resolve) => setTimeout(resolve, 0))
@@ -24,33 +25,35 @@ describe('intl-number', () => {
     })
 
     it('should format numbers programmatically', () => {
-        expect(intlNumber({ value: 123456.789, locale: 'en-US' })).toBe(
+        expect(intlNumber(123456.789, { locale: 'en-US' })).toBe(
             '123,456.789'
         )
         expect(
-            intlNumber({
-                value: 20,
+            intlNumber(20, {
                 locale: 'en-US',
-                type: 'currency',
+                style: 'currency',
                 currency: 'USD',
             })
         ).toBe('$20.00')
         expect(
-            intlNumber({ value: 0.25, locale: 'en-US', type: 'percent' })
+            intlNumber(0.25, { locale: 'en-US', style: 'percent' })
         ).toBe('25%')
         expect(
-            intlNumber({
-                value: 4,
+            intlNumber(4, {
                 locale: 'en-US',
-                type: 'unit',
+                style: 'unit',
                 unit: 'kilogram',
             })
         ).toBe('4 kg')
         expect(
-            intlNumber({ value: 2.28, locale: 'en-US', fractions: '0 1' })
+            intlNumber(2.28, {
+                locale: 'en-US',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 1,
+            })
         ).toBe('2.3')
         expect(
-            intlNumber({ value: 1234, locale: 'en-US', system: 'arab' })
+            intlNumber(1234, { locale: 'en-US', numberingSystem: 'arab' })
         ).toBe('١٬٢٣٤')
     })
 
@@ -139,6 +142,6 @@ describe('intl-number', () => {
         }
 
         expect(number.contentRoot.textContent).toBe('')
-        expect(intlNumber({ value: 'not-a-number' })).toBe('')
+        expect(intlNumber(Number('not-a-number'))).toBe('')
     })
 })

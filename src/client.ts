@@ -1,12 +1,16 @@
-import initLocale from './components/intl-locale'
-import initLocaleMsg from './components/intl-msg'
-import initLocaleDatetime from './components/intl-datetime'
-import initLocaleDuration from './components/intl-duration'
-import initLocaleRelativeTime from './components/intl-rel-time'
-import initLocaleList from './components/intl-list'
-import initLocaleName from './components/intl-name'
-import initLocalePlural from './components/intl-plural'
+import * as runtimeApis from './runtime'
+import * as formatterApis from './formatters'
+import initIntlLocale from './components/intl-locale'
+import initIntlMsg from './components/intl-msg'
+import initIntlNumber from './components/intl-number'
+import initIntlDateTime from './components/intl-datetime'
+import initIntlDuration from './components/intl-duration'
+import initIntlRelTime from './components/intl-rel-time'
+import initIntlList from './components/intl-list'
+import initIntlName from './components/intl-name'
+import initIntlPlural from './components/intl-plural'
 import type { WebComponent } from '@beforesemicolon/web-component'
+import { initSingleIntlClient } from './client-base'
 
 declare global {
     interface Window {
@@ -25,28 +29,29 @@ if (!window.BFS?.MARKUP || !window.BFS.WebComponent) {
 }
 
 if (window.BFS) {
-    const BFS = { ...window.BFS, ...window.BFS?.MARKUP }
-
-    const onLocaleMessagesLoaded = initLocale(BFS)
-    const { intlDatetime } = initLocaleDatetime(BFS)
-    const { intlDuration } = initLocaleDuration(BFS)
-    const { intlMsg } = initLocaleMsg(BFS)
-    const { intlRelativeTime } = initLocaleRelativeTime(BFS)
-    const { intlList } = initLocaleList(BFS)
-    const { intlName } = initLocaleName(BFS)
-    const { intlPlural } = initLocalePlural(BFS)
-
-    window.BFS = {
-        ...window.BFS,
-        INTL: {
-            onLocaleMessagesLoaded,
-            intlDatetime,
-            intlDuration,
-            intlMsg,
-            intlRelativeTime,
-            intlList,
-            intlName,
-            intlPlural,
-        },
-    }
+    initSingleIntlClient(initIntlLocale, runtimeApis)
+    initSingleIntlClient(initIntlMsg, {
+        intlMsg: formatterApis.intlMsg,
+    })
+    initSingleIntlClient(initIntlNumber, {
+        intlNumber: formatterApis.intlNumber,
+    })
+    initSingleIntlClient(initIntlDateTime, {
+        intlDateTime: formatterApis.intlDateTime,
+    })
+    initSingleIntlClient(initIntlDuration, {
+        intlDuration: formatterApis.intlDuration,
+    })
+    initSingleIntlClient(initIntlRelTime, {
+        intlRelTime: formatterApis.intlRelTime,
+    })
+    initSingleIntlClient(initIntlList, {
+        intlList: formatterApis.intlList,
+    })
+    initSingleIntlClient(initIntlName, {
+        intlName: formatterApis.intlName,
+    })
+    initSingleIntlClient(initIntlPlural, {
+        intlPlural: formatterApis.intlPlural,
+    })
 }

@@ -1,10 +1,11 @@
 import initLocale from './intl-locale'
 import initName from './intl-name'
 import * as WC from '@beforesemicolon/web-component'
+import { intlName } from '../formatters'
 import { resetIntl } from '../runtime'
 
 initLocale(WC)
-const { intlName } = initName(WC)
+initName(WC)
 const { html } = WC
 
 const nextFrame = () => new Promise((resolve) => setTimeout(resolve, 0))
@@ -27,11 +28,7 @@ describe('intl-name', () => {
 
     it('formats display names programmatically', () => {
         expect(
-            intlName({
-                value: 'US',
-                locale: 'en-US',
-                type: 'region',
-            })
+            intlName('US', { locale: 'en-US', type: 'region' })
         ).toBe('United States')
     })
 
@@ -86,6 +83,6 @@ describe('intl-name', () => {
         await nextFrame()
 
         expect(getContent()).toBe('')
-        expect(intlName()).toBe('')
+        expect(intlName('')).toBe('')
     })
 })

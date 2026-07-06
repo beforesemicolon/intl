@@ -1,5 +1,5 @@
 import '@formatjs/intl-durationformat/polyfill'
-import { formatDuration, FormatterOptions } from '../formatters'
+import { intlDuration, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
 
@@ -87,7 +87,7 @@ const buildOptions = (
     return options
 }
 
-export default ({
+const initIntlDuration = ({
     html,
     WebComponent,
 }: typeof import('@beforesemicolon/web-component')) => {
@@ -130,10 +130,10 @@ export default ({
                 fields: '*' | string | string[]
                 style: 'long' | 'short' | 'narrow' | 'digital'
             }
-            const content = formatDuration(value, options)
+            const content = intlDuration(value, options)
             const label =
                 options.style && options.style !== 'long'
-                    ? formatDuration(value, { ...options, style: 'long' })
+                    ? intlDuration(value, { ...options, style: 'long' })
                     : ''
 
             if (label && label !== content) {
@@ -196,22 +196,6 @@ export default ({
     if (!customElements.get('intl-duration')) {
         customElements.define('intl-duration', IntlDuration)
     }
-
-    return {
-        intlDuration: (props: Partial<IntlDurationProps> = {}) => {
-            const value = resolveDurationValue(props.value ?? 0)
-
-            if (value === undefined) {
-                return ''
-            }
-
-            return formatDuration(
-                value,
-                buildOptions(props) as unknown as FormatterOptions & {
-                    fields: '*' | string | string[]
-                    style: 'long' | 'short' | 'narrow' | 'digital'
-                }
-            )
-        },
-    }
 }
+
+export default initIntlDuration

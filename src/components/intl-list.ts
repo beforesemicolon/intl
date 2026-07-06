@@ -1,4 +1,4 @@
-import { formatList, FormatterOptions } from '../formatters'
+import { intlList, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
 
@@ -56,7 +56,7 @@ const buildOptions = (
     return options
 }
 
-export default ({
+const initIntlList = ({
     html,
     WebComponent,
 }: typeof import('@beforesemicolon/web-component')) => {
@@ -84,10 +84,10 @@ export default ({
                 this.props,
                 this.runtime
             ) as FormatterOptions & Record<string, unknown>
-            const content = formatList(value, options)
+            const content = intlList(value, options)
             const label =
                 options.style && options.style !== 'long'
-                    ? formatList(value, { ...options, style: 'long' })
+                    ? intlList(value, { ...options, style: 'long' })
                     : ''
 
             if (label && label !== content) {
@@ -150,14 +150,6 @@ export default ({
     if (!customElements.get('intl-list')) {
         customElements.define('intl-list', IntlList)
     }
-
-    return {
-        intlList: (props: Partial<IntlListProps> = {}) => {
-            return formatList(
-                resolveListValue(props.value ?? ''),
-                buildOptions(props) as FormatterOptions &
-                    Record<string, unknown>
-            )
-        },
-    }
 }
+
+export default initIntlList

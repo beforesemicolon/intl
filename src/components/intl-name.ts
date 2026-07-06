@@ -1,4 +1,4 @@
-import { formatName, FormatterOptions } from '../formatters'
+import { intlName, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
 
@@ -51,7 +51,7 @@ const buildOptions = (
     return options
 }
 
-export default ({
+const initIntlName = ({
     html,
     WebComponent,
 }: typeof import('@beforesemicolon/web-component')) => {
@@ -93,10 +93,10 @@ export default ({
                 this.props,
                 this.runtime
             ) as unknown as Intl.DisplayNamesOptions & FormatterOptions
-            const content = formatName(value, options)
+            const content = intlName(value, options)
             const label =
                 options.style && options.style !== 'long'
-                    ? formatName(value, { ...options, style: 'long' })
+                    ? intlName(value, { ...options, style: 'long' })
                     : ''
 
             if (label && label !== content) {
@@ -159,20 +159,6 @@ export default ({
     if (!customElements.get('intl-name')) {
         customElements.define('intl-name', IntlName)
     }
-
-    return {
-        intlName: (props: Partial<IntlNameProps> = {}) => {
-            const value = resolveNameValue(props.value ?? '')
-
-            if (!value) {
-                return ''
-            }
-
-            return formatName(
-                value,
-                buildOptions(props) as unknown as Intl.DisplayNamesOptions &
-                    FormatterOptions
-            )
-        },
-    }
 }
+
+export default initIntlName

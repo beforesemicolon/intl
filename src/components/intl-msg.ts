@@ -1,8 +1,4 @@
-import {
-    formatMessage,
-    MessageFormatOptions,
-    MessageValues,
-} from '../formatters'
+import { intlMsg, MessageValues } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { warnDeprecatedAlias } from '../utils/deprecation'
 import { getIntlLocaleRuntime } from './intl-locale'
@@ -13,7 +9,7 @@ interface IntlMsgProps {
     values: MessageValues
 }
 
-export default ({
+const initIntlMsg = ({
     html,
     HtmlTemplate,
     WebComponent,
@@ -57,7 +53,7 @@ export default ({
                 return
             }
 
-            const content = formatMessage(key, values, {
+            const content = intlMsg(key, values, {
                 scope: this.runtime,
                 missing: (missingKey) => {
                     console.error(
@@ -111,14 +107,6 @@ export default ({
     if (!customElements.get('intl-msg')) {
         customElements.define('intl-msg', IntlMsg)
     }
-
-    return {
-        intlMsg: (
-            key: string,
-            values: MessageValues = {},
-            options: MessageFormatOptions = {}
-        ) => {
-            return formatMessage(key, values, options)
-        },
-    }
 }
+
+export default initIntlMsg

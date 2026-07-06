@@ -1,10 +1,11 @@
 import initLocale from './intl-locale'
 import initList from './intl-list'
 import * as WC from '@beforesemicolon/web-component'
+import { intlList } from '../formatters'
 import { resetIntl } from '../runtime'
 
 initLocale(WC)
-const { intlList } = initList(WC)
+initList(WC)
 const { html } = WC
 
 const nextFrame = () => new Promise((resolve) => setTimeout(resolve, 0))
@@ -27,8 +28,7 @@ describe('intl-list', () => {
 
     it('formats lists programmatically', () => {
         expect(
-            intlList({
-                value: ['book', 'pen', 'pencil'],
+            intlList(['book', 'pen', 'pencil'], {
                 locale: 'en-US',
                 type: 'conjunction',
             })

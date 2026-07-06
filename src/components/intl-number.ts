@@ -1,4 +1,4 @@
-import { formatNumber, FormatterOptions } from '../formatters'
+import { intlNumber, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
 
@@ -134,7 +134,7 @@ const resolveNumberValue = (value: unknown) => {
     return Number.isNaN(numberValue) ? undefined : numberValue
 }
 
-export default ({
+const initIntlNumber = ({
     html,
     WebComponent,
 }: typeof import('@beforesemicolon/web-component')) => {
@@ -205,7 +205,7 @@ export default ({
             }
 
             this.setState({
-                content: formatNumber(
+                content: intlNumber(
                     value,
                     buildOptions(
                         this.props,
@@ -266,20 +266,6 @@ export default ({
     if (!customElements.get('intl-number')) {
         customElements.define('intl-number', IntlNumber)
     }
-
-    return {
-        intlNumber: (props: Partial<IntlNumberProps> = {}) => {
-            const value = resolveNumberValue(props.value ?? 0)
-
-            if (value === undefined) {
-                return ''
-            }
-
-            return formatNumber(
-                value,
-                buildOptions(props) as Intl.NumberFormatOptions &
-                    FormatterOptions
-            )
-        },
-    }
 }
+
+export default initIntlNumber

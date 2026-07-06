@@ -26,7 +26,7 @@ export const getIntlLocaleRuntime = (element: Element | null) => {
     return provider ? providerScopes.get(provider) : undefined
 }
 
-export default ({
+const initIntlLocale = ({
     html,
     WebComponent,
     when,
@@ -174,3 +174,5 @@ export default ({
         customElements.define('intl-locale', IntlLocale)
     }
 }
+
+export default initIntlLocale

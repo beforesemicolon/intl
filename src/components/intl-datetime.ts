@@ -1,4 +1,4 @@
-import { formatDateTime, FormatterOptions } from '../formatters'
+import { intlDateTime, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { warnDeprecatedAlias } from '../utils/deprecation'
 import { getIntlLocaleRuntime } from './intl-locale'
@@ -139,7 +139,7 @@ const buildOptions = (
     return options
 }
 
-export default ({
+const initIntlDateTime = ({
     html,
     WebComponent,
 }: typeof import('@beforesemicolon/web-component')) => {
@@ -214,7 +214,7 @@ export default ({
             }
 
             this.setState({
-                content: formatDateTime(
+                content: intlDateTime(
                     value,
                     buildOptions(
                         this.props,
@@ -278,20 +278,6 @@ export default ({
     if (!customElements.get('intl-datetime')) {
         customElements.define('intl-datetime', IntlDatetime)
     }
-
-    return {
-        intlDatetime: (props: Partial<IntlDatetimeProps> = {}) => {
-            const value = resolveDateValue(props.value ?? new Date())
-
-            if (value === undefined) {
-                return ''
-            }
-
-            return formatDateTime(
-                value,
-                buildOptions(props) as Intl.DateTimeFormatOptions &
-                    FormatterOptions
-            )
-        },
-    }
 }
+
+export default initIntlDateTime

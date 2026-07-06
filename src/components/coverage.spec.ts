@@ -8,17 +8,27 @@ import initNumber from './intl-number'
 import initPlural from './intl-plural'
 import initRelTime from './intl-rel-time'
 import * as WC from '@beforesemicolon/web-component'
+import {
+    intlDateTime,
+    intlDuration,
+    intlList,
+    intlMsg,
+    intlName,
+    intlNumber,
+    intlPlural,
+    intlRelTime,
+} from '../formatters'
 import { initIntl, resetIntl } from '../runtime'
 
 initLocale(WC)
-const { intlDatetime } = initDatetime(WC)
-const { intlDuration } = initDuration(WC)
-const { intlList } = initList(WC)
-const { intlMsg } = initMsg(WC)
-const { intlName } = initName(WC)
-const { intlNumber } = initNumber(WC)
-const { intlPlural } = initPlural(WC)
-const { intlRelativeTime } = initRelTime(WC)
+initDatetime(WC)
+initDuration(WC)
+initList(WC)
+initMsg(WC)
+initName(WC)
+initNumber(WC)
+initPlural(WC)
+initRelTime(WC)
 
 const { html } = WC
 const nextFrame = () => new Promise((resolve) => setTimeout(resolve, 0))
@@ -47,48 +57,56 @@ describe('component edge coverage', () => {
         })
 
         expect(
-            intlDatetime({
-                value: new Date('2026-01-01T10:00:00Z'),
+            intlDateTime(new Date('2026-01-01T10:00:00Z'), {
                 dateStyle: 'medium',
                 timeZone: 'UTC',
             })
         ).toBe('Jan 1, 2026')
         expect(
-            intlDatetime({
-                value: new Date('bad-date'),
+            intlDateTime(new Date('bad-date'), {
                 dateStyle: 'medium',
             })
         ).toBe('')
-        expect(intlDatetime()).not.toBe('')
-        expect(intlNumber({ value: 12, grouping: true })).toBe('12')
-        expect(intlNumber({ value: 12, grouping: 'min2' })).toBe('12')
-        expect(intlNumber({ value: 12, fractions: 'bad' })).toBe('12')
-        expect(intlNumber()).toBe('0')
-        expect(intlDuration({ value: 1_000, fields: undefined })).toBe(
-            '1 second'
-        )
-        expect(intlDuration()).toBe('')
-        expect(intlList({ value: undefined })).toBe('')
-        expect(intlList()).toBe('')
-        expect(intlName({ value: 'US', nameStyle: 'short' })).toBe('US')
-        expect(intlName({ value: '' })).toBe('')
-        expect(intlPlural({ value: Number.NaN })).toBe('')
-        expect(intlPlural()).toBe('other')
-        expect(intlRelativeTime(new Date('bad-date'))).toBe('')
         expect(
-            intlRelativeTime('2026-01-01T10:00:00Z', {
+            intlDateTime(new Date('2026-01-01T10:00:00Z'), {
+                dateStyle: 'medium',
+            })
+        ).not.toBe('')
+        expect(intlNumber(12, { useGrouping: true })).toBe('12')
+        expect(
+            intlNumber(12, {
+                useGrouping: 'bad' as unknown as Intl.NumberFormatOptions['useGrouping'],
+            })
+        ).toBe('')
+        expect(
+            intlNumber(12, {
+                maximumFractionDigits: 'bad' as unknown as number,
+            })
+        ).toBe('')
+        expect(intlNumber(0)).toBe('0')
+        expect(intlDuration(1_000, { fields: undefined })).toBe('1 second')
+        expect(intlDuration(NaN)).toBe('')
+        expect(intlList(undefined as unknown as string[])).toBe('')
+        expect(intlList([] as unknown as string[])).toBe('')
+        expect(intlName('US', { type: 'region', style: 'short' })).toBe('US')
+        expect(intlName('')).toBe('')
+        expect(intlPlural(Number.NaN)).toBe('')
+        expect(intlPlural(0)).toBe('other')
+        expect(intlRelTime(Number.NaN)).toBe('')
+        expect(
+            intlRelTime(new Date('2026-01-01T10:00:00Z').getTime(), {
                 locale: 'en-US',
             })
         ).not.toBe('')
         expect(
-            intlRelativeTime(1, {
-                numeric: true,
+            intlRelTime(1, {
+                numeric: 'always',
                 unit: 'years',
             })
         ).toBe('in 1 year')
         expect(
-            intlRelativeTime(1, {
-                numeric: false,
+            intlRelTime(1, {
+                numeric: 'auto',
                 unit: 'years',
             })
         ).toBe('next year')

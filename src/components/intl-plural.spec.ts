@@ -1,10 +1,11 @@
 import initLocale from './intl-locale'
 import initPlural from './intl-plural'
 import * as WC from '@beforesemicolon/web-component'
+import { intlPlural } from '../formatters'
 import { resetIntl } from '../runtime'
 
 initLocale(WC)
-const { intlPlural } = initPlural(WC)
+initPlural(WC)
 const { html } = WC
 
 const nextFrame = () => new Promise((resolve) => setTimeout(resolve, 0))
@@ -27,20 +28,10 @@ describe('intl-plural', () => {
 
     it('formats plural values programmatically', () => {
         expect(
-            intlPlural({
-                value: 1,
-                locale: 'en-US',
-                one: 'person',
-                other: 'people',
-            })
+            intlPlural(1, { locale: 'en-US', one: 'person', other: 'people' })
         ).toBe('person')
         expect(
-            intlPlural({
-                value: 2,
-                locale: 'en-US',
-                one: 'person',
-                other: 'people',
-            })
+            intlPlural(2, { locale: 'en-US', one: 'person', other: 'people' })
         ).toBe('people')
     })
 
@@ -120,6 +111,6 @@ describe('intl-plural', () => {
         await nextFrame()
 
         expect(getContent()).toBe('')
-        expect(intlPlural({ value: 'bad-value' })).toBe('')
+        expect(intlPlural(Number('bad-value'))).toBe('')
     })
 })
