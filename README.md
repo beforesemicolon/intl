@@ -45,10 +45,10 @@ await setLocale('pt-CV')
 Register the components you use, then add `<intl-locale>` around localized UI.
 
 ```ts
-import '@beforesemicolon/intl/components/locale'
-import '@beforesemicolon/intl/components/msg'
-import '@beforesemicolon/intl/components/number'
-import '@beforesemicolon/intl/components/datetime'
+import '@beforesemicolon/intl/components/intl-locale'
+import '@beforesemicolon/intl/components/intl-msg'
+import '@beforesemicolon/intl/components/intl-number'
+import '@beforesemicolon/intl/components/intl-datetime'
 ```
 
 ```html
@@ -94,8 +94,8 @@ parent messages and fallback messages unless they override them.
 For ESM CDNs, import component entrypoints independently:
 
 ```js
-import 'https://esm.sh/@beforesemicolon/intl/components/locale'
-import 'https://esm.sh/@beforesemicolon/intl/components/msg'
+import 'https://esm.sh/@beforesemicolon/intl/components/intl-locale'
+import 'https://esm.sh/@beforesemicolon/intl/components/intl-msg'
 ```
 
 ## Runtime API
@@ -214,5 +214,5 @@ Message files are JSON objects. Nested keys are addressed with dot notation.
 - Use `<intl-msg key="...">` for message lookup.
 - Use `time-zone` and `time-zone-name` for date-time options.
 - Use package-level formatter functions when JavaScript code needs the same formatting behavior as components.
-- Use `@beforesemicolon/intl/components/*` entrypoints for lazy component registration.
+- Use `@beforesemicolon/intl/components/intl-*` entrypoints for lazy component registration.
 - Use `<intl-locale>` scopes when a page or subtree needs explicit locale state.

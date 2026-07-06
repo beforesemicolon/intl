@@ -13,6 +13,7 @@ const docsOptions = {
 const cleanAssets = () => {
     const assetsDir = path.join(process.cwd(), 'website/assets')
     const filesToDelete = [
+        '.DS_Store',
         'markup-banner.jpg',
         'markup-essentials-training.jpg',
         'markup-favicon.jpg',
@@ -27,6 +28,9 @@ const cleanAssets = () => {
         'reactive.svg',
         'simple.svg',
         'small.svg',
+        'router-banner.jpg',
+        'router-icon.jpg',
+        'router-logo.png',
     ]
 
     filesToDelete.forEach((file) => {
@@ -42,6 +46,21 @@ const cleanAssets = () => {
     })
 }
 
+const copyAssets = () => {
+    const sourceDir = path.join(process.cwd(), 'docs/assets')
+    const targetDir = path.join(process.cwd(), 'website/assets')
+
+    if (!fs.existsSync(sourceDir)) {
+        return
+    }
+
+    fs.cpSync(sourceDir, targetDir, {
+        recursive: true,
+        force: true,
+        filter: (source) => path.basename(source) !== '.DS_Store',
+    })
+}
+
 const run = async () => {
     try {
         fs.rmSync(path.join(process.cwd(), 'website'), {
@@ -54,6 +73,7 @@ const run = async () => {
 
         // Clear out builder default assets that are Markup-specific
         cleanAssets()
+        copyAssets()
 
         console.log('Documentation built successfully.')
     } catch (error) {
