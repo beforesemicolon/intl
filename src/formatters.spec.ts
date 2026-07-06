@@ -203,19 +203,15 @@ describe('formatter functions', () => {
             ) => { format(parts: Record<string, number>): string }
         }).DurationFormat
 
-        try {
-            delete (Intl as { DurationFormat?: typeof originalDurationFormat }).DurationFormat
-
+        withIntlProperty('DurationFormat', undefined, () => {
             expect(
-                intlDuration(1_000, { locale: 'en-US', fields: 'seconds', style: 'narrow' })
+                intlDuration(1_000, {
+                    locale: 'en-US',
+                    fields: 'seconds',
+                    style: 'narrow',
+                })
             ).toMatch(/1s/)
-        } finally {
-            ;(
-                Intl as typeof Intl & {
-                    DurationFormat?: typeof originalDurationFormat
-                }
-            ).DurationFormat = originalDurationFormat
-        }
+        })
     })
 
     it('falls back to local duration formatting with default long style', () => {
@@ -226,19 +222,11 @@ describe('formatter functions', () => {
             ) => { format(parts: Record<string, number>): string }
         }).DurationFormat
 
-        try {
-            delete (Intl as { DurationFormat?: typeof originalDurationFormat }).DurationFormat
-
+        withIntlProperty('DurationFormat', undefined, () => {
             expect(
                 intlDuration(1_000, { locale: 'en-US', fields: 'seconds' })
             ).toBe('1 second')
-        } finally {
-            ;(
-                Intl as typeof Intl & {
-                    DurationFormat?: typeof originalDurationFormat
-                }
-            ).DurationFormat = originalDurationFormat
-        }
+        })
     })
 
     it('returns empty output for invalid duration and list inputs', () => {
@@ -251,19 +239,11 @@ describe('formatter functions', () => {
             ListFormat?: new (locale: string) => { format(items: string[]): string }
         }).ListFormat
 
-        try {
-            delete (Intl as { ListFormat?: typeof originalListFormat }).ListFormat
-
+        withIntlProperty('ListFormat', undefined, () => {
             expect(intlList(['A', 'B', 'C'], { locale: 'en-US' })).toBe(
                 'A, B, C'
             )
-        } finally {
-            ;(
-                Intl as typeof Intl & {
-                    ListFormat?: typeof originalListFormat
-                }
-            ).ListFormat = originalListFormat
-        }
+        })
     })
 
     it('formats plural values', () => {
@@ -364,3 +344,79 @@ describe('formatter functions', () => {
         expect(intlPlural(0, undefined)).toBe('other')
     })
 })
+    const withIntlProperty = <T extends 'DurationFormat' | 'ListFormat'>(
+        property: T,
+        temporaryValue: unknown,
+        callback: () => void
+    ) => {
+        const descriptor = Object.getOwnPropertyDescriptor(
+            Intl,
+            property
+        ) as PropertyDescriptor
+        const originalValue = (Intl as typeof Intl & Record<T, unknown>)[
+            property
+        ]
+
+        const restore = () => {
+            if (!descriptor || descriptor.writable) {
+                ;(Intl as typeof Intl & Record<T, unknown>)[
+                    property
+                ] = originalValue as never
+                return
+            }
+
+            if (!descriptor || descriptor.configurable) {
+                Object.defineProperty(Intl, property, {
+                    ...descriptor,
+                    value: originalValue,
+                    writable: true,
+                    configurable: true,
+                })
+            }
+        }
+
+        if (descriptor && descriptor.writable) {
+            try {
+                ;(Intl as typeof Intl & Record<T, unknown>)[
+                    property
+                ] = temporaryValue as never
+                callback()
+            } finally {
+                try {
+                    restore()
+                } catch {
+                    // Some environments expose Intl constructors as read-only.
+                }
+            }
+
+            return
+        }
+
+        if (!descriptor || descriptor.configurable) {
+            try {
+                Object.defineProperty(Intl, property, {
+                    ...descriptor,
+                    value: temporaryValue,
+                    writable: true,
+                    configurable: true,
+                })
+            } catch {
+                callback()
+                return
+            }
+
+            try {
+                callback()
+            } finally {
+                try {
+                    restore()
+                } catch {
+                    // Some environments expose Intl constructors as read-only.
+                }
+            }
+
+            return
+        }
+
+        callback()
+    }

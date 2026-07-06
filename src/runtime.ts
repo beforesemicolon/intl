@@ -65,7 +65,6 @@ let defaultRuntime: IntlRuntime | null = null
 
 const hasDocument = () => typeof document !== 'undefined'
 const hasFetch = () => typeof fetch !== 'undefined'
-const hasLocation = () => typeof location !== 'undefined'
 const hasAbortController = () => typeof AbortController !== 'undefined'
 
 const getDocumentLocale = () => {
@@ -73,13 +72,23 @@ const getDocumentLocale = () => {
         return document.documentElement.lang
     }
 
-    return DEFAULT_LOCALE
+    return undefined
+}
+
+const normalizeLocaleFromDocument = (locale?: string) => {
+    return locale || DEFAULT_LOCALE
 }
 
 const resolveLocale = (locale?: string, parentScope?: IntlRuntime) => {
-    return (
-        locale || parentScope?.locale || getDocumentLocale() || DEFAULT_LOCALE
-    )
+    if (locale) {
+        return locale
+    }
+
+    if (parentScope?.locale) {
+        return parentScope.locale
+    }
+
+    return normalizeLocaleFromDocument(getDocumentLocale())
 }
 
 export const getLocaleDirection = (locale: string): IntlDirection => {
@@ -135,14 +144,17 @@ const resolveSourceUrl = (
     locale: string,
     { src, srcDir, baseUrl }: IntlRuntimeOptions
 ) => {
-    const path = src || `${srcDir?.replace(/\/$/, '')}/${locale}.json`
+    const normalizedSrcDir = srcDir
+        ? srcDir.replace(/^\/+/, '').replace(/\/$/, '')
+        : srcDir
+
+    const path = src || `${normalizedSrcDir}/${locale}.json`
 
     if (/^https?:\/\//.test(path)) {
         return path
     }
 
-    const base =
-        baseUrl || (hasLocation() ? location.origin : 'http://localhost')
+    const base = baseUrl || globalThis.location?.origin || 'http://localhost'
     return new URL(path, base).href
 }
 
@@ -165,7 +177,7 @@ class ScopedIntlRuntime implements IntlRuntime {
     readonly formatterCache = new Map<string, unknown>()
     readonly messageCache = new Map<string, unknown>()
 
-    constructor(options: IntlRuntimeOptions = {}) {
+    constructor(options: IntlRuntimeOptions) {
         this.#options = options
         this.parentScope = options.parentScope
         this.#locale = resolveLocale(options.locale, options.parentScope)

@@ -63,9 +63,12 @@ const copyAssets = () => {
 
 const run = async () => {
     try {
-        fs.rmSync(path.join(process.cwd(), 'website'), {
+        const websiteDir = path.join(process.cwd(), 'website')
+        fs.rmSync(websiteDir, {
             recursive: true,
             force: true,
+            maxRetries: 10,
+            retryDelay: 200,
         })
         await buildDocs(docsOptions)
         // Wait for the unawaited async writeFile calls in builder's forEach to finish

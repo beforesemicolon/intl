@@ -562,4 +562,139 @@ describe('intl runtime', () => {
         expect(intl.getMessage('hello')).toBe('current')
         expect(intl.getMessage('fallback')).toBe('fallback')
     })
+
+    it('falls back to default locale when document locale is unavailable', () => {
+        const previousLocale = document.documentElement.lang
+
+        document.documentElement.lang = ''
+
+        const intlWithoutLocale = createIntl()
+        document.documentElement.lang = previousLocale
+
+        expect(intlWithoutLocale.locale).toBe('en')
+    })
+
+    it('resolves locale source URLs using baseUrl when provided', async () => {
+        ;(window.fetch as jest.Mock).mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ hello: 'Hello' }),
+        })
+
+        const intl = createIntl({
+            locale: 'en-US',
+            srcDir: '/locales',
+            baseUrl: 'https://example.com/app/',
+        })
+
+        await intl.loadLocale()
+
+        expect(window.fetch).toHaveBeenCalledWith(
+            'https://example.com/app/locales/en-US.json',
+            expect.objectContaining({ signal: expect.any(AbortSignal) })
+        )
+    })
+
+    it('uses parent fallback locale when child locale fallback is explicitly empty', async () => {
+        const parent = createIntl({
+            locale: 'en-US',
+            messages: { hello: 'Parent' },
+        })
+        const child = createIntl({
+            parentScope: parent,
+            locale: 'pt-CV',
+            fallbackLocale: '',
+        })
+
+        await child.loadLocale()
+
+        expect(child.fallbackLocale).toBe('en')
+        expect(child.getMessage('hello')).toBe('Parent')
+    })
+
+    it('applies locale from parent cache when requesting a cached locale from a child', async () => {
+        const intl = createIntl({
+            locale: 'pt-CV',
+            fallbackLocale: '',
+        })
+        intl.setMessages({ localeMessage: 'from-en' }, 'en')
+
+        await intl.loadLocale('en')
+
+        expect(intl.getMessage('localeMessage')).toBeUndefined()
+    })
+
+    it('returns empty message maps when loader returns no payload for the primary locale', async () => {
+        const intl = createIntl({
+            locale: 'en-US',
+            fallbackLocale: 'en-US',
+            loader: () => undefined as never,
+        })
+
+        await intl.loadLocale()
+
+        expect(intl.getMessage('anything')).toBeUndefined()
+        expect(intl.loadedLocales.has('en-US')).toBe(true)
+    })
+
+    it('skips applying fallback merge when destroyed while loading fallback locale', async () => {
+        const signals: Array<{
+            locale: string
+            resolve: (messages: Record<string, string>) => void
+        }> = []
+        const waitForLoader = async (locale: string) => {
+            while (!signals.some((entry) => entry.locale === locale)) {
+                await new Promise((resolve) => setTimeout(resolve, 0))
+            }
+        }
+
+        const intl = createIntl({
+            locale: 'pt-CV',
+            fallbackLocale: 'en',
+            loader: (locale) => {
+                return new Promise<Record<string, string>>((resolve) => {
+                    const entry: typeof signals[number] = {
+                        locale,
+                        resolve,
+                    }
+                    signals.push(entry)
+                })
+            },
+        })
+
+        const loading = intl.loadLocale()
+
+        await waitForLoader('pt-CV')
+        await Promise.resolve()
+        signals
+            .filter((entry) => entry.locale === 'pt-CV')
+            .shift()
+            ?.resolve({ hello: 'Primary' })
+
+        await waitForLoader('en')
+        intl.destroy()
+        signals
+            .filter((entry) => entry.locale === 'en')
+            .shift()
+            ?.resolve({ fallback: 'Fallback' })
+
+        const snapshot = await loading
+
+        expect(snapshot.loadedLocales.has('en')).toBe(false)
+        expect(Object.keys(snapshot.fallbackMessages)).toHaveLength(0)
+        expect(snapshot.error).toBeUndefined()
+    })
+
+    it('loads fallback locale with empty payload and keeps fallback map empty', async () => {
+        const intl = createIntl({
+            locale: 'en',
+            fallbackLocale: 'en',
+            loader: () => undefined as never,
+        })
+
+        await intl.loadLocale()
+
+        expect(intl.loadedLocales.has('en')).toBe(true)
+        expect(intl.getMessage('anything')).toBeUndefined()
+        expect(intl.status).toBe('ready')
+    })
 })
