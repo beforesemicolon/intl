@@ -1,12 +1,12 @@
 const renderGoogleAnalyticsScript = () => `
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-8GPFPFW87C"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F8QX6JYRJY"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);} 
   gtag('js', new Date());
 
-  gtag('config', 'G-8GPFPFW87C');
+  gtag('config', 'G-F8QX6JYRJY');
 </script>`
 
 export default {
