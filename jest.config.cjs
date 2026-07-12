@@ -7,6 +7,7 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/index.ts',
+    '!src/clients/**/*.ts',
     '!src/**/*.spec.ts',
     '!src/**/*.test.ts',
   ],

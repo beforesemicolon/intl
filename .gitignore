@@ -145,5 +145,6 @@ en.json
 
 # dirs
 website
+static
 coverage_tmp
 coverage_tmp_json
