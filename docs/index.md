@@ -56,9 +56,9 @@ FORMATTERS
 
 `// THE ECOSYSTEM`
 
-## Powered by Markup & Web Component.
+## Built on Web Component & Markup.
 
-Intl is built for the same Markup family as Router: native Web Components on top of the lightweight Markup rendering model.
+Intl is built on top of Web Component and Markup. Same engine, modular packages, zero lock-in.
 
 === product title="Markup" package="@beforesemicolon/markup" color=orange icon=reactive href="https://markup.beforesemicolon.com"
 
