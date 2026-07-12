@@ -1,9 +1,8 @@
-import {
+import { getRuntime, interpolateMessage } from './shared'
+import type {
     FormatterOptions,
     MessageFormatOptions,
     MessageValues,
-    getRuntime,
-    interpolateMessage,
 } from './shared'
 
 export const intlMsg = (
@@ -29,4 +28,4 @@ export const intlMsg = (
     return interpolateMessage(String(message), values)
 }
 
-export { FormatterOptions, MessageFormatOptions, MessageValues }
+export type { FormatterOptions, MessageFormatOptions, MessageValues }
