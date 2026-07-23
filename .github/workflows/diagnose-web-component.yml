@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - agent/web-component-1.19-compat
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
