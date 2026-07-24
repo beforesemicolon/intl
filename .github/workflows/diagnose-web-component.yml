@@ -6,6 +6,9 @@ on:
       - agent/intl-web-component-fix-2
     paths-ignore:
       - diagnostics/**
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
