@@ -1,0 +1,325 @@
+exit_code=1
+
+11:      Error: [intl] Loading "http://localhost/locales/en.json" failed with status code 404
+27:      Error: [intl] Loading "http://localhost/locales/pt.json" failed with status code 404
+46:      TypeError: Cannot read properties of undefined (reading 'ok')
+62:      TypeError: Cannot read properties of undefined (reading 'ok')
+101:FAIL src/components/intl-rel-time.spec.ts
+105:      TypeError: Cannot read properties of undefined (reading 'ok')
+121:      TypeError: Cannot read properties of undefined (reading 'ok')
+180:      TypeError: Cannot read properties of undefined (reading 'ok')
+196:      TypeError: Cannot read properties of undefined (reading 'ok')
+238:      TypeError: Cannot read properties of undefined (reading 'ok')
+254:      TypeError: Cannot read properties of undefined (reading 'ok')
+422:      TypeError: Cannot read properties of undefined (reading 'ok')
+438:      TypeError: Cannot read properties of undefined (reading 'ok')
+480:      TypeError: Cannot read properties of undefined (reading 'ok')
+496:      TypeError: Cannot read properties of undefined (reading 'ok')
+516:      TypeError: Cannot read properties of undefined (reading 'ok')
+532:      TypeError: Cannot read properties of undefined (reading 'ok')
+574:      TypeError: Cannot read properties of undefined (reading 'ok')
+631:Test Suites: 1 failed, 19 passed, 20 total
+632:Tests:       1 failed, 147 passed, 148 total
+633:Snapshots:   0 total
+
+--- tail ---
+      at p.#c (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:8012)
+      at p.render (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:4780)
+      at Object.<anonymous> (src/components/intl-datetime.spec.ts:140:66)
+
+PASS src/components/intl-msg.spec.ts
+  ● Console
+
+    console.warn
+      [intl] "id" is deprecated and will be removed in a future release. Use "key" instead.
+
+    [0m [90m 16 |[39m
+     [90m 17 |[39m     warnedAliases[33m.[39madd(key)
+    [31m[1m>[22m[39m[90m 18 |[39m     console[33m.[39mwarn(
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 19 |[39m         [32m`[intl] "${alias}" is deprecated and will be removed in a future release. Use "${replacement}" instead.`[39m
+     [90m 20 |[39m     )
+     [90m 21 |[39m }[0m
+
+      at warn (src/utils/deprecation.ts:18:13)
+      at IntlMsg.getMessageKey (src/components/intl-msg.ts:39:36)
+      at IntlMsg.getMessageKey (src/components/intl-msg.ts:46:30)
+      at updateMessage (src/components/intl-msg.ts:75:22)
+      at ScopedIntlRuntime.listener [as subscribe] (src/runtime.ts:467:9)
+      at IntlMsg.subscribe [as subscribeToRuntime] (src/components/intl-msg.ts:72:45)
+      at IntlMsg.subscribeToRuntime [as onMount] (src/components/intl-msg.ts:80:18)
+      at IntlMsg.connectedCallback (node_modules/@beforesemicolon/web-component/dist/cjs/web-component.js:1:4908)
+      at IntlMsg.call [as connectedCallback] (src/components/intl-msg.ts:103:33)
+      at p.#c (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:8012)
+      at p.render (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:4780)
+      at Object.<anonymous> (src/components/intl-msg.spec.ts:69:11)
+
+    console.error
+      [intl-msg] text for key of "missing" was not found. Rendering the key itself as backup.
+
+    [0m [90m 57 |[39m                 scope[33m:[39m [36mthis[39m[33m.[39mruntime[33m,[39m
+     [90m 58 |[39m                 missing[33m:[39m (missingKey) [33m=>[39m {
+    [31m[1m>[22m[39m[90m 59 |[39m                     console[33m.[39merror(
+     [90m    |[39m                             [31m[1m^[22m[39m
+     [90m 60 |[39m                         [32m`[intl-msg] text for key of "${missingKey}" was not found. Rendering the key itself as backup.`[39m
+     [90m 61 |[39m                     )
+     [90m 62 |[39m                     [36mreturn[39m fallback [33m||[39m missingKey[0m
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:794:25)
+      at Object.error [as missing] (src/components/intl-msg.ts:59:29)
+      at missing (src/formatters/message.ts:22:28)
+      at IntlMsg.updateMessage (src/components/intl-msg.ts:56:36)
+      at updateMessage (src/components/intl-msg.ts:75:22)
+      at ScopedIntlRuntime.listener [as subscribe] (src/runtime.ts:467:9)
+      at IntlMsg.subscribe [as subscribeToRuntime] (src/components/intl-msg.ts:72:45)
+      at IntlMsg.subscribeToRuntime [as onMount] (src/components/intl-msg.ts:80:18)
+      at IntlMsg.connectedCallback (node_modules/@beforesemicolon/web-component/dist/cjs/web-component.js:1:4908)
+      at IntlMsg.call [as connectedCallback] (src/components/intl-msg.ts:103:33)
+      at p.#c (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:8012)
+      at p.render (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:4780)
+      at Object.<anonymous> (src/components/intl-msg.spec.ts:88:51)
+
+    console.error
+      [intl-msg] text for key of "missing" was not found. Rendering the key itself as backup.
+
+    [0m [90m 57 |[39m                 scope[33m:[39m [36mthis[39m[33m.[39mruntime[33m,[39m
+     [90m 58 |[39m                 missing[33m:[39m (missingKey) [33m=>[39m {
+    [31m[1m>[22m[39m[90m 59 |[39m                     console[33m.[39merror(
+     [90m    |[39m                             [31m[1m^[22m[39m
+     [90m 60 |[39m                         [32m`[intl-msg] text for key of "${missingKey}" was not found. Rendering the key itself as backup.`[39m
+     [90m 61 |[39m                     )
+     [90m 62 |[39m                     [36mreturn[39m fallback [33m||[39m missingKey[0m
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:794:25)
+      at Object.error [as missing] (src/components/intl-msg.ts:59:29)
+      at missing (src/formatters/message.ts:22:28)
+      at IntlMsg.updateMessage (src/components/intl-msg.ts:56:36)
+      at updateMessage (src/components/intl-msg.ts:75:22)
+      at ScopedIntlRuntime.listener [as subscribe] (src/runtime.ts:467:9)
+      at IntlMsg.subscribe [as subscribeToRuntime] (src/components/intl-msg.ts:72:45)
+      at IntlMsg.subscribeToRuntime [as onMount] (src/components/intl-msg.ts:80:18)
+      at IntlMsg.connectedCallback (node_modules/@beforesemicolon/web-component/dist/cjs/web-component.js:1:4908)
+      at IntlMsg.call [as connectedCallback] (src/components/intl-msg.ts:103:33)
+      at p.#c (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:8012)
+      at p.render (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:4780)
+      at Object.<anonymous> (src/components/intl-msg.spec.ts:104:64)
+
+PASS src/formatters/shared.spec.ts
+PASS src/components/intl-plural.spec.ts
+  ● Console
+
+    console.error
+      TypeError: Cannot read properties of undefined (reading 'ok')
+          at ScopedIntlRuntime.ok (/home/runner/work/intl/intl/src/runtime.ts:302:27)
+          at /home/runner/work/intl/intl/src/runtime.ts:387:34
+
+    [0m [90m 135 |[39m         onMount() {
+     [90m 136 |[39m             [36mthis[39m[33m.[39mloadMessages()[33m.[39m[36mcatch[39m((err) [33m=>[39m {
+    [31m[1m>[22m[39m[90m 137 |[39m                 console[33m.[39merror(err)
+     [90m     |[39m                         [31m[1m^[22m[39m
+     [90m 138 |[39m             })
+     [90m 139 |[39m         }
+     [90m 140 |[39m[0m
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:794:25)
+      at error (src/components/intl-locale.ts:137:25)
+
+    console.error
+      TypeError: Cannot read properties of undefined (reading 'ok')
+          at ScopedIntlRuntime.ok (/home/runner/work/intl/intl/src/runtime.ts:302:27)
+          at /home/runner/work/intl/intl/src/runtime.ts:387:34
+
+    [0m [90m 135 |[39m         onMount() {
+     [90m 136 |[39m             [36mthis[39m[33m.[39mloadMessages()[33m.[39m[36mcatch[39m((err) [33m=>[39m {
+    [31m[1m>[22m[39m[90m 137 |[39m                 console[33m.[39merror(err)
+     [90m     |[39m                         [31m[1m^[22m[39m
+     [90m 138 |[39m             })
+     [90m 139 |[39m         }
+     [90m 140 |[39m[0m
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:794:25)
+      at error (src/components/intl-locale.ts:137:25)
+
+    console.error
+      intl-plural: invalid value bad-value
+
+    [0m [90m 101 |[39m
+     [90m 102 |[39m             [36mif[39m (value [33m===[39m undefined) {
+    [31m[1m>[22m[39m[90m 103 |[39m                 console[33m.[39merror([32m'intl-plural: invalid value'[39m[33m,[39m [36mthis[39m[33m.[39mprops[33m.[39mvalue())
+     [90m     |[39m                         [31m[1m^[22m[39m
+     [90m 104 |[39m                 [36mthis[39m[33m.[39msetState({ content[33m:[39m [32m''[39m })
+     [90m 105 |[39m                 [36mreturn[39m
+     [90m 106 |[39m             }[0m
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:794:25)
+      at IntlPlural.error [as updatePlural] (src/components/intl-plural.ts:103:25)
+      at updatePlural (src/components/intl-plural.ts:142:22)
+      at ScopedIntlRuntime.listener [as subscribe] (src/runtime.ts:467:9)
+      at IntlPlural.subscribe [as subscribeToRuntime] (src/components/intl-plural.ts:139:45)
+      at IntlPlural.subscribeToRuntime [as onMount] (src/components/intl-plural.ts:147:18)
+      at IntlPlural.connectedCallback (node_modules/@beforesemicolon/web-component/dist/cjs/web-component.js:1:4908)
+      at IntlPlural.call [as connectedCallback] (src/components/intl-plural.ts:171:33)
+      at p.#c (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:8012)
+      at p.render (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:4780)
+      at Object.<anonymous> (src/components/intl-plural.spec.ts:108:61)
+
+PASS src/components/intl-list.spec.ts
+  ● Console
+
+    console.error
+      TypeError: Cannot read properties of undefined (reading 'ok')
+          at ScopedIntlRuntime.ok (/home/runner/work/intl/intl/src/runtime.ts:302:27)
+          at /home/runner/work/intl/intl/src/runtime.ts:387:34
+
+    [0m [90m 135 |[39m         onMount() {
+     [90m 136 |[39m             [36mthis[39m[33m.[39mloadMessages()[33m.[39m[36mcatch[39m((err) [33m=>[39m {
+    [31m[1m>[22m[39m[90m 137 |[39m                 console[33m.[39merror(err)
+     [90m     |[39m                         [31m[1m^[22m[39m
+     [90m 138 |[39m             })
+     [90m 139 |[39m         }
+     [90m 140 |[39m[0m
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:794:25)
+      at error (src/components/intl-locale.ts:137:25)
+
+    console.error
+      TypeError: Cannot read properties of undefined (reading 'ok')
+          at ScopedIntlRuntime.ok (/home/runner/work/intl/intl/src/runtime.ts:302:27)
+          at /home/runner/work/intl/intl/src/runtime.ts:387:34
+
+    [0m [90m 135 |[39m         onMount() {
+     [90m 136 |[39m             [36mthis[39m[33m.[39mloadMessages()[33m.[39m[36mcatch[39m((err) [33m=>[39m {
+    [31m[1m>[22m[39m[90m 137 |[39m                 console[33m.[39merror(err)
+     [90m     |[39m                         [31m[1m^[22m[39m
+     [90m 138 |[39m             })
+     [90m 139 |[39m         }
+     [90m 140 |[39m[0m
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:794:25)
+      at error (src/components/intl-locale.ts:137:25)
+
+PASS src/utils/milliseconds-to-time-parts.spec.ts
+PASS src/components/intl-name.spec.ts
+  ● Console
+
+    console.error
+      TypeError: Cannot read properties of undefined (reading 'ok')
+          at ScopedIntlRuntime.ok (/home/runner/work/intl/intl/src/runtime.ts:302:27)
+          at /home/runner/work/intl/intl/src/runtime.ts:387:34
+
+    [0m [90m 135 |[39m         onMount() {
+     [90m 136 |[39m             [36mthis[39m[33m.[39mloadMessages()[33m.[39m[36mcatch[39m((err) [33m=>[39m {
+    [31m[1m>[22m[39m[90m 137 |[39m                 console[33m.[39merror(err)
+     [90m     |[39m                         [31m[1m^[22m[39m
+     [90m 138 |[39m             })
+     [90m 139 |[39m         }
+     [90m 140 |[39m[0m
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:794:25)
+      at error (src/components/intl-locale.ts:137:25)
+
+    console.error
+      TypeError: Cannot read properties of undefined (reading 'ok')
+          at ScopedIntlRuntime.ok (/home/runner/work/intl/intl/src/runtime.ts:302:27)
+          at /home/runner/work/intl/intl/src/runtime.ts:387:34
+
+    [0m [90m 135 |[39m         onMount() {
+     [90m 136 |[39m             [36mthis[39m[33m.[39mloadMessages()[33m.[39m[36mcatch[39m((err) [33m=>[39m {
+    [31m[1m>[22m[39m[90m 137 |[39m                 console[33m.[39merror(err)
+     [90m     |[39m                         [31m[1m^[22m[39m
+     [90m 138 |[39m             })
+     [90m 139 |[39m         }
+     [90m 140 |[39m[0m
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:794:25)
+      at error (src/components/intl-locale.ts:137:25)
+
+    console.error
+      intl-name: invalid value
+
+    [0m [90m 85 |[39m
+     [90m 86 |[39m             [36mif[39m ([33m![39mvalue) {
+    [31m[1m>[22m[39m[90m 87 |[39m                 console[33m.[39merror([32m'intl-name: invalid value'[39m[33m,[39m value)
+     [90m    |[39m                         [31m[1m^[22m[39m
+     [90m 88 |[39m                 [36mthis[39m[33m.[39msetState({ content[33m:[39m [32m''[39m })
+     [90m 89 |[39m                 [36mreturn[39m
+     [90m 90 |[39m             }[0m
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:794:25)
+      at IntlName.error [as updateName] (src/components/intl-name.ts:87:25)
+      at updateName (src/components/intl-name.ts:126:22)
+      at ScopedIntlRuntime.listener [as subscribe] (src/runtime.ts:467:9)
+      at IntlName.subscribe [as subscribeToRuntime] (src/components/intl-name.ts:123:45)
+      at IntlName.subscribeToRuntime [as onMount] (src/components/intl-name.ts:131:18)
+      at IntlName.connectedCallback (node_modules/@beforesemicolon/web-component/dist/cjs/web-component.js:1:4908)
+      at IntlName.call [as connectedCallback] (src/components/intl-name.ts:155:33)
+      at p.#c (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:8012)
+      at p.render (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:4780)
+      at Object.<anonymous> (src/components/intl-name.spec.ts:82:53)
+
+PASS src/components/accessibility.spec.ts
+  ● Console
+
+    console.error
+      TypeError: Cannot read properties of undefined (reading 'ok')
+          at ScopedIntlRuntime.ok (/home/runner/work/intl/intl/src/runtime.ts:302:27)
+          at /home/runner/work/intl/intl/src/runtime.ts:387:34
+
+    [0m [90m 135 |[39m         onMount() {
+     [90m 136 |[39m             [36mthis[39m[33m.[39mloadMessages()[33m.[39m[36mcatch[39m((err) [33m=>[39m {
+    [31m[1m>[22m[39m[90m 137 |[39m                 console[33m.[39merror(err)
+     [90m     |[39m                         [31m[1m^[22m[39m
+     [90m 138 |[39m             })
+     [90m 139 |[39m         }
+     [90m 140 |[39m[0m
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:794:25)
+      at error (src/components/intl-locale.ts:137:25)
+
+PASS src/client.spec.ts
+PASS src/client-base.spec.ts
+PASS src/components/registration.spec.ts
+PASS src/utils/deprecation.spec.ts
+PASS src/utils/conditional-field.spec.ts
+--------------------------------|---------|----------|---------|---------|---------------------------------
+File                            | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s               
+--------------------------------|---------|----------|---------|---------|---------------------------------
+All files                       |   98.11 |    90.92 |   99.11 |   98.03 |                                 
+ src                            |     100 |    96.07 |     100 |     100 |                                 
+  client-base.ts                |     100 |       80 |     100 |     100 | 33                              
+  client.ts                     |     100 |      100 |     100 |     100 |                                 
+  formatters.ts                 |     100 |      100 |     100 |     100 |                                 
+  runtime.ts                    |     100 |    96.77 |     100 |     100 | 157,421-426                     
+ src/components                 |   96.71 |    86.25 |    98.5 |    96.7 |                                 
+  intl-datetime.ts              |   94.54 |    76.92 |     100 |   94.54 | 47,51,61,65-66,77               
+  intl-duration.ts              |     100 |    94.11 |     100 |     100 | 82                              
+  intl-list.ts                  |   96.49 |    89.65 |     100 |   96.49 | 28,35                           
+  intl-locale.ts                |     100 |      100 |     100 |     100 |                                 
+  intl-msg.ts                   |   98.03 |    94.73 |   92.85 |   97.95 | 84                              
+  intl-name.ts                  |     100 |    93.75 |     100 |     100 | 44-45                           
+  intl-number.ts                |   95.19 |    84.21 |   93.75 |   95.19 | 50,56,64-68                     
+  intl-plural.ts                |     100 |       95 |     100 |     100 | 46                              
+  intl-rel-time.ts              |   92.43 |    74.24 |     100 |   92.43 | 48,52,72,76,101,121,142-144,148 
+ src/formatters                 |     100 |    98.93 |     100 |     100 |                                 
+  datetime.ts                   |     100 |      100 |     100 |     100 |                                 
+  duration.ts                   |     100 |      100 |     100 |     100 |                                 
+  index.ts                      |     100 |      100 |     100 |     100 |                                 
+  list.ts                       |     100 |      100 |     100 |     100 |                                 
+  message.ts                    |     100 |      100 |     100 |     100 |                                 
+  name.ts                       |     100 |    83.33 |     100 |     100 | 23                              
+  number.ts                     |     100 |      100 |     100 |     100 |                                 
+  plural.ts                     |     100 |      100 |     100 |     100 |                                 
+  relative-time.ts              |     100 |      100 |     100 |     100 |                                 
+  shared.ts                     |     100 |      100 |     100 |     100 |                                 
+ src/utils                      |     100 |      100 |     100 |     100 |                                 
+  conditional-field.ts          |     100 |      100 |     100 |     100 |                                 
+  deprecation.ts                |     100 |      100 |     100 |     100 |                                 
+  milliseconds-to-time-parts.ts |     100 |      100 |     100 |     100 |                                 
+  time-in-miliseconds.ts        |     100 |      100 |     100 |     100 |                                 
+--------------------------------|---------|----------|---------|---------|---------------------------------
+
+Test Suites: 1 failed, 19 passed, 20 total
+Tests:       1 failed, 147 passed, 148 total
+Snapshots:   0 total
+Time:        15.572 s
+Ran all test suites.
