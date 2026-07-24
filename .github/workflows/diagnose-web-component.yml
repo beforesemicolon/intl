@@ -27,6 +27,7 @@ jobs:
           mkdir -p diagnostics
           npm test -- --runInBand > diagnostics/full-test-output.txt 2>&1
           status=$?
+          head -n 240 diagnostics/full-test-output.txt > diagnostics/test-start.txt
           {
             echo "exit_code=$status"
             echo
@@ -37,7 +38,7 @@ jobs:
           } > diagnostics/test-failure.txt
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add diagnostics/test-failure.txt
-          git commit -m "chore: capture compatibility test failure" || true
+          git add diagnostics/test-start.txt diagnostics/test-failure.txt
+          git commit -m "chore: capture focused compatibility failure" || true
           git push || true
           exit $status
