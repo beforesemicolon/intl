@@ -1,26 +1,25 @@
-exit_code=1
+exit_code=0
 
 11:      Error: [intl] Loading "http://localhost/locales/en.json" failed with status code 404
 27:      Error: [intl] Loading "http://localhost/locales/pt.json" failed with status code 404
 46:      TypeError: Cannot read properties of undefined (reading 'ok')
 62:      TypeError: Cannot read properties of undefined (reading 'ok')
-101:FAIL src/components/intl-rel-time.spec.ts
 105:      TypeError: Cannot read properties of undefined (reading 'ok')
 121:      TypeError: Cannot read properties of undefined (reading 'ok')
-180:      TypeError: Cannot read properties of undefined (reading 'ok')
-196:      TypeError: Cannot read properties of undefined (reading 'ok')
-238:      TypeError: Cannot read properties of undefined (reading 'ok')
-254:      TypeError: Cannot read properties of undefined (reading 'ok')
-422:      TypeError: Cannot read properties of undefined (reading 'ok')
-438:      TypeError: Cannot read properties of undefined (reading 'ok')
-480:      TypeError: Cannot read properties of undefined (reading 'ok')
-496:      TypeError: Cannot read properties of undefined (reading 'ok')
-516:      TypeError: Cannot read properties of undefined (reading 'ok')
-532:      TypeError: Cannot read properties of undefined (reading 'ok')
-574:      TypeError: Cannot read properties of undefined (reading 'ok')
-631:Test Suites: 1 failed, 19 passed, 20 total
-632:Tests:       1 failed, 147 passed, 148 total
-633:Snapshots:   0 total
+163:      TypeError: Cannot read properties of undefined (reading 'ok')
+179:      TypeError: Cannot read properties of undefined (reading 'ok')
+221:      TypeError: Cannot read properties of undefined (reading 'ok')
+237:      TypeError: Cannot read properties of undefined (reading 'ok')
+405:      TypeError: Cannot read properties of undefined (reading 'ok')
+421:      TypeError: Cannot read properties of undefined (reading 'ok')
+463:      TypeError: Cannot read properties of undefined (reading 'ok')
+479:      TypeError: Cannot read properties of undefined (reading 'ok')
+499:      TypeError: Cannot read properties of undefined (reading 'ok')
+515:      TypeError: Cannot read properties of undefined (reading 'ok')
+557:      TypeError: Cannot read properties of undefined (reading 'ok')
+614:Test Suites: 20 passed, 20 total
+615:Tests:       148 passed, 148 total
+616:Snapshots:   0 total
 
 --- tail ---
       at p.#c (node_modules/@beforesemicolon/markup/dist/cjs/html.js:1:8012)
@@ -318,8 +317,8 @@ All files                       |   98.11 |    90.92 |   99.11 |   98.03 |
   time-in-miliseconds.ts        |     100 |      100 |     100 |     100 |                                 
 --------------------------------|---------|----------|---------|---------|---------------------------------
 
-Test Suites: 1 failed, 19 passed, 20 total
-Tests:       1 failed, 147 passed, 148 total
+Test Suites: 20 passed, 20 total
+Tests:       148 passed, 148 total
 Snapshots:   0 total
-Time:        17.014 s
+Time:        13.399 s
 Ran all test suites.
