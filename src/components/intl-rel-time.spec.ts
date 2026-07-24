@@ -122,8 +122,8 @@ describe('intl-rel-time', () => {
 
     it('updates live relative time and clears timers on destroy', async () => {
         const value = new Date('2026-01-01T00:00:00.000Z').getTime()
-        const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout')
         jest.useFakeTimers()
+        const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout')
         jest.setSystemTime(value)
 
         html`
