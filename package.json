@@ -1,6 +1,6 @@
 {
     "name": "@beforesemicolon/intl",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Web component localization based on Markup",
     "type": "module",
     "types": "./dist/types/index.d.ts",
@@ -132,7 +132,7 @@
         "typescript": "^5.7.2"
     },
     "dependencies": {
-        "@beforesemicolon/web-component": "^1.16.0",
+        "@beforesemicolon/web-component": "^1.19.3",
         "@formatjs/intl-durationformat": "^0.10.0"
     }
 }
