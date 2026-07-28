@@ -1,0 +1,35 @@
+name: Diagnose durationformat compatibility
+
+on:
+  push:
+    branches:
+      - agent/intl-durationformat-0.10
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20.x, 22.x, 24.x]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - name: Run focused diagnostics
+        shell: bash
+        run: |
+          set +e
+          npm test -- --runInBand > test-output.log 2>&1
+          status=$?
+          echo "TEST_EXIT_CODE=$status"
+          grep -n -E "FAIL|Expected:|Received:|TypeError|ReferenceError|Error:|●|Test Suites:|Tests:" test-output.log | tail -n 160 || true
+          echo "--- tail ---"
+          tail -n 120 test-output.log
+          exit $status
