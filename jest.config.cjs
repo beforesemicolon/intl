@@ -1,7 +1,15 @@
 module.exports = {
   transform: {
-    '^.+\\.ts?$': 'ts-jest',
+    '^.+\\.[tj]s$': [
+      'ts-jest',
+      {
+        tsconfig: {
+          allowJs: true,
+        },
+      },
+    ],
   },
+  transformIgnorePatterns: ['node_modules/(?!@formatjs/)'],
   testEnvironment: 'jsdom',
   collectCoverage: true,
   collectCoverageFrom: [
