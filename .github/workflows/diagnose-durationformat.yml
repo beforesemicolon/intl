@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - agent/intl-durationformat-0.10
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
