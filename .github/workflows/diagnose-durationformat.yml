@@ -26,13 +26,24 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Run focused diagnostics
+        id: test
         shell: bash
         run: |
           set +e
           npm test -- --runInBand > test-output.log 2>&1
           status=$?
-          echo "TEST_EXIT_CODE=$status"
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload test output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: durationformat-test-output-${{ matrix.node }}
+          path: test-output.log
+      - name: Print failure summary
+        if: steps.test.outputs.status != '0'
+        shell: bash
+        run: |
           grep -n -E "FAIL|Expected:|Received:|TypeError|ReferenceError|Error:|●|Test Suites:|Tests:" test-output.log | tail -n 160 || true
-          echo "--- tail ---"
           tail -n 120 test-output.log
-          exit $status
+          exit 1
