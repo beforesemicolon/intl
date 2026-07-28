@@ -133,6 +133,6 @@
     },
     "dependencies": {
         "@beforesemicolon/web-component": "^1.16.0",
-        "@formatjs/intl-durationformat": "^0.7.1"
+        "@formatjs/intl-durationformat": "^0.10.0"
     }
 }
