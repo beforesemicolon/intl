@@ -47,3 +47,14 @@ jobs:
           grep -n -E "FAIL|Expected:|Received:|TypeError|ReferenceError|Error:|●|Test Suites:|Tests:" test-output.log | tail -n 160 || true
           tail -n 120 test-output.log
           exit 1
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: npm
+      - run: npm ci
+      - run: npm run build
