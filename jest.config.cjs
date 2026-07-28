@@ -14,7 +14,11 @@ module.exports = {
   testRegex: './src/.*\\.(test|spec)?\\.(js|ts)$',
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   roots: ['<rootDir>/src'],
-  setupFilesAfterEnv: ["<rootDir>/scripts/set-tests-up.cjs"],
+  moduleNameMapper: {
+    '^@formatjs/intl-durationformat/polyfill$':
+      '@formatjs/intl-durationformat/polyfill.js',
+  },
+  setupFilesAfterEnv: ['<rootDir>/scripts/set-tests-up.cjs'],
   coverageThreshold: {
     global: {
       branches: 90,
