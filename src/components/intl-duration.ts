@@ -1,4 +1,4 @@
-import '@formatjs/intl-durationformat/polyfill'
+import '@formatjs/intl-durationformat/polyfill.js'
 import { intlDuration, FormatterOptions } from '../formatters'
 import { getIntl, IntlRuntime } from '../runtime'
 import { getIntlLocaleRuntime } from './intl-locale'
