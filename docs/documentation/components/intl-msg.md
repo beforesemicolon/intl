@@ -1,30 +1,29 @@
 ---
-name: intl-msg
+name: '{{t.pages.documentation.components.intl_msg.meta.intl_msg}}'
 order: 5.2
-title: <intl-msg> - Message Formatter
-description: Resolve runtime messages by key with text fallback and placeholder interpolation.
+title: '{{t.pages.documentation.components.intl_msg.meta.message_formatter}}'
+description: '{{t.pages.documentation.components.intl_msg.meta.resolve_runtime_messages_by_key_with_text_fallback_and_placeholder_interpolation}}'
 layout: document
 ---
 
-## `<intl-msg>`
+## {{t.pages.documentation.components.intl_msg.content.text}}
 
-`<intl-msg>` renders a message from the nearest `<intl-locale>` runtime.
-Its child text is the fallback shown before messages are ready, when a key is missing, or when no key is provided.
+{{t.pages.documentation.components.intl_msg.content.renders_a_message_from_the_nearest_runtime_its_child_text_is_the_fallback_shown_before_messages}}
 
 ```html
 <intl-msg key="checkout.title">Checkout</intl-msg>
 ```
 
-## Attributes
+## {{t.common.content.attributes}}
 
-| Attribute | Type | Default | Description |
+{{t.common.content.attribute_type_default_description}}
 |---|---|---|---|
-| `key` | `string` | `''` | Dot-path message key, such as `checkout.title`. |
-| `values` | JSON object | `{}` | Placeholder values used for `{name}` interpolation. |
+{{t.pages.documentation.components.intl_msg.content.key_string_dot_path_message_key_such_as_checkout_title}}
+{{t.pages.documentation.components.intl_msg.content.values_json_object_placeholder_values_used_for_name_interpolation}}
 
-## `key`
+## {{t.pages.documentation.components.intl_msg.content.key}}
 
-Use `key` to read a value from the active locale messages. The child text remains useful fallback content.
+{{t.pages.documentation.components.intl_msg.content.use_key_to_read_a_value_from_the_active_locale_messages_the_child_text_remains_useful_fallback_c}}
 
 ```html
 <intl-locale locale="en-US" src-dir="/locales">
@@ -32,7 +31,7 @@ Use `key` to read a value from the active locale messages. The child text remain
 </intl-locale>
 ```
 
-For messages like:
+{{t.pages.documentation.components.intl_msg.content.for_messages_like}}
 
 ```json
 {
@@ -42,7 +41,7 @@ For messages like:
 }
 ```
 
-Dot paths read nested message objects:
+{{t.pages.documentation.components.intl_msg.content.dot_paths_read_nested_message_objects}}
 
 ```html
 <intl-msg key="account.profile.heading">Profile</intl-msg>
@@ -58,9 +57,9 @@ Dot paths read nested message objects:
 }
 ```
 
-## `values`
+## {{t.pages.documentation.components.intl_msg.content.values}}
 
-Use `values` when the message includes `{placeholder}` tokens.
+{{t.pages.documentation.components.intl_msg.content.use_values_when_the_message_includes_placeholder_tokens}}
 
 ```html
 <intl-msg
@@ -71,7 +70,7 @@ Use `values` when the message includes `{placeholder}` tokens.
 </intl-msg>
 ```
 
-For messages like:
+{{t.pages.documentation.components.intl_msg.content.for_messages_like}}
 
 ```json
 {
@@ -81,7 +80,7 @@ For messages like:
 }
 ```
 
-Every value must be valid JSON because attributes are strings in HTML.
+{{t.pages.documentation.components.intl_msg.content.every_value_must_be_valid_json_because_attributes_are_strings_in_html}}
 
 ```html
 <intl-msg
@@ -92,31 +91,31 @@ Every value must be valid JSON because attributes are strings in HTML.
 </intl-msg>
 ```
 
-Missing, `null`, and `undefined` placeholder values render as empty strings.
+{{t.pages.documentation.components.intl_msg.content.missing_null_and_undefined_placeholder_values_render_as_empty_strings}}
 
-For complex formatting (dates, numbers, etc.), place placeholders in the message string and keep locale formatting to the runtime formatters.
+{{t.pages.documentation.components.intl_msg.content.for_complex_formatting_dates_numbers_etc_place_placeholders_in_the_message_string_and_keep_local}}
 
-## Fallback text
+## {{t.pages.documentation.components.intl_msg.content.fallback_text}}
 
-The fallback text is the content inside the tag.
+{{t.pages.documentation.components.intl_msg.content.the_fallback_text_is_the_content_inside_the_tag}}
 
 ```html
 <intl-msg key="missing.key">Fallback copy</intl-msg>
 ```
 
-If the runtime is not ready, no key is set, or the key is missing, the component renders `Fallback copy`. If there is no fallback text, a missing key renders the key itself.
+{{t.pages.documentation.components.intl_msg.content.if_the_runtime_is_not_ready_no_key_is_set_or_the_key_is_missing_the_component_renders_fallback_c}}
 
-You can also use fallback-only text for static copy during early prototyping.
+{{t.pages.documentation.components.intl_msg.content.you_can_also_use_fallback_only_text_for_static_copy_during_early_prototyping}}
 
 ```html
 <intl-msg>Plain fallback text</intl-msg>
 ```
 
-For production translation files, prefer adding a `key` or using the optional translation builder workflow once it exists.
+{{t.pages.documentation.components.intl_msg.content.for_production_translation_files_prefer_adding_a_key_or_using_the_optional_translation_builder_w}}
 
-## HTML content in messages
+## {{t.pages.documentation.components.intl_msg.content.html_content_in_messages}}
 
-Message output is rendered as a Markup template, so trusted message strings can include markup.
+{{t.pages.documentation.components.intl_msg.content.message_output_is_rendered_as_a_markup_template_so_trusted_message_strings_can_include_markup}}
 
 ```json
 {
@@ -130,8 +129,8 @@ Message output is rendered as a Markup template, so trusted message strings can 
 <intl-msg key="status.new">New</intl-msg>
 ```
 
-Only put trusted translation content in message files.
+{{t.pages.documentation.components.intl_msg.content.only_put_trusted_translation_content_in_message_files}}
 
-## See also
+## {{t.common.content.see_also}}
 
-- [intlMsg](/documentation/formatters/intl-message)
+- {{t.pages.documentation.components.intl_msg.content.intlmsg_documentation_formatters_intl_message}}

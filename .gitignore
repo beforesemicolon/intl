@@ -142,6 +142,7 @@ dist
 .DS_Store
 index.html
 en.json
+!docs/locale/en.json
 
 # dirs
 website

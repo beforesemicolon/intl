@@ -1,22 +1,20 @@
 ---
-name: intlDuration
+name: '{{t.pages.documentation.formatters.intl_duration.meta.intlduration}}'
 order: 6.13
-title: intlDuration - Intl by Before Semicolon
-description: Format millisecond durations into localized duration strings.
+title: '{{t.pages.documentation.formatters.intl_duration.meta.intlduration_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.formatters.intl_duration.meta.format_millisecond_durations_into_localized_duration_strings}}'
 layout: document
 ---
 
-## `intlDuration`
+## {{t.pages.documentation.formatters.intl_duration.content.intlduration}}
 
-`intlDuration(value, options?)` converts milliseconds to human-readable duration text.
-Use it for time spans (API delays, countdowns, file-size elapsed windows, etc.).
+{{t.pages.documentation.formatters.intl_duration.content.intlduration_value_options_converts_milliseconds_to_human_readable_duration_text_use_it_for_time}}
 
-It mirrors [Intl.DurationFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat)
-behavior and falls back to a package implementation when that API is unavailable.
+{{t.pages.documentation.formatters.intl_duration.content.it_mirrors_intl_durationformat_https_developer_mozilla_org_en_us_docs_web_javascript_reference_g}}
 
-## Input shape
+## {{t.common.content.input_shape}}
 
-`value` should be a number in milliseconds.
+{{t.pages.documentation.formatters.intl_duration.content.value_should_be_a_number_in_milliseconds}}
 
 ```ts
 import { intlDuration } from '@beforesemicolon/intl'
@@ -25,7 +23,7 @@ intlDuration(3_661_000)
 intlDuration(86_400_000)
 ```
 
-## Signature
+## {{t.common.content.signature}}
 
 ```ts
 function intlDuration(
@@ -39,26 +37,26 @@ function intlDuration(
 ): string
 ```
 
-Invalid values return `''`.
+{{t.common.content.invalid_values_return}}
 
-## Option map
+## {{t.common.content.option_map}}
 
-| Option | Type | Default | Effect |
+{{t.common.content.option_type_default_effect}}
 |---|---|---|---|
-| `locale` | `string` | runtime locale | One-off locale override |
-| `scope` | `IntlRuntime` | `getIntl()` | Use nested runtime state |
-| `fields` | `string` \| `string[]` \| `'*'` | `['hours', 'minutes', 'seconds']` | Units to include |
-| `style` | `long \| short \| narrow \| digital` | `long` | Output compactness |
+{{t.common.content.locale_string_runtime_locale_one_off_locale_override}}
+{{t.pages.documentation.formatters.intl_duration.content.scope_intlruntime_getintl_use_nested_runtime_state}}
+{{t.pages.documentation.formatters.intl_duration.content.fields_string_string_hours_minutes_seconds_units_to_include}}
+{{t.pages.documentation.formatters.intl_duration.content.style_long_short_narrow_digital_long_output_compactness}}
 
-### Supported units
+### {{t.pages.documentation.formatters.intl_duration.content.supported_units}}
 
-`years`, `months`, `weeks`, `days`, `hours`, `minutes`, `seconds`, `milliseconds`, `microseconds`, `nanoseconds`.
+{{t.pages.documentation.formatters.intl_duration.content.years_months_weeks_days_hours_minutes_seconds_milliseconds_microseconds_nanoseconds}}
 
-Singular unit names are normalized (`hour` → `hours`).
+{{t.pages.documentation.formatters.intl_duration.content.singular_unit_names_are_normalized_hour_hours}}
 
-## Examples
+## {{t.common.content.examples}}
 
-### Field permutations
+### {{t.pages.documentation.formatters.intl_duration.content.field_permutations}}
 
 ```ts
 intlDuration(90_000, { fields: 'minutes seconds' })
@@ -67,7 +65,7 @@ intlDuration(86_400_000, { fields: '*' })
 intlDuration(3_661_000, { fields: 'hour minute second' }) // normalized to plural
 ```
 
-### Style permutations
+### {{t.pages.documentation.formatters.intl_duration.content.style_permutations}}
 
 ```ts
 intlDuration(3_600_000, { fields: 'hours', style: 'long' })
@@ -76,7 +74,7 @@ intlDuration(3_600_000, { fields: 'hours', style: 'narrow' })
 intlDuration(3_600_000, { fields: 'hours minutes seconds', style: 'digital' })
 ```
 
-### Locale and scope overrides
+### {{t.pages.documentation.formatters.intl_duration.content.locale_and_scope_overrides}}
 
 ```ts
 import { createIntl, intlDuration } from '@beforesemicolon/intl'
@@ -86,13 +84,13 @@ const scoped = createIntl({ locale: 'fr-FR', messages: {} })
 intlDuration(3661_000, { scope: scoped, locale: 'fr-FR' })
 ```
 
-### Empty input edge case
+### {{t.pages.documentation.formatters.intl_duration.content.empty_input_edge_case}}
 
 ```ts
 intlDuration(NaN) // ''
 ```
 
-## See also
+## {{t.common.content.see_also}}
 
-- [intl-duration component reference](/documentation/components/intl-duration)
-- [Intl.DurationFormat docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat)
+- {{t.pages.documentation.formatters.intl_duration.content.intl_duration_component_reference_documentation_components_intl_duration}}
+- {{t.pages.documentation.formatters.intl_duration.content.intl_durationformat_docs_https_developer_mozilla_org_en_us_docs_web_javascript_reference_global}}

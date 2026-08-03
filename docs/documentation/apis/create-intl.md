@@ -1,21 +1,21 @@
 ---
-name: createIntl
+name: '{{t.pages.documentation.apis.create_intl.meta.createintl}}'
 order: 7.01
-title: createIntl - Intl by Before Semicolon
-description: Create an isolated Intl runtime for a component region, micro-app, or integration boundary.
+title: '{{t.pages.documentation.apis.create_intl.meta.createintl_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.apis.create_intl.meta.create_an_isolated_intl_runtime_for_a_component_region_micro_app_or_integration_boundary}}'
 layout: document
 ---
 
-## `createIntl`
+## {{t.pages.documentation.apis.create_intl.content.createintl}}
 
-`createIntl(options?)` creates a standalone localization runtime.
+{{t.pages.documentation.apis.create_intl.content.createintl_options_creates_a_standalone_localization_runtime}}
 
-Use it when one part of the app needs its own locale state, loading strategy, or message source while keeping the rest of the app unchanged.
+{{t.pages.documentation.apis.create_intl.content.use_it_when_one_part_of_the_app_needs_its_own_locale_state_loading_strategy_or_message_source_wh}}
 
-The key difference from `initIntl()` is scope:
+{{t.pages.documentation.apis.create_intl.content.the_key_difference_from_initintl_is_scope}}
 
-- `initIntl()` creates/replaces the **package default runtime** (global fallback for helpers and unscoped components).
-- `createIntl()` creates a **separate runtime object** that you pass around explicitly.
+- {{t.pages.documentation.apis.create_intl.content.initintl_creates_replaces_the_package_default_runtime_global_fallback_for_helpers_and_unscoped_c}}
+- {{t.pages.documentation.apis.create_intl.content.createintl_creates_a_separate_runtime_object_that_you_pass_around_explicitly}}
 
 ```ts
 import { createIntl } from '@beforesemicolon/intl'
@@ -37,66 +37,66 @@ const checkoutRuntime = createIntl({
 checkoutRuntime.getMessage('checkout.title') // "Checkout"
 ```
 
-Native API: [`Intl.Locale`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale)
+{{t.common.content.native_api_intl_locale_https_developer_mozilla_org_en_us_docs_web_javascript_reference_global_ob}}
 
-## Signature
+## {{t.common.content.signature}}
 
 ```ts
 function createIntl(options?: IntlRuntimeOptions): IntlRuntime
 ```
 
-If called with no options, it creates a runtime using defaults and lazy message loading settings.
+{{t.pages.documentation.apis.create_intl.content.if_called_with_no_options_it_creates_a_runtime_using_defaults_and_lazy_message_loading_settings}}
 
-## Runtime shape
+## {{t.pages.documentation.apis.create_intl.content.runtime_shape}}
 
-`IntlRuntime` exposes:
+{{t.pages.documentation.apis.create_intl.content.intlruntime_exposes}}
 
-- `locale` / `fallbackLocale`
-- `messages` / `fallbackMessages`
-- `direction`
-- `loadedLocales`
-- `status` (`idle` | `loading` | `ready` | `error`)
-- `error`
-- `snapshot()`
-- `setLocale(locale)`
-- `loadLocale(locale?)`
-- `setMessages(messages, locale?)`
-- `setFallbackMessages(messages, locale?)`
-- `getMessage(key)`
-- `subscribe(listener)`
-- `destroy()`
+- {{t.pages.documentation.apis.create_intl.content.locale_fallbacklocale}}
+- {{t.pages.documentation.apis.create_intl.content.messages_fallbackmessages}}
+- {{t.pages.documentation.apis.create_intl.content.direction}}
+- {{t.pages.documentation.apis.create_intl.content.loadedlocales}}
+- {{t.pages.documentation.apis.create_intl.content.status_idle_loading_ready_error}}
+- {{t.pages.documentation.apis.create_intl.content.error}}
+- {{t.pages.documentation.apis.create_intl.content.snapshot}}
+- {{t.pages.documentation.apis.create_intl.content.setlocale_locale}}
+- {{t.pages.documentation.apis.create_intl.content.loadlocale_locale}}
+- {{t.pages.documentation.apis.create_intl.content.setmessages_messages_locale}}
+- {{t.pages.documentation.apis.create_intl.content.setfallbackmessages_messages_locale}}
+- {{t.pages.documentation.apis.create_intl.content.getmessage_key}}
+- {{t.pages.documentation.apis.create_intl.content.subscribe_listener}}
+- {{t.pages.documentation.apis.create_intl.content.destroy}}
 
-Use these methods directly when you need isolation and deterministic control.
+{{t.pages.documentation.apis.create_intl.content.use_these_methods_directly_when_you_need_isolation_and_deterministic_control}}
 
-## Core behavior to understand
+## {{t.pages.documentation.apis.create_intl.content.core_behavior_to_understand}}
 
-- `messages` and `fallbackMessages` are merged with `parentScope` if present.
-- inline `messages` for the configured locale are loaded into memory immediately.
-- if `src` or `srcDir` is configured, locale fetching happens when needed.
-- switching locale on this runtime via `setLocale()` keeps isolation from the default runtime unless you use `initIntl()`.
+- {{t.pages.documentation.apis.create_intl.content.messages_and_fallbackmessages_are_merged_with_parentscope_if_present}}
+- {{t.pages.documentation.apis.create_intl.content.inline_messages_for_the_configured_locale_are_loaded_into_memory_immediately}}
+- {{t.pages.documentation.apis.create_intl.content.if_src_or_srcdir_is_configured_locale_fetching_happens_when_needed}}
+- {{t.pages.documentation.apis.create_intl.content.switching_locale_on_this_runtime_via_setlocale_keeps_isolation_from_the_default_runtime_unless_y}}
 
 ```ts
 const runtime = createIntl({ locale: 'en-US', srcDir: '/locales' })
 await runtime.setLocale('fr-FR')
 ```
 
-## Options deep dive
+## {{t.pages.documentation.apis.create_intl.content.options_deep_dive}}
 
-### `locale`
+### {{t.common.content.locale}}
 
-- Default: `document.documentElement.lang` if present, otherwise inherited parent locale or `'en'`.
-- If missing/empty, `getLocale` resolution still falls back to defaults.
-- If `parentScope` exists, it inherits locale unless you provide one.
+- {{t.pages.documentation.apis.create_intl.content.default_document_documentelement_lang_if_present_otherwise_inherited_parent_locale_or_en}}
+- {{t.pages.documentation.apis.create_intl.content.if_missing_empty_getlocale_resolution_still_falls_back_to_defaults}}
+- {{t.pages.documentation.apis.create_intl.content.if_parentscope_exists_it_inherits_locale_unless_you_provide_one}}
 
-### `fallbackLocale`
+### {{t.pages.documentation.apis.create_intl.content.fallbacklocale}}
 
-- Default: `en` if not provided; inherited from `parentScope` if available.
-- Used when active-locale keys are missing.
+- {{t.pages.documentation.apis.create_intl.content.default_en_if_not_provided_inherited_from_parentscope_if_available}}
+- {{t.pages.documentation.apis.create_intl.content.used_when_active_locale_keys_are_missing}}
 
-### `messages`
+### {{t.pages.documentation.apis.create_intl.content.messages}}
 
-- Inline messages for the active locale.
-- Useful for SSR snapshots, integration tests, and no-network bootstraps.
+- {{t.pages.documentation.apis.create_intl.content.inline_messages_for_the_active_locale}}
+- {{t.pages.documentation.apis.create_intl.content.useful_for_ssr_snapshots_integration_tests_and_no_network_bootstraps}}
 
 ```ts
 createIntl({
@@ -107,36 +107,36 @@ createIntl({
 })
 ```
 
-### `fallbackMessages`
+### {{t.pages.documentation.apis.create_intl.content.fallbackmessages}}
 
-- Inline fallback messages keyed by `fallbackLocale`.
-- Good for bootstrapping critical copy while still loading remote locale bundles.
+- {{t.pages.documentation.apis.create_intl.content.inline_fallback_messages_keyed_by_fallbacklocale}}
+- {{t.pages.documentation.apis.create_intl.content.good_for_bootstrapping_critical_copy_while_still_loading_remote_locale_bundles}}
 
-### `src` vs `srcDir`
+### {{t.pages.documentation.apis.create_intl.content.src_vs_srcdir}}
 
-Use exactly one of them per runtime in normal setups:
+{{t.pages.documentation.apis.create_intl.content.use_exactly_one_of_them_per_runtime_in_normal_setups}}
 
-- `src`: one exact endpoint
-- `srcDir`: auto-load using `${srcDir}/${locale}.json`
+- {{t.pages.documentation.apis.create_intl.content.src_one_exact_endpoint}}
+- {{t.pages.documentation.apis.create_intl.content.srcdir_auto_load_using_srcdir_locale_json}}
 
 ```ts
 const exact = createIntl({ locale: 'en', src: '/api/messages/en.json' })
 const perLocale = createIntl({ locale: 'fr', srcDir: '/locales' })
 ```
 
-### `baseUrl`
+### {{t.pages.documentation.apis.create_intl.content.baseurl}}
 
-Base URL used when paths are relative.
+{{t.pages.documentation.apis.create_intl.content.base_url_used_when_paths_are_relative}}
 
 ```ts
 createIntl({ locale: 'en', src: './locales/en.json', baseUrl: 'https://cdn.example.com' })
 ```
 
-### `loader`
+### {{t.pages.documentation.apis.create_intl.content.loader}}
 
-Custom loader is used for all locale fetches.
+{{t.pages.documentation.apis.create_intl.content.custom_loader_is_used_for_all_locale_fetches}}
 
-Signature:
+{{t.pages.documentation.apis.create_intl.content.signature}}
 
 ```ts
 (locale: string, signal?: AbortSignal) => Promise<IntlMessages> | IntlMessages
@@ -155,15 +155,15 @@ const runtime = createIntl({
 })
 ```
 
-Why this matters:
+{{t.pages.documentation.apis.create_intl.content.why_this_matters}}
 
-- supports authenticated endpoints
-- lets you add response transforms/caching
-- receives `AbortSignal` so rapid language switches don’t accumulate stale requests
+- {{t.pages.documentation.apis.create_intl.content.supports_authenticated_endpoints}}
+- {{t.pages.documentation.apis.create_intl.content.lets_you_add_response_transforms_caching}}
+- {{t.pages.documentation.apis.create_intl.content.receives_abortsignal_so_rapid_language_switches_don_t_accumulate_stale_requests}}
 
-### `parentScope`
+### {{t.pages.documentation.apis.create_intl.content.parentscope}}
 
-Child runtimes inherit parent messages and configuration, then apply local overrides.
+{{t.pages.documentation.apis.create_intl.content.child_runtimes_inherit_parent_messages_and_configuration_then_apply_local_overrides}}
 
 ```ts
 const shell = createIntl({
@@ -188,11 +188,11 @@ modal.getMessage('common.save') // "Sauvegarder"
 modal.getMessage('common.cancel') // "Cancel"
 ```
 
-## Common setup patterns
+## {{t.pages.documentation.apis.create_intl.content.common_setup_patterns}}
 
-### Isolated UI previews
+### {{t.pages.documentation.apis.create_intl.content.isolated_ui_previews}}
 
-Keep each preview runtime isolated from production defaults.
+{{t.pages.documentation.apis.create_intl.content.keep_each_preview_runtime_isolated_from_production_defaults}}
 
 ```ts
 const productCard = createIntl({
@@ -203,9 +203,9 @@ const productCard = createIntl({
 })
 ```
 
-### Route-level widgets
+### {{t.pages.documentation.apis.create_intl.content.route_level_widgets}}
 
-Each route can own its own runtime for reduced coupling.
+{{t.pages.documentation.apis.create_intl.content.each_route_can_own_its_own_runtime_for_reduced_coupling}}
 
 ```ts
 const checkoutRuntime = createIntl({
@@ -219,9 +219,9 @@ const supportRuntime = createIntl({
 })
 ```
 
-### Runtime testing and fixtures
+### {{t.pages.documentation.apis.create_intl.content.runtime_testing_and_fixtures}}
 
-Create and tear down runtimes per test case.
+{{t.pages.documentation.apis.create_intl.content.create_and_tear_down_runtimes_per_test_case}}
 
 ```ts
 const runtime = createIntl({
@@ -233,7 +233,7 @@ runtime.getMessage('title') // "Home"
 runtime.destroy()
 ```
 
-## Runtime methods in practice
+## {{t.pages.documentation.apis.create_intl.content.runtime_methods_in_practice}}
 
 ```ts
 const runtime = createIntl({ locale: 'en-US', srcDir: '/locales' })
@@ -252,31 +252,31 @@ console.log(runtime.snapshot())
 runtime.destroy()
 ```
 
-### Return types that matter
+### {{t.pages.documentation.apis.create_intl.content.return_types_that_matter}}
 
-- `setLocale(locale)` → `Promise<IntlRuntimeSnapshot>`
-- `loadLocale(locale?)` → `Promise<IntlRuntimeSnapshot>`
-- `setMessages(...)` and `setFallbackMessages(...)` → `IntlRuntimeSnapshot`
-- `getMessage(key)` → message value or `undefined`
-- `snapshot()` → normalized snapshot including `loadedLocales` and `error`
+- {{t.pages.documentation.apis.create_intl.content.setlocale_locale_promise}}
+- {{t.pages.documentation.apis.create_intl.content.loadlocale_locale_promise}}
+- {{t.pages.documentation.apis.create_intl.content.setmessages_and_setfallbackmessages_intlruntimesnapshot}}
+- {{t.pages.documentation.apis.create_intl.content.getmessage_key_message_value_or_undefined}}
+- {{t.pages.documentation.apis.create_intl.content.snapshot_normalized_snapshot_including_loadedlocales_and_error}}
 
-## Error and lifecycle notes
+## {{t.pages.documentation.apis.create_intl.content.error_and_lifecycle_notes}}
 
-- `snapshot().status` is your source of truth:
-  - `idle`: no remote load has started
-  - `loading`: a load is in-flight
-  - `ready`: locale messages are ready
-  - `error`: load failed
-- `destroy()` clears caches, listeners, and loaded data for that runtime.
-- `destroy()` does **not** mutate sibling runtimes.
+- {{t.pages.documentation.apis.create_intl.content.snapshot_status_is_your_source_of_truth}}
+    - {{t.pages.documentation.apis.create_intl.content.idle_no_remote_load_has_started}}
+    - {{t.pages.documentation.apis.create_intl.content.loading_a_load_is_in_flight}}
+    - {{t.pages.documentation.apis.create_intl.content.ready_locale_messages_are_ready}}
+    - {{t.pages.documentation.apis.create_intl.content.error_load_failed}}
+- {{t.pages.documentation.apis.create_intl.content.destroy_clears_caches_listeners_and_loaded_data_for_that_runtime}}
+- {{t.pages.documentation.apis.create_intl.content.destroy_does_not_mutate_sibling_runtimes}}
 
-## Migration from `initIntl` to scoped runtimes
+## {{t.pages.documentation.apis.create_intl.content.migration_from_initintl_to_scoped_runtimes}}
 
-If you have one global locale currently, start by moving feature areas one-by-one:
+{{t.pages.documentation.apis.create_intl.content.if_you_have_one_global_locale_currently_start_by_moving_feature_areas_one_by_one}}
 
-1. Keep `initIntl()` for app shell
-2. Create `createIntl()` for each page section or widget
-3. Pass scoped runtimes into helper calls that need independent state
-4. Keep existing `<intl-locale>` usage where DOM scoping is already clear
+1. {{t.pages.documentation.apis.create_intl.content.keep_initintl_for_app_shell}}
+2. {{t.pages.documentation.apis.create_intl.content.create_createintl_for_each_page_section_or_widget}}
+3. {{t.pages.documentation.apis.create_intl.content.pass_scoped_runtimes_into_helper_calls_that_need_independent_state}}
+4. {{t.pages.documentation.apis.create_intl.content.keep_existing_usage_where_dom_scoping_is_already_clear}}
 
-Use `createIntl()` when you want predictable, composable runtime boundaries.
+{{t.pages.documentation.apis.create_intl.content.use_createintl_when_you_want_predictable_composable_runtime_boundaries}}

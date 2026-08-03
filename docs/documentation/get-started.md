@@ -1,16 +1,16 @@
 ---
-name: Get Started
+name: '{{t.common.content.get_started}}'
 order: 2
-title: Get Started - Intl by Before Semicolon
-description: Build your first multilingual UI with one runtime scope and reusable formatters.
+title: '{{t.pages.documentation.get_started.meta.get_started_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.get_started.meta.build_your_first_multilingual_ui_with_one_runtime_scope_and_reusable_formatters}}'
 layout: document
 ---
 
-## Get started
+## {{t.pages.documentation.get_started.content.get_started}}
 
-Use this page to get a working localized UI quickly. Start with a runtime scope, then add tags and helper calls as you expand the page.
+{{t.pages.documentation.get_started.content.use_this_page_to_get_a_working_localized_ui_quickly_start_with_a_runtime_scope_then_add_tags_and}}
 
-## Step 1 — Initialize a locale scope
+## {{t.pages.documentation.get_started.content.step_1_initialize_a_locale_scope}}
 
 ```html
 <intl-locale locale="en-US" fallback-locale="en" src-dir="/locales" update-document>
@@ -21,17 +21,17 @@ Use this page to get a working localized UI quickly. Start with a runtime scope,
 </intl-locale>
 ```
 
-This creates one locale runtime boundary and loads translation files from `/locales/en-US.json`.
+{{t.pages.documentation.get_started.content.this_creates_one_locale_runtime_boundary_and_loads_translation_files_from_locales_en_us_json}}
 
-## Step 2 — Render translated text
+## {{t.pages.documentation.get_started.content.step_2_render_translated_text}}
 
 ```html
 <intl-msg key="product.name">Default product name</intl-msg>
 ```
 
-`<intl-msg>` first renders its tag content, then replaces it when message lookup is available.
+{{t.pages.documentation.get_started.content.first_renders_its_tag_content_then_replaces_it_when_message_lookup_is_available}}
 
-## Step 3 — Add rich formatting
+## {{t.pages.documentation.get_started.content.step_3_add_rich_formatting}}
 
 ```html
 <intl-datetime date-style="long">2026-01-01T10:00:00Z</intl-datetime>
@@ -39,7 +39,7 @@ This creates one locale runtime boundary and loads translation files from `/loca
 <intl-rel-time live>2026-01-01T00:00:00Z</intl-rel-time>
 ```
 
-## Step 4 — Run from code when you need runtime logic
+## {{t.pages.documentation.get_started.content.step_4_run_from_code_when_you_need_runtime_logic}}
 
 ```ts
 import { initIntl, intlPlural, createIntl } from '@beforesemicolon/intl'
@@ -63,7 +63,7 @@ intlPlural(3, {
 })
 ```
 
-## Step 5 — Use nested scopes for sections
+## {{t.pages.documentation.get_started.content.step_5_use_nested_scopes_for_sections}}
 
 ```html
 <intl-locale locale="en-US">
@@ -75,11 +75,10 @@ intlPlural(3, {
 </intl-locale>
 ```
 
-## Next step
+## {{t.pages.documentation.get_started.content.next_step}}
 
-If this works, move on to:
+{{t.pages.documentation.get_started.content.if_this_works_move_on_to}}
 
-- [Guide & Best Practices](./guide-best-practices)
-- [Components](./components/intl-locale)
-- [Runtime APIs](./apis/create-intl)
-
+- {{t.common.content.guide_best_practices_guide_best_practices}}
+- {{t.common.content.components_components_intl_locale}}
+- {{t.pages.documentation.get_started.content.runtime_apis_apis_create_intl}}

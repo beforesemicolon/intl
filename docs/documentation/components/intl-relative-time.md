@@ -1,47 +1,46 @@
 ---
-name: intl-rel-time
+name: '{{t.pages.documentation.components.intl_relative_time.meta.intl_rel_time}}'
 order: 5.6
-title: <intl-rel-time> - Relative Time Formatter
-description: Render relative timestamps or unit offsets with live updates and accessible labels.
+title: '{{t.pages.documentation.components.intl_relative_time.meta.relative_time_formatter}}'
+description: '{{t.pages.documentation.components.intl_relative_time.meta.render_relative_timestamps_or_unit_offsets_with_live_updates_and_accessible_labels}}'
 layout: document
 ---
 
-## `<intl-rel-time>`
+## {{t.pages.documentation.components.intl_relative_time.content.text}}
 
-`<intl-rel-time>` formats relative time with `Intl.RelativeTimeFormat`.
-It renders a `<time>` element when `unit="auto"` can be represented as an absolute timestamp.
+{{t.pages.documentation.components.intl_relative_time.content.formats_relative_time_with_intl_relativetimeformat_it_renders_a_element_when_unit_auto_can_be_re}}
 
-Native reference: [Intl.RelativeTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat)
+{{t.pages.documentation.components.intl_relative_time.content.native_reference_intl_relativetimeformat_https_developer_mozilla_org_en_us_docs_web_javascript_r}}
 
 ```html
 <intl-rel-time live>2026-01-01T00:00:00Z</intl-rel-time>
 ```
 
-The package also registers `<intl-relative-time>` as an equivalent element name.
+{{t.pages.documentation.components.intl_relative_time.content.the_package_also_registers_as_an_equivalent_element_name}}
 
-## Attributes and properties
+## {{t.common.content.attributes_and_properties}}
 
-| Attribute | JS property | Type | Description |
+{{t.common.content.attribute_js_property_type_description}}
 |---|---|---|---|
-| `value` | `value` | number/string/Date | Timestamp or unit offset. Child text is used when omitted. |
-| `locale` | `locale` | string | Overrides the runtime locale. |
-| `unit` | `unit` | `auto` or relative-time unit | `auto` treats value as an absolute timestamp. Explicit units treat value as an offset. |
-| `precision` | `precision` | number/string | Fraction precision. |
-| `decimals` | `decimals` | boolean/string | Convenience flag that sets precision to `1` when `precision` is absent. |
-| `numeric` | `numeric` | `auto` \| `always` \| boolean | `true` maps to `always`; `false` maps to `auto`. |
-| `time-style` | `timeStyle` | `long` \| `short` \| `narrow` | Output style. |
-| `live` | `live` | boolean/string | Re-renders recent values on an interval. |
+{{t.pages.documentation.components.intl_relative_time.content.value_value_number_string_date_timestamp_or_unit_offset_child_text_is_used_when_omitted}}
+{{t.common.content.locale_locale_string_overrides_the_runtime_locale}}
+{{t.pages.documentation.components.intl_relative_time.content.unit_unit_auto_or_relative_time_unit_auto_treats_value_as_an_absolute_timestamp_explicit_units_t}}
+{{t.pages.documentation.components.intl_relative_time.content.precision_precision_number_string_fraction_precision}}
+{{t.pages.documentation.components.intl_relative_time.content.decimals_decimals_boolean_string_convenience_flag_that_sets_precision_to_1_when_precision_is_abs}}
+{{t.pages.documentation.components.intl_relative_time.content.numeric_numeric_auto_always_boolean_true_maps_to_always_false_maps_to_auto}}
+{{t.pages.documentation.components.intl_relative_time.content.time_style_timestyle_long_short_narrow_output_style}}
+{{t.pages.documentation.components.intl_relative_time.content.live_live_boolean_string_re_renders_recent_values_on_an_interval}}
 
-## `value`
+## {{t.common.content.value}}
 
-With the default `unit="auto"`, the value is an absolute timestamp.
+{{t.pages.documentation.components.intl_relative_time.content.with_the_default_unit_auto_the_value_is_an_absolute_timestamp}}
 
 ```html
 <intl-rel-time>2026-01-01T00:00:00Z</intl-rel-time>
 <intl-rel-time>1767225600000</intl-rel-time>
 ```
 
-Use the property from JavaScript when the timestamp is dynamic.
+{{t.pages.documentation.components.intl_relative_time.content.use_the_property_from_javascript_when_the_timestamp_is_dynamic}}
 
 ```html
 <intl-rel-time id="next-refresh" unit="auto">2026-01-01T00:00:00Z</intl-rel-time>
@@ -51,18 +50,18 @@ Use the property from JavaScript when the timestamp is dynamic.
 </script>
 ```
 
-## `locale`
+## {{t.common.content.locale}}
 
-Use `locale` for a one-off override.
+{{t.common.content.use_locale_for_a_one_off_override}}
 
 ```html
 <intl-rel-time locale="en-US" unit="day">-1</intl-rel-time>
 <intl-rel-time locale="fr-FR" unit="day">-1</intl-rel-time>
 ```
 
-## `unit`
+## {{t.common.content.unit}}
 
-Use `unit="auto"` for timestamps. Use an explicit unit when the value is already an offset.
+{{t.pages.documentation.components.intl_relative_time.content.use_unit_auto_for_timestamps_use_an_explicit_unit_when_the_value_is_already_an_offset}}
 
 ```html
 <intl-rel-time unit="auto">2026-01-01T00:00:00Z</intl-rel-time>
@@ -71,11 +70,11 @@ Use `unit="auto"` for timestamps. Use an explicit unit when the value is already
 <intl-rel-time unit="second">-45</intl-rel-time>
 ```
 
-Negative values are in the past. Positive values are in the future.
+{{t.pages.documentation.components.intl_relative_time.content.negative_values_are_in_the_past_positive_values_are_in_the_future}}
 
-## `precision`
+## {{t.pages.documentation.components.intl_relative_time.content.precision}}
 
-`precision` controls decimal places for relative values.
+{{t.pages.documentation.components.intl_relative_time.content.precision_controls_decimal_places_for_relative_values}}
 
 ```html
 <intl-rel-time unit="hour" precision="0">1.5</intl-rel-time>
@@ -83,9 +82,9 @@ Negative values are in the past. Positive values are in the future.
 <intl-rel-time unit="hour" precision="2">1.555</intl-rel-time>
 ```
 
-## `decimals`
+## {{t.pages.documentation.components.intl_relative_time.content.decimals}}
 
-`decimals` is a convenience flag that uses one decimal place when `precision` is not set.
+{{t.pages.documentation.components.intl_relative_time.content.decimals_is_a_convenience_flag_that_uses_one_decimal_place_when_precision_is_not_set}}
 
 ```html
 <intl-rel-time unit="hour" decimals>1.5</intl-rel-time>
@@ -93,9 +92,9 @@ Negative values are in the past. Positive values are in the future.
 <intl-rel-time unit="hour" decimals="false">1.5</intl-rel-time>
 ```
 
-## `numeric`
+## {{t.pages.documentation.components.intl_relative_time.content.numeric}}
 
-`numeric="auto"` allows words such as `yesterday` when the locale supports them. `numeric="always"` keeps numeric output.
+{{t.pages.documentation.components.intl_relative_time.content.numeric_auto_allows_words_such_as_yesterday_when_the_locale_supports_them_numeric_always_keeps_n}}
 
 ```html
 <intl-rel-time unit="day" numeric="auto">-1</intl-rel-time>
@@ -104,9 +103,9 @@ Negative values are in the past. Positive values are in the future.
 <intl-rel-time unit="day" numeric="false">-1</intl-rel-time>
 ```
 
-## `time-style`
+## {{t.common.content.time_style}}
 
-`time-style` controls output length.
+{{t.pages.documentation.components.intl_relative_time.content.time_style_controls_output_length}}
 
 ```html
 <intl-rel-time unit="minute" time-style="long">30</intl-rel-time>
@@ -114,19 +113,19 @@ Negative values are in the past. Positive values are in the future.
 <intl-rel-time unit="minute" time-style="narrow">30</intl-rel-time>
 ```
 
-For `short` or `narrow` styles, the component adds a long-form `aria-label` when it differs from the visible content.
+{{t.pages.documentation.components.intl_relative_time.content.for_short_or_narrow_styles_the_component_adds_a_long_form_aria_label_when_it_differs_from_the_vi}}
 
-## `live`
+## {{t.pages.documentation.components.intl_relative_time.content.live}}
 
-`live` re-renders recent timestamp values on an interval.
+{{t.pages.documentation.components.intl_relative_time.content.live_re_renders_recent_timestamp_values_on_an_interval}}
 
 ```html
 <intl-rel-time live>2026-01-01T00:00:00Z</intl-rel-time>
 <intl-rel-time live unit="auto">1767225600000</intl-rel-time>
 ```
 
-Use `live` for changing values such as `just now`, `1 minute ago`, or `in 30 seconds`. Avoid it for old historical timestamps that do not need frequent updates.
+{{t.pages.documentation.components.intl_relative_time.content.use_live_for_changing_values_such_as_just_now_1_minute_ago_or_in_30_seconds_avoid_it_for_old_his}}
 
-## See also
+## {{t.common.content.see_also}}
 
-- [intlRelTime](/documentation/formatters/intl-relative-time)
+- {{t.pages.documentation.components.intl_relative_time.content.intlreltime_documentation_formatters_intl_relative_time}}

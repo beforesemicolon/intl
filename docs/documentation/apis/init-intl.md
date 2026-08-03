@@ -1,16 +1,16 @@
 ---
-name: initIntl
+name: '{{t.pages.documentation.apis.init_intl.meta.initintl}}'
 order: 7.02
-title: initIntl - Intl by Before Semicolon
-description: Initialize or replace the default Intl runtime used by helper functions and unscoped components.
+title: '{{t.pages.documentation.apis.init_intl.meta.initintl_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.apis.init_intl.meta.initialize_or_replace_the_default_intl_runtime_used_by_helper_functions_and_unscoped_components}}'
 layout: document
 ---
 
-## `initIntl`
+## {{t.pages.documentation.apis.init_intl.content.initintl}}
 
-`initIntl(options?)` creates or replaces the package default runtime.
+{{t.pages.documentation.apis.init_intl.content.initintl_options_creates_or_replaces_the_package_default_runtime}}
 
-Use this at app entry, when one locale baseline should apply across the whole page.
+{{t.pages.documentation.apis.init_intl.content.use_this_at_app_entry_when_one_locale_baseline_should_apply_across_the_whole_page}}
 
 ```ts
 import { initIntl } from '@beforesemicolon/intl'
@@ -22,27 +22,27 @@ initIntl({
 })
 ```
 
-Native API: [`Intl.Locale`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale)
+{{t.common.content.native_api_intl_locale_https_developer_mozilla_org_en_us_docs_web_javascript_reference_global_ob}}
 
-## Signature
+## {{t.common.content.signature}}
 
 ```ts
 function initIntl(options?: IntlRuntimeOptions): IntlRuntime
 ```
 
-## What happens when called
+## {{t.pages.documentation.apis.init_intl.content.what_happens_when_called}}
 
-- destroys any existing default runtime
-- creates a new default runtime from options
-- default runtime becomes the fallback for `initIntl`, helpers, and unscoped components
+- {{t.pages.documentation.apis.init_intl.content.destroys_any_existing_default_runtime}}
+- {{t.pages.documentation.apis.init_intl.content.creates_a_new_default_runtime_from_options}}
+- {{t.pages.documentation.apis.init_intl.content.default_runtime_becomes_the_fallback_for_initintl_helpers_and_unscoped_components}}
 
 ```ts
 const runtime = initIntl({ locale: 'en-US', messages: { brand: 'Acme' } })
 ```
 
-## Setup patterns
+## {{t.pages.documentation.apis.init_intl.content.setup_patterns}}
 
-### Page-level scoped files
+### {{t.pages.documentation.apis.init_intl.content.page_level_scoped_files}}
 
 ```ts
 initIntl({
@@ -52,9 +52,9 @@ initIntl({
 })
 ```
 
-### Runtime inheritance
+### {{t.pages.documentation.apis.init_intl.content.runtime_inheritance}}
 
-`initIntl` is for global defaults. For nested or isolated contexts, create dedicated runtimes with `createIntl()`.
+{{t.pages.documentation.apis.init_intl.content.initintl_is_for_global_defaults_for_nested_or_isolated_contexts_create_dedicated_runtimes_with_c}}
 
 ```ts
 import { createIntl } from '@beforesemicolon/intl'
@@ -62,11 +62,10 @@ import { createIntl } from '@beforesemicolon/intl'
 const child = createIntl({ locale: 'fr-FR', parentScope: initIntl() })
 ```
 
-## Pairing with components
+## {{t.pages.documentation.apis.init_intl.content.pairing_with_components}}
 
-When components render outside `<intl-locale>`, they use this runtime.
+{{t.pages.documentation.apis.init_intl.content.when_components_render_outside_they_use_this_runtime}}
 
 ```html
 <intl-number type="currency" currency="USD">1299.99</intl-number>
 ```
-

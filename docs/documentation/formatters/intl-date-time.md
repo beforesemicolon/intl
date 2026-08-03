@@ -1,29 +1,26 @@
 ---
-name: intlDateTime
+name: '{{t.pages.documentation.formatters.intl_date_time.meta.intldatetime}}'
 order: 6.12
-title: intlDateTime - Intl by Before Semicolon
-description: Format Date, timestamp, and ISO string values with Intl.DateTimeFormat.
+title: '{{t.pages.documentation.formatters.intl_date_time.meta.intldatetime_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.formatters.intl_date_time.meta.format_date_timestamp_and_iso_string_values_with_intl_datetimeformat}}'
 layout: document
 ---
 
-## `intlDateTime`
+## {{t.pages.documentation.formatters.intl_date_time.content.intldatetime}}
 
-`intlDateTime(value, options?)` formats a date-like value as localized date/time text.
-Use this for values you already have in JS and want the same output as `<intl-datetime>`.
+{{t.pages.documentation.formatters.intl_date_time.content.intldatetime_value_options_formats_a_date_like_value_as_localized_date_time_text_use_this_for_va}}
 
-It uses the same option model as:
-[Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat)
-and uses the same runtime locale resolution as components.
+{{t.pages.documentation.formatters.intl_date_time.content.it_uses_the_same_option_model_as_intl_datetimeformat_https_developer_mozilla_org_en_us_docs_web}}
 
-Native output context: [HTML `<time>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/time).
+{{t.pages.documentation.formatters.intl_date_time.content.native_output_context_html_https_developer_mozilla_org_en_us_docs_web_html_reference_elements_ti}}
 
-## Input shape
+## {{t.common.content.input_shape}}
 
-`value` can be:
+{{t.common.content.value_can_be}}
 
-- `Date`
-- timestamp number (ms since epoch)
-- ISO/string date (`'2026-01-01T10:00:00Z'`)
+- {{t.pages.documentation.formatters.intl_date_time.content.date}}
+- {{t.pages.documentation.formatters.intl_date_time.content.timestamp_number_ms_since_epoch}}
+- {{t.pages.documentation.formatters.intl_date_time.content.iso_string_date_2026_01_01t10_00_00z}}
 
 ```ts
 import { intlDateTime } from '@beforesemicolon/intl'
@@ -33,7 +30,7 @@ intlDateTime(1704067200000)
 intlDateTime(new Date('2026-01-01T10:00:00Z'))
 ```
 
-## Signature
+## {{t.common.content.signature}}
 
 ```ts
 function intlDateTime(
@@ -45,35 +42,35 @@ function intlDateTime(
 ): string
 ```
 
-Invalid date input returns `''`.
+{{t.pages.documentation.formatters.intl_date_time.content.invalid_date_input_returns}}
 
-## Important options
+## {{t.pages.documentation.formatters.intl_date_time.content.important_options}}
 
-| Option | Type | Default | Effect |
+{{t.common.content.option_type_default_effect}}
 |---|---|---|---|
-| `locale` | `string` | runtime/DOM locale | One-off locale override |
-| `scope` | `IntlRuntime` | `getIntl()` | Scope override (when using nested runtimes) |
-| `dateStyle` | `full \| long \| medium \| short` | `undefined` | Preset date formatting |
-| `timeStyle` | `full \| long \| medium \| short` | `undefined` | Preset time formatting |
-| `calendar` | `string` | runtime default | Override calendar |
-| `numberingSystem` | `string` | runtime default | Override digit system |
-| `timeZone` | `string` | runtime default | IANA zone like `UTC` |
-| `timeZoneName` | `long \| short` | `undefined` | Show timezone label |
-| `hour12` | `boolean` | runtime default | Force 12h clock |
-| `hourCycle` | `h11 \| h12 \| h23 \| h24` | runtime default | Alternative hour formatting |
-| `weekday` | `narrow \| short \| long` | `undefined` | Day name output |
-| `year` | `numeric \| 2-digit` | `undefined` | Year part |
-| `month` | `numeric \| 2-digit \| narrow \| short \| long` | `undefined` | Month part |
-| `day` | `numeric \| 2-digit` | `undefined` | Day part |
-| `hour` | `numeric \| 2-digit` | `undefined` | Hour part |
-| `minute` | `numeric \| 2-digit` | `undefined` | Minute part |
-| `second` | `numeric \| 2-digit` | `undefined` | Second part |
-| `fractionalSecondDigits` | `1 \| 2 \| 3` | `undefined` | Fractional seconds |
-| `era` | `narrow \| short \| long` | `undefined` | Era label |
+{{t.pages.documentation.formatters.intl_date_time.content.locale_string_runtime_dom_locale_one_off_locale_override}}
+{{t.pages.documentation.formatters.intl_date_time.content.scope_intlruntime_getintl_scope_override_when_using_nested_runtimes}}
+{{t.pages.documentation.formatters.intl_date_time.content.datestyle_full_long_medium_short_undefined_preset_date_formatting}}
+{{t.pages.documentation.formatters.intl_date_time.content.timestyle_full_long_medium_short_undefined_preset_time_formatting}}
+{{t.pages.documentation.formatters.intl_date_time.content.calendar_string_runtime_default_override_calendar}}
+{{t.pages.documentation.formatters.intl_date_time.content.numberingsystem_string_runtime_default_override_digit_system}}
+{{t.pages.documentation.formatters.intl_date_time.content.timezone_string_runtime_default_iana_zone_like_utc}}
+{{t.pages.documentation.formatters.intl_date_time.content.timezonename_long_short_undefined_show_timezone_label}}
+{{t.pages.documentation.formatters.intl_date_time.content.hour12_boolean_runtime_default_force_12h_clock}}
+{{t.pages.documentation.formatters.intl_date_time.content.hourcycle_h11_h12_h23_h24_runtime_default_alternative_hour_formatting}}
+{{t.pages.documentation.formatters.intl_date_time.content.weekday_narrow_short_long_undefined_day_name_output}}
+{{t.pages.documentation.formatters.intl_date_time.content.year_numeric_2_digit_undefined_year_part}}
+{{t.pages.documentation.formatters.intl_date_time.content.month_numeric_2_digit_narrow_short_long_undefined_month_part}}
+{{t.pages.documentation.formatters.intl_date_time.content.day_numeric_2_digit_undefined_day_part}}
+{{t.pages.documentation.formatters.intl_date_time.content.hour_numeric_2_digit_undefined_hour_part}}
+{{t.pages.documentation.formatters.intl_date_time.content.minute_numeric_2_digit_undefined_minute_part}}
+{{t.pages.documentation.formatters.intl_date_time.content.second_numeric_2_digit_undefined_second_part}}
+{{t.pages.documentation.formatters.intl_date_time.content.fractionalseconddigits_1_2_3_undefined_fractional_seconds}}
+{{t.pages.documentation.formatters.intl_date_time.content.era_narrow_short_long_undefined_era_label}}
 
-## Examples
+## {{t.common.content.examples}}
 
-### Presets
+### {{t.pages.documentation.formatters.intl_date_time.content.presets}}
 
 ```ts
 intlDateTime(Date.now(), { dateStyle: 'short' })
@@ -81,7 +78,7 @@ intlDateTime(Date.now(), { timeStyle: 'medium' })
 intlDateTime(Date.now(), { dateStyle: 'long', timeStyle: 'short' })
 ```
 
-### Field-level formatting
+### {{t.pages.documentation.formatters.intl_date_time.content.field_level_formatting}}
 
 ```ts
 intlDateTime('2026-01-01T10:00:00Z', {
@@ -95,7 +92,7 @@ intlDateTime('2026-01-01T10:00:00Z', {
 })
 ```
 
-### Locale and timezone variants
+### {{t.pages.documentation.formatters.intl_date_time.content.locale_and_timezone_variants}}
 
 ```ts
 intlDateTime('2026-01-01T10:00:00Z', {
@@ -111,7 +108,7 @@ intlDateTime('2026-01-01T10:00:00Z', {
 })
 ```
 
-### Scope integration
+### {{t.pages.documentation.formatters.intl_date_time.content.scope_integration}}
 
 ```ts
 import { createIntl, intlDateTime } from '@beforesemicolon/intl'
@@ -121,14 +118,14 @@ const scoped = createIntl({ locale: 'en-GB', messages: {} })
 intlDateTime('2026-01-01T10:00:00Z', { scope: scoped })
 ```
 
-### Empty output rules
+### {{t.common.content.empty_output_rules}}
 
 ```ts
 intlDateTime('bad-date-string') // ''
 intlDateTime(NaN as unknown as number) // ''
 ```
 
-## See also
+## {{t.common.content.see_also}}
 
-- [intl-datetime component reference](/documentation/components/intl-datetime)
-- [Intl.DateTimeFormat docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat)
+- {{t.pages.documentation.formatters.intl_date_time.content.intl_datetime_component_reference_documentation_components_intl_datetime}}
+- {{t.pages.documentation.formatters.intl_date_time.content.intl_datetimeformat_docs_https_developer_mozilla_org_en_us_docs_web_javascript_reference_global}}

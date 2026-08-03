@@ -1,18 +1,18 @@
 ---
-name: onLocaleMessagesLoaded
+name: '{{t.pages.documentation.apis.on_locale_messages_loaded.meta.onlocalemessagesloaded}}'
 order: 7.26
-title: onLocaleMessagesLoaded - Intl by Before Semicolon
-description: Register the intl-locale component and return locale lifecycle behavior for the browser entrypoint.
+title: '{{t.pages.documentation.apis.on_locale_messages_loaded.meta.onlocalemessagesloaded_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.apis.on_locale_messages_loaded.meta.register_the_intl_locale_component_and_return_locale_lifecycle_behavior_for_the_browser_entrypoi}}'
 layout: document
 ---
 
-## `onLocaleMessagesLoaded`
+## {{t.pages.documentation.apis.on_locale_messages_loaded.content.onlocalemessagesloaded}}
 
-`onLocaleMessagesLoaded` is exported from the browser bundle and used when you load `dist/client.js`.
+{{t.pages.documentation.apis.on_locale_messages_loaded.content.onlocalemessagesloaded_is_exported_from_the_browser_bundle_and_used_when_you_load_dist_client_js}}
 
-It ties locale events to the custom-element layer so DOM workflows can react to runtime lifecycle without importing the full module API.
+{{t.pages.documentation.apis.on_locale_messages_loaded.content.it_ties_locale_events_to_the_custom_element_layer_so_dom_workflows_can_react_to_runtime_lifecycl}}
 
-## Signature
+## {{t.common.content.signature}}
 
 ```ts
 function onLocaleMessagesLoaded(
@@ -20,13 +20,13 @@ function onLocaleMessagesLoaded(
 ) // Browser entry helper
 ```
 
-## Event model and lifecycle
+## {{t.pages.documentation.apis.on_locale_messages_loaded.content.event_model_and_lifecycle}}
 
-The helper powers the same locale events that `<intl-locale>` emits:
+{{t.pages.documentation.apis.on_locale_messages_loaded.content.the_helper_powers_the_same_locale_events_that_emits}}
 
-- `locale-load` when a locale file fetch completes
-- `locale-change` when active locale is ready
-- `locale-error` when fetch/parsing fails
+- {{t.pages.documentation.apis.on_locale_messages_loaded.content.locale_load_when_a_locale_file_fetch_completes}}
+- {{t.pages.documentation.apis.on_locale_messages_loaded.content.locale_change_when_active_locale_is_ready}}
+- {{t.pages.documentation.apis.on_locale_messages_loaded.content.locale_error_when_fetch_parsing_fails}}
 
 ```html
 <intl-locale locale="en-US" src-dir="/locales"></intl-locale>
@@ -37,8 +37,8 @@ The helper powers the same locale events that `<intl-locale>` emits:
 </script>
 ```
 
-Use this in browser mode when you need global setup and want to keep logic in HTML.
+{{t.pages.documentation.apis.on_locale_messages_loaded.content.use_this_in_browser_mode_when_you_need_global_setup_and_want_to_keep_logic_in_html}}
 
-For explicit JS subscriptions and snapshots, prefer `subscribeIntl()`.
+{{t.pages.documentation.apis.on_locale_messages_loaded.content.for_explicit_js_subscriptions_and_snapshots_prefer_subscribeintl}}
 
-Native references: [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent), [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)
+{{t.pages.documentation.apis.on_locale_messages_loaded.content.native_references_customevent_https_developer_mozilla_org_en_us_docs_web_api_customevent_web_com}}

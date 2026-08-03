@@ -1,42 +1,41 @@
 ---
-name: intl-list
+name: '{{t.pages.documentation.components.intl_list.meta.intl_list}}'
 order: 5.7
-title: <intl-list> - List Formatter
-description: Format localized conjunction, disjunction, and unit lists from child text or a value.
+title: '{{t.pages.documentation.components.intl_list.meta.list_formatter}}'
+description: '{{t.pages.documentation.components.intl_list.meta.format_localized_conjunction_disjunction_and_unit_lists_from_child_text_or_a_value}}'
 layout: document
 ---
 
-## `<intl-list>`
+## {{t.pages.documentation.components.intl_list.content.text}}
 
-`<intl-list>` formats a list with `Intl.ListFormat`.
-Child text is split on whitespace. The helper function can also accept arrays.
+{{t.pages.documentation.components.intl_list.content.formats_a_list_with_intl_listformat_child_text_is_split_on_whitespace_the_helper_function_can_al}}
 
-Native reference: [Intl.ListFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat)
+{{t.pages.documentation.components.intl_list.content.native_reference_intl_listformat_https_developer_mozilla_org_en_us_docs_web_javascript_reference}}
 
 ```html
 <intl-list>shipping tax discounts</intl-list>
 ```
 
-## Attributes and properties
+## {{t.common.content.attributes_and_properties}}
 
-| Attribute | JS property | Type | Description |
+{{t.common.content.attribute_js_property_type_description}}
 |---|---|---|---|
-| `value` | `value` | string/string[] | List source. Child text is used when omitted. |
-| `locale` | `locale` | string | Overrides the runtime locale. |
-| `type` | `type` | `conjunction` \| `disjunction` \| `unit` \| `and` \| `or` \| `none` | List relationship. |
-| `type-style` | `typeStyle` | `long` \| `short` \| `narrow` | List style. |
+{{t.pages.documentation.components.intl_list.content.value_value_string_string_list_source_child_text_is_used_when_omitted}}
+{{t.common.content.locale_locale_string_overrides_the_runtime_locale}}
+{{t.pages.documentation.components.intl_list.content.type_type_conjunction_disjunction_unit_and_or_none_list_relationship}}
+{{t.pages.documentation.components.intl_list.content.type_style_typestyle_long_short_narrow_list_style}}
 
-Aliases: `and` means `conjunction`, `or` means `disjunction`, and `none` means `unit`.
+{{t.pages.documentation.components.intl_list.content.aliases_and_means_conjunction_or_means_disjunction_and_none_means_unit}}
 
-## `value`
+## {{t.common.content.value}}
 
-Use child text for simple whitespace-separated lists.
+{{t.pages.documentation.components.intl_list.content.use_child_text_for_simple_whitespace_separated_lists}}
 
 ```html
 <intl-list>shipping tax discounts</intl-list>
 ```
 
-Use the property from JavaScript when the list is dynamic or contains items with spaces.
+{{t.pages.documentation.components.intl_list.content.use_the_property_from_javascript_when_the_list_is_dynamic_or_contains_items_with_spaces}}
 
 ```html
 <intl-list id="delivery-options">email phone chat</intl-list>
@@ -50,18 +49,18 @@ Use the property from JavaScript when the list is dynamic or contains items with
 </script>
 ```
 
-## `locale`
+## {{t.common.content.locale}}
 
-Use `locale` for a one-off override.
+{{t.common.content.use_locale_for_a_one_off_override}}
 
 ```html
 <intl-list locale="en-US">apples pears peaches</intl-list>
 <intl-list locale="es-ES">apples pears peaches</intl-list>
 ```
 
-## `type`
+## {{t.common.content.type}}
 
-`type` controls the relationship between list items.
+{{t.pages.documentation.components.intl_list.content.type_controls_the_relationship_between_list_items}}
 
 ```html
 <intl-list type="conjunction">apples pears peaches</intl-list>
@@ -69,7 +68,7 @@ Use `locale` for a one-off override.
 <intl-list type="unit">meter second kilogram</intl-list>
 ```
 
-The aliases are shorter to write in markup.
+{{t.pages.documentation.components.intl_list.content.the_aliases_are_shorter_to_write_in_markup}}
 
 ```html
 <intl-list type="and">apples pears peaches</intl-list>
@@ -77,9 +76,9 @@ The aliases are shorter to write in markup.
 <intl-list type="none">meter second kilogram</intl-list>
 ```
 
-## `type-style`
+## {{t.pages.documentation.components.intl_list.content.type_style}}
 
-`type-style` controls output length.
+{{t.pages.documentation.components.intl_list.content.type_style_controls_output_length}}
 
 ```html
 <intl-list type="and" type-style="long">A B C</intl-list>
@@ -87,8 +86,8 @@ The aliases are shorter to write in markup.
 <intl-list type="and" type-style="narrow">A B C</intl-list>
 ```
 
-For short or narrow styles, the component adds a long-form `aria-label` when the accessible label differs from the visible output.
+{{t.common.content.for_short_or_narrow_styles_the_component_adds_a_long_form_aria_label_when_the_accessible_label_d}}
 
-## See also
+## {{t.common.content.see_also}}
 
-- [intlList](/documentation/formatters/intl-list)
+- {{t.pages.documentation.components.intl_list.content.intllist_documentation_formatters_intl_list}}

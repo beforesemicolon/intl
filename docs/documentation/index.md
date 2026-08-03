@@ -1,50 +1,49 @@
 ---
-name: Why Intl?
+name: '{{t.pages.documentation.index.meta.why_intl}}'
 order: 1
-title: Why Intl? - Intl by Before Semicolon
-description: Learn why Intl provides HTML-first localization primitives for Web Components and component-first interfaces.
+title: '{{t.pages.documentation.index.meta.why_intl_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.index.meta.learn_why_intl_provides_html_first_localization_primitives_for_web_components_and_component_firs}}'
 layout: document
 ---
 
-## Why Intl?
+## {{t.pages.documentation.index.content.why_intl}}
 
-`@beforesemicolon/intl` gives component-first applications a predictable localization layer.
+{{t.pages.documentation.index.content.beforesemicolon_intl_gives_component_first_applications_a_predictable_localization_layer}}
 
-It combines:
+{{t.pages.documentation.index.content.it_combines}}
 
-- runtime-aware locale scoping
-- message lookup and fallback behavior
-- formatting helpers for numbers, dates, durations, relative time, names, lists, and plurals
+- {{t.pages.documentation.index.content.runtime_aware_locale_scoping}}
+- {{t.pages.documentation.index.content.message_lookup_and_fallback_behavior}}
+- {{t.pages.documentation.index.content.formatting_helpers_for_numbers_dates_durations_relative_time_names_lists_and_plurals}}
 
-Everything is explicit, so you can reason about where and how localization changes.
+{{t.pages.documentation.index.content.everything_is_explicit_so_you_can_reason_about_where_and_how_localization_changes}}
 
-## Why this over framework i18n adapters
+## {{t.pages.documentation.index.content.why_this_over_framework_i18n_adapters}}
 
-With Intl:
+{{t.pages.documentation.index.content.with_intl}}
 
-- you do not need router-like global context to access locale state
-- messages and formatters can live in plain HTML with fallback text
-- runtime APIs stay available for business logic and tests
-- page-level and component-level locale boundaries are straightforward
+- {{t.pages.documentation.index.content.you_do_not_need_router_like_global_context_to_access_locale_state}}
+- {{t.pages.documentation.index.content.messages_and_formatters_can_live_in_plain_html_with_fallback_text}}
+- {{t.pages.documentation.index.content.runtime_apis_stay_available_for_business_logic_and_tests}}
+- {{t.pages.documentation.index.content.page_level_and_component_level_locale_boundaries_are_straightforward}}
 
-## What to read first
+## {{t.pages.documentation.index.content.what_to_read_first}}
 
-- [Get Started](./get-started)
-- [Installation](./installation)
-- [Guide & Best Practices](./guide-best-practices)
-- [Components](./components/intl-locale)
-- [APIs](./apis/create-intl)
+- {{t.pages.documentation.index.content.get_started_get_started}}
+- {{t.pages.documentation.index.content.installation_installation}}
+- {{t.common.content.guide_best_practices_guide_best_practices}}
+- {{t.common.content.components_components_intl_locale}}
+- {{t.pages.documentation.index.content.apis_apis_create_intl}}
 
-## Core mental model
+## {{t.pages.documentation.index.content.core_mental_model}}
 
-Use `<intl-locale>` to define a boundary. Everything inside that boundary uses the same runtime configuration:
+{{t.pages.documentation.index.content.use_to_define_a_boundary_everything_inside_that_boundary_uses_the_same_runtime_configuration}}
 
-- active locale
-- fallback locale
-- where messages load from
-- how the runtime notifies components
+- {{t.pages.documentation.index.content.active_locale}}
+- {{t.pages.documentation.index.content.fallback_locale}}
+- {{t.pages.documentation.index.content.where_messages_load_from}}
+- {{t.pages.documentation.index.content.how_the_runtime_notifies_components}}
 
-Use components for visible output. Use helper APIs where formatting should stay in code.
+{{t.pages.documentation.index.content.use_components_for_visible_output_use_helper_apis_where_formatting_should_stay_in_code}}
 
-When the boundary is the root of your page, add `update-document` so document language and direction stay aligned with runtime state.
-
+{{t.pages.documentation.index.content.when_the_boundary_is_the_root_of_your_page_add_update_document_so_document_language_and_directio}}

@@ -1,21 +1,20 @@
 ---
-name: intlMsg
+name: '{{t.pages.documentation.formatters.intl_message.meta.intlmsg}}'
 order: 6.10
-title: intlMsg - Intl by Before Semicolon
-description: Resolve a message key from an Intl runtime and interpolate placeholder values.
+title: '{{t.pages.documentation.formatters.intl_message.meta.intlmsg_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.formatters.intl_message.meta.resolve_a_message_key_from_an_intl_runtime_and_interpolate_placeholder_values}}'
 layout: document
 ---
 
-## `intlMsg`
+## {{t.pages.documentation.formatters.intl_message.content.intlmsg}}
 
-`intlMsg(key, values?, options?)` resolves a message key from runtime messages and returns a plain string.
-Use this for server-side rendering, app-level formatting, and logic where you need only the text result.
+{{t.pages.documentation.formatters.intl_message.content.intlmsg_key_values_options_resolves_a_message_key_from_runtime_messages_and_returns_a_plain_stri}}
 
-It matches message behavior used by `<intl-msg>` so keys and placeholders are consistent across JS + components.
+{{t.pages.documentation.formatters.intl_message.content.it_matches_message_behavior_used_by_so_keys_and_placeholders_are_consistent_across_js_components}}
 
-For rich HTML output use `<intl-msg>` instead and keep HTML in runtime messages only when trusted.
+{{t.pages.documentation.formatters.intl_message.content.for_rich_html_output_use_instead_and_keep_html_in_runtime_messages_only_when_trusted}}
 
-## Signature
+## {{t.common.content.signature}}
 
 ```ts
 function intlMsg(
@@ -29,29 +28,29 @@ function intlMsg(
 ): string
 ```
 
-`key` can use dot notation (`checkout.total`) for nested message objects.
+{{t.pages.documentation.formatters.intl_message.content.key_can_use_dot_notation_checkout_total_for_nested_message_objects}}
 
-## What `values` means
+## {{t.pages.documentation.formatters.intl_message.content.what_values_means}}
 
-`values` maps placeholders to replacements in the message template:
+{{t.pages.documentation.formatters.intl_message.content.values_maps_placeholders_to_replacements_in_the_message_template}}
 
 ```ts
 intlMsg('invoice.total', { amount: '$42.00' }, { scope: runtime })
 ```
 
-When a placeholder is missing, `null`, `undefined`, or omitted, it renders as an empty string.
+{{t.pages.documentation.formatters.intl_message.content.when_a_placeholder_is_missing_null_undefined_or_omitted_it_renders_as_an_empty_string}}
 
-## Option map
+## {{t.common.content.option_map}}
 
-| Option | Type | Default | Effect |
+{{t.common.content.option_type_default_effect}}
 |---|---|---|---|
-| `scope` | `IntlRuntime` | `getIntl()` | Use explicit runtime instead of default runtime |
-| `locale` | `string` | scope/default locale | Render with a one-off locale |
-| `missing` | `string \| ((key) => string)` | `key` | Fallback when message is not found |
+{{t.pages.documentation.formatters.intl_message.content.scope_intlruntime_getintl_use_explicit_runtime_instead_of_default_runtime}}
+{{t.pages.documentation.formatters.intl_message.content.locale_string_scope_default_locale_render_with_a_one_off_locale}}
+{{t.pages.documentation.formatters.intl_message.content.missing_string_key_string_key_fallback_when_message_is_not_found}}
 
-## Examples
+## {{t.common.content.examples}}
 
-### Basic message + interpolation
+### {{t.pages.documentation.formatters.intl_message.content.basic_message_interpolation}}
 
 ```ts
 import { createIntl, intlMsg } from '@beforesemicolon/intl'
@@ -71,14 +70,14 @@ intlMsg('greeting', { name: 'Ari' }, { scope: runtime })
 intlMsg('items.remaining', { count: 3 }, { scope: runtime })
 ```
 
-### Nested key paths
+### {{t.pages.documentation.formatters.intl_message.content.nested_key_paths}}
 
 ```ts
 intlMsg('invoice.total', { amount: '$42.00' }, { scope: runtime })
 intlMsg('invoice.total', { amount: '$42.00' }, { locale: 'fr-FR' })
 ```
 
-### Missing key behavior
+### {{t.pages.documentation.formatters.intl_message.content.missing_key_behavior}}
 
 ```ts
 intlMsg('missing', { name: 'Ari' }, { scope: runtime })
@@ -89,12 +88,12 @@ intlMsg('missing', { name: 'Ari' }, {
 })
 ```
 
-### Empty and invalid inputs
+### {{t.pages.documentation.formatters.intl_message.content.empty_and_invalid_inputs}}
 
 ```ts
 intlMsg('', { name: 'Ari' }, { scope: runtime }) // ''
 ```
 
-## See also
+## {{t.common.content.see_also}}
 
-- [intl-msg component reference](/documentation/components/intl-msg)
+- {{t.pages.documentation.formatters.intl_message.content.intl_msg_component_reference_documentation_components_intl_msg}}

@@ -1,42 +1,41 @@
 ---
-name: intl-duration
+name: '{{t.pages.documentation.components.intl_duration.meta.intl_duration}}'
 order: 5.5
-title: <intl-duration> - Duration Formatter
-description: Format millisecond durations with selected fields and long, short, narrow, or digital styles.
+title: '{{t.pages.documentation.components.intl_duration.meta.duration_formatter}}'
+description: '{{t.pages.documentation.components.intl_duration.meta.format_millisecond_durations_with_selected_fields_and_long_short_narrow_or_digital_styles}}'
 layout: document
 ---
 
-## `<intl-duration>`
+## {{t.pages.documentation.components.intl_duration.content.text}}
 
-`<intl-duration>` formats a millisecond duration and breaks the value into duration fields.
-It uses `Intl.DurationFormat` when available, otherwise a package fallback formatter.
+{{t.pages.documentation.components.intl_duration.content.formats_a_millisecond_duration_and_breaks_the_value_into_duration_fields_it_uses_intl_durationfo}}
 
-Native reference: [Intl.DurationFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat)
+{{t.pages.documentation.components.intl_duration.content.native_reference_intl_durationformat_https_developer_mozilla_org_en_us_docs_web_javascript_refer}}
 
 ```html
 <intl-duration fields="hours minutes seconds">3661000</intl-duration>
 ```
 
-## Attributes and properties
+## {{t.common.content.attributes_and_properties}}
 
-| Attribute | JS property | Type | Description |
+{{t.common.content.attribute_js_property_type_description}}
 |---|---|---|---|
-| `value` | `value` | number/string | Milliseconds to format. Child text is used when omitted. |
-| `locale` | `locale` | string | Overrides the runtime locale. |
-| `time-style` | `timeStyle` | `long` \| `short` \| `narrow` \| `digital` | Output style. |
-| `fields` | `fields` | `*` or space-separated units | Units to include. |
+{{t.pages.documentation.components.intl_duration.content.value_value_number_string_milliseconds_to_format_child_text_is_used_when_omitted}}
+{{t.common.content.locale_locale_string_overrides_the_runtime_locale}}
+{{t.pages.documentation.components.intl_duration.content.time_style_timestyle_long_short_narrow_digital_output_style}}
+{{t.pages.documentation.components.intl_duration.content.fields_fields_or_space_separated_units_units_to_include}}
 
-Valid fields are `years`, `months`, `weeks`, `days`, `hours`, `minutes`, `seconds`, `milliseconds`, `microseconds`, and `nanoseconds`. Singular names such as `hour` normalize to plural names.
+{{t.pages.documentation.components.intl_duration.content.valid_fields_are_years_months_weeks_days_hours_minutes_seconds_milliseconds_microseconds_and_nan}}
 
-## `value`
+## {{t.common.content.value}}
 
-Use child text for static durations.
+{{t.pages.documentation.components.intl_duration.content.use_child_text_for_static_durations}}
 
 ```html
 <intl-duration fields="minutes seconds">90061</intl-duration>
 ```
 
-Use the property from JavaScript for dynamic values.
+{{t.pages.documentation.components.intl_duration.content.use_the_property_from_javascript_for_dynamic_values}}
 
 ```html
 <intl-duration id="elapsed" fields="hours minutes seconds">0</intl-duration>
@@ -46,18 +45,18 @@ Use the property from JavaScript for dynamic values.
 </script>
 ```
 
-## `locale`
+## {{t.common.content.locale}}
 
-Use `locale` for a one-off override.
+{{t.common.content.use_locale_for_a_one_off_override}}
 
 ```html
 <intl-duration locale="en-US" fields="hours minutes">3661000</intl-duration>
 <intl-duration locale="fr-FR" fields="hours minutes">3661000</intl-duration>
 ```
 
-## `time-style`
+## {{t.common.content.time_style}}
 
-`time-style` controls duration output length.
+{{t.pages.documentation.components.intl_duration.content.time_style_controls_duration_output_length}}
 
 ```html
 <intl-duration fields="hours minutes" time-style="long">3661000</intl-duration>
@@ -66,11 +65,11 @@ Use `locale` for a one-off override.
 <intl-duration fields="hours minutes seconds" time-style="digital">3661000</intl-duration>
 ```
 
-For non-long styles, the component adds a long-form `aria-label` when the accessible label differs from the visible output.
+{{t.pages.documentation.components.intl_duration.content.for_non_long_styles_the_component_adds_a_long_form_aria_label_when_the_accessible_label_differs}}
 
-## `fields`
+## {{t.pages.documentation.components.intl_duration.content.fields}}
 
-Use `fields` to choose which units are included.
+{{t.pages.documentation.components.intl_duration.content.use_fields_to_choose_which_units_are_included}}
 
 ```html
 <intl-duration fields="minutes seconds">90061</intl-duration>
@@ -79,12 +78,12 @@ Use `fields` to choose which units are included.
 <intl-duration fields="*">90061000</intl-duration>
 ```
 
-Singular names normalize to plural names.
+{{t.pages.documentation.components.intl_duration.content.singular_names_normalize_to_plural_names}}
 
 ```html
 <intl-duration fields="hour minute second">3661000</intl-duration>
 ```
 
-## See also
+## {{t.common.content.see_also}}
 
-- [intlDuration](/documentation/formatters/intl-duration)
+- {{t.pages.documentation.components.intl_duration.content.intlduration_documentation_formatters_intl_duration}}

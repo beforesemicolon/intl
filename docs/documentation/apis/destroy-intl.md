@@ -1,16 +1,16 @@
 ---
-name: destroyIntl
+name: '{{t.pages.documentation.apis.destroy_intl.meta.destroyintl}}'
 order: 7.07
-title: destroyIntl - Intl by Before Semicolon
-description: Destroy the default or scoped Intl runtime and clear subscriptions, caches, and pending loads.
+title: '{{t.pages.documentation.apis.destroy_intl.meta.destroyintl_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.apis.destroy_intl.meta.destroy_the_default_or_scoped_intl_runtime_and_clear_subscriptions_caches_and_pending_loads}}'
 layout: document
 ---
 
-## `destroyIntl`
+## {{t.pages.documentation.apis.destroy_intl.content.destroyintl}}
 
-`destroyIntl(scope?)` disposes runtime resources.
+{{t.pages.documentation.apis.destroy_intl.content.destroyintl_scope_disposes_runtime_resources}}
 
-Use this for component/page teardown in long-lived single-page contexts.
+{{t.pages.documentation.apis.destroy_intl.content.use_this_for_component_page_teardown_in_long_lived_single_page_contexts}}
 
 ```ts
 import { createIntl, destroyIntl } from '@beforesemicolon/intl'
@@ -19,20 +19,20 @@ const preview = createIntl({ locale: 'en-US' })
 destroyIntl(preview)
 ```
 
-## Signature
+## {{t.common.content.signature}}
 
 ```ts
 function destroyIntl(scope?: IntlRuntime): void
 ```
 
-## What it does
+## {{t.pages.documentation.apis.destroy_intl.content.what_it_does}}
 
-- cancels pending loads via `AbortController`
-- clears listeners, loading maps, and runtime caches
-- clears loaded locale maps
-- marks runtime as destroyed
+- {{t.pages.documentation.apis.destroy_intl.content.cancels_pending_loads_via_abortcontroller}}
+- {{t.pages.documentation.apis.destroy_intl.content.clears_listeners_loading_maps_and_runtime_caches}}
+- {{t.pages.documentation.apis.destroy_intl.content.clears_loaded_locale_maps}}
+- {{t.pages.documentation.apis.destroy_intl.content.marks_runtime_as_destroyed}}
 
-If no `scope` is passed, it disposes the package default runtime only when it is the current default.
+{{t.pages.documentation.apis.destroy_intl.content.if_no_scope_is_passed_it_disposes_the_package_default_runtime_only_when_it_is_the_current_defaul}}
 
 ```ts
 import { destroyIntl } from '@beforesemicolon/intl'
@@ -40,11 +40,11 @@ import { destroyIntl } from '@beforesemicolon/intl'
 destroyIntl() // remove package default runtime
 ```
 
-## Teardown patterns
+## {{t.pages.documentation.apis.destroy_intl.content.teardown_patterns}}
 
-### Scoped runtime
+### {{t.pages.documentation.apis.destroy_intl.content.scoped_runtime}}
 
-Use with modals, widgets, and editors that own their own localization context.
+{{t.pages.documentation.apis.destroy_intl.content.use_with_modals_widgets_and_editors_that_own_their_own_localization_context}}
 
 ```ts
 const sidePanelRuntime = createIntl({ locale: 'en-US', messages: { ok: 'OK' } })
@@ -52,15 +52,14 @@ const sidePanelRuntime = createIntl({ locale: 'en-US', messages: { ok: 'OK' } })
 destroyIntl(sidePanelRuntime)
 ```
 
-### Default runtime
+### {{t.pages.documentation.apis.destroy_intl.content.default_runtime}}
 
-Use during app-level unmount or full-page reload flows.
+{{t.pages.documentation.apis.destroy_intl.content.use_during_app_level_unmount_or_full_page_reload_flows}}
 
 ```ts
 window.addEventListener('beforeunload', () => destroyIntl())
 ```
 
-## What it is not
+## {{t.pages.documentation.apis.destroy_intl.content.what_it_is_not}}
 
-`destroyIntl()` does not mutate any other runtime instances.
-For default runtime reset in test code, prefer `resetIntl()`.
+{{t.pages.documentation.apis.destroy_intl.content.destroyintl_does_not_mutate_any_other_runtime_instances_for_default_runtime_reset_in_test_code_p}}
