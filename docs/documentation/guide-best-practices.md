@@ -1,16 +1,16 @@
 ---
-name: Guide & Best Practices
+name: '{{t.pages.documentation.guide_best_practices.meta.guide_best_practices}}'
 order: 4
-title: Intl Guide & Best Practices - Intl by Before Semicolon
-description: Practical guidance for building maintainable HTML-first localization with Before Semicolon Intl.
+title: '{{t.pages.documentation.guide_best_practices.meta.intl_guide_best_practices_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.guide_best_practices.meta.practical_guidance_for_building_maintainable_html_first_localization_with_before_semicolon_intl}}'
 layout: document
 ---
 
-## Guide & Best Practices
+## {{t.pages.documentation.guide_best_practices.content.guide_best_practices}}
 
-Use this guide to keep localized UIs predictable at scale. The package is most effective when locale scope and content remain explicit.
+{{t.pages.documentation.guide_best_practices.content.use_this_guide_to_keep_localized_uis_predictable_at_scale_the_package_is_most_effective_when_loc}}
 
-## 1) Start with one top-level `<intl-locale>`
+## {{t.pages.documentation.guide_best_practices.content.text_1_start_with_one_top_level}}
 
 ```html
 <intl-locale locale="en-US" fallback-locale="en" src-dir="/locales" update-document>
@@ -19,13 +19,13 @@ Use this guide to keep localized UIs predictable at scale. The package is most e
 </intl-locale>
 ```
 
-Use one top-level provider for the page when possible. It centralizes:
+{{t.pages.documentation.guide_best_practices.content.use_one_top_level_provider_for_the_page_when_possible_it_centralizes}}
 
-- message loading
-- locale fallback behavior
-- document direction updates
+- {{t.pages.documentation.guide_best_practices.content.message_loading}}
+- {{t.pages.documentation.guide_best_practices.content.locale_fallback_behavior}}
+- {{t.pages.documentation.guide_best_practices.content.document_direction_updates}}
 
-## 2) Prefer readable fallback text
+## {{t.pages.documentation.guide_best_practices.content.text_2_prefer_readable_fallback_text}}
 
 ```html
 <intl-msg key="cta.primary">Get started</intl-msg>
@@ -34,9 +34,9 @@ Use one top-level provider for the page when possible. It centralizes:
 <intl-list type="and">shipping tax discounts</intl-list>
 ```
 
-Keep fallback text meaningful. It helps SEO, JS-disabled rendering, and loading states.
+{{t.pages.documentation.guide_best_practices.content.keep_fallback_text_meaningful_it_helps_seo_js_disabled_rendering_and_loading_states}}
 
-## 3) Build nested locale boundaries intentionally
+## {{t.pages.documentation.guide_best_practices.content.text_3_build_nested_locale_boundaries_intentionally}}
 
 ```html
 <intl-locale locale="en-US" src-dir="/locales">
@@ -50,9 +50,9 @@ Keep fallback text meaningful. It helps SEO, JS-disabled rendering, and loading 
 </intl-locale>
 ```
 
-Nested scopes inherit message state from parent and can override values where needed.
+{{t.pages.documentation.guide_best_practices.content.nested_scopes_inherit_message_state_from_parent_and_can_override_values_where_needed}}
 
-## 4) Use API helpers where component markup is not ideal
+## {{t.pages.documentation.guide_best_practices.content.text_4_use_api_helpers_where_component_markup_is_not_ideal}}
 
 ```ts
 import { createIntl, intlMsg, intlNumber, intlDateTime } from '@beforesemicolon/intl'
@@ -68,9 +68,9 @@ intlNumber(1000, { locale: 'ja-JP', style: 'currency', currency: 'JPY' })
 intlDateTime('2026-01-01T10:00:00Z', { locale: 'ja-JP', dateStyle: 'full' })
 ```
 
-Use helpers for server-rendered content, labels in background jobs, and non-DOM workflows.
+{{t.pages.documentation.guide_best_practices.content.use_helpers_for_server_rendered_content_labels_in_background_jobs_and_non_dom_workflows}}
 
-## 5) Language switching without a page reload
+## {{t.pages.documentation.guide_best_practices.content.text_5_language_switching_without_a_page_reload}}
 
 ```ts
 import { setLocale } from '@beforesemicolon/intl'
@@ -84,11 +84,11 @@ selector?.addEventListener('change', async (event) => {
 })
 ```
 
-Language switching works when components are subscribed to the active runtime.
+{{t.pages.documentation.guide_best_practices.content.language_switching_works_when_components_are_subscribed_to_the_active_runtime}}
 
-## 6) Keep translation bundles small
+## {{t.pages.documentation.guide_best_practices.content.text_6_keep_translation_bundles_small}}
 
-At build time, combine shared keys and page-specific keys into scoped bundles:
+{{t.pages.documentation.guide_best_practices.content.at_build_time_combine_shared_keys_and_page_specific_keys_into_scoped_bundles}}
 
 ```text
 locales/common.json
@@ -96,24 +96,24 @@ locales/landing-page.json
 locales/en.landing-page.json
 ```
 
-Use `src="/locales/en.landing-page.json"` for the landing page runtime. This avoids loading unrelated pages.
+{{t.pages.documentation.guide_best_practices.content.use_src_locales_en_landing_page_json_for_the_landing_page_runtime_this_avoids_loading_unrelated}}
 
-## 7) Prefer SEO-safe content structure
+## {{t.pages.documentation.guide_best_practices.content.text_7_prefer_seo_safe_content_structure}}
 
-Use clear visible text in HTML and keep formatting decisions close to output:
+{{t.pages.documentation.guide_best_practices.content.use_clear_visible_text_in_html_and_keep_formatting_decisions_close_to_output}}
 
 ```html
 <h1><intl-msg key="hero.title">Internationalization in plain HTML.</intl-msg></h1>
 <intl-datetime date-style="full" time-style="short">2026-01-01T10:00:00Z</intl-datetime>
 ```
 
-Your parser and crawler both benefit from predictable, localized output in the DOM.
+{{t.pages.documentation.guide_best_practices.content.your_parser_and_crawler_both_benefit_from_predictable_localized_output_in_the_dom}}
 
-## Production checklist
+## {{t.pages.documentation.guide_best_practices.content.production_checklist}}
 
-- one explicit locale provider for each major page boundary
-- `src` for exact page bundles, `src-dir` for broad locale bundles
-- use child text for simple values
-- include `fallback-locale`
-- keep `update-document` only on the top-most scope
-- keep `intl-msg` fallback text readable
+- {{t.pages.documentation.guide_best_practices.content.one_explicit_locale_provider_for_each_major_page_boundary}}
+- {{t.pages.documentation.guide_best_practices.content.src_for_exact_page_bundles_src_dir_for_broad_locale_bundles}}
+- {{t.pages.documentation.guide_best_practices.content.use_child_text_for_simple_values}}
+- {{t.pages.documentation.guide_best_practices.content.include_fallback_locale}}
+- {{t.pages.documentation.guide_best_practices.content.keep_update_document_only_on_the_top_most_scope}}
+- {{t.pages.documentation.guide_best_practices.content.keep_intl_msg_fallback_text_readable}}

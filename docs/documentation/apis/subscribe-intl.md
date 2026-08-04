@@ -1,16 +1,16 @@
 ---
-name: subscribeIntl
+name: '{{t.pages.documentation.apis.subscribe_intl.meta.subscribeintl}}'
 order: 7.06
-title: subscribeIntl - Intl by Before Semicolon
-description: Subscribe to Intl runtime snapshots when locale, loading status, or messages change.
+title: '{{t.pages.documentation.apis.subscribe_intl.meta.subscribeintl_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.apis.subscribe_intl.meta.subscribe_to_intl_runtime_snapshots_when_locale_loading_status_or_messages_change}}'
 layout: document
 ---
 
-## `subscribeIntl`
+## {{t.pages.documentation.apis.subscribe_intl.content.subscribeintl}}
 
-`subscribeIntl(listener, scope?)` subscribes to live runtime snapshots.
+{{t.pages.documentation.apis.subscribe_intl.content.subscribeintl_listener_scope_subscribes_to_live_runtime_snapshots}}
 
-It is useful for UI that must react to locale, loading, or message load state outside components.
+{{t.pages.documentation.apis.subscribe_intl.content.it_is_useful_for_ui_that_must_react_to_locale_loading_or_message_load_state_outside_components}}
 
 ```ts
 import { subscribeIntl } from '@beforesemicolon/intl'
@@ -21,7 +21,7 @@ const unsubscribe = subscribeIntl((snapshot) => {
 })
 ```
 
-## Signature
+## {{t.common.content.signature}}
 
 ```ts
 function subscribeIntl(
@@ -30,24 +30,24 @@ function subscribeIntl(
 ): () => void
 ```
 
-## Callback contract
+## {{t.pages.documentation.apis.subscribe_intl.content.callback_contract}}
 
-`subscribeIntl` does two things immediately:
+{{t.pages.documentation.apis.subscribe_intl.content.subscribeintl_does_two_things_immediately}}
 
-1. adds the listener
-2. calls it once with the current snapshot
+1. {{t.pages.documentation.apis.subscribe_intl.content.adds_the_listener}}
+2. {{t.pages.documentation.apis.subscribe_intl.content.calls_it_once_with_the_current_snapshot}}
 
-It then calls the listener for all future locale/message/state updates.
+{{t.pages.documentation.apis.subscribe_intl.content.it_then_calls_the_listener_for_all_future_locale_message_state_updates}}
 
-## Snapshot fields in practice
+## {{t.pages.documentation.apis.subscribe_intl.content.snapshot_fields_in_practice}}
 
-- `locale` / `fallbackLocale` for current and fallback language resolution
-- `direction` for `ltr` / `rtl` layout behavior
-- `messages` and `fallbackMessages` for resolved message layers
-- `loadedLocales` for cache-awareness
-- `status` lifecycle (`idle`, `loading`, `ready`, `error`)
-- `error` for failed loads
-- `parentScope` when runtime inherits from another runtime
+- {{t.pages.documentation.apis.subscribe_intl.content.locale_fallbacklocale_for_current_and_fallback_language_resolution}}
+- {{t.pages.documentation.apis.subscribe_intl.content.direction_for_ltr_rtl_layout_behavior}}
+- {{t.pages.documentation.apis.subscribe_intl.content.messages_and_fallbackmessages_for_resolved_message_layers}}
+- {{t.pages.documentation.apis.subscribe_intl.content.loadedlocales_for_cache_awareness}}
+- {{t.pages.documentation.apis.subscribe_intl.content.status_lifecycle_idle_loading_ready_error}}
+- {{t.pages.documentation.apis.subscribe_intl.content.error_for_failed_loads}}
+- {{t.pages.documentation.apis.subscribe_intl.content.parentscope_when_runtime_inherits_from_another_runtime}}
 
 ```ts
 const unsubscribe = subscribeIntl((snapshot) => {
@@ -67,9 +67,9 @@ const unsubscribe = subscribeIntl((snapshot) => {
 })
 ```
 
-## Cleanup
+## {{t.pages.documentation.apis.subscribe_intl.content.cleanup}}
 
-Always unsubscribe when the listener is no longer needed.
+{{t.pages.documentation.apis.subscribe_intl.content.always_unsubscribe_when_the_listener_is_no_longer_needed}}
 
 ```ts
 const cleanup = subscribeIntl((snapshot) => {
@@ -79,4 +79,4 @@ const cleanup = subscribeIntl((snapshot) => {
 window.addEventListener('unload', cleanup)
 ```
 
-For low-level component internals, this can replace manual polling for runtime state.
+{{t.pages.documentation.apis.subscribe_intl.content.for_low_level_component_internals_this_can_replace_manual_polling_for_runtime_state}}

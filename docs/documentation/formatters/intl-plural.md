@@ -1,20 +1,18 @@
 ---
-name: intlPlural
+name: '{{t.pages.documentation.formatters.intl_plural.meta.intlplural}}'
 order: 6.17
-title: intlPlural - Intl by Before Semicolon
-description: Select cardinal or ordinal plural output with Intl.PluralRules.
+title: '{{t.pages.documentation.formatters.intl_plural.meta.intlplural_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.formatters.intl_plural.meta.select_cardinal_or_ordinal_plural_output_with_intl_pluralrules}}'
 layout: document
 ---
 
-## `intlPlural`
+## {{t.pages.documentation.formatters.intl_plural.content.intlplural}}
 
-`intlPlural(value, options?)` returns text based on locale plural rules.
-Use this for item labels, counters, and plural-aware grammar in any output path.
+{{t.pages.documentation.formatters.intl_plural.content.intlplural_value_options_returns_text_based_on_locale_plural_rules_use_this_for_item_labels_coun}}
 
-Native reference:
-[Intl.PluralRules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules)
+{{t.pages.documentation.formatters.intl_plural.content.native_reference_intl_pluralrules_https_developer_mozilla_org_en_us_docs_web_javascript_referenc}}
 
-## Signature
+## {{t.common.content.signature}}
 
 ```ts
 function intlPlural(
@@ -33,27 +31,27 @@ function intlPlural(
 ): string
 ```
 
-Invalid values return `''`.
+{{t.common.content.invalid_values_return}}
 
-## Option map
+## {{t.common.content.option_map}}
 
-| Option | Type | Default | Effect |
+{{t.common.content.option_type_default_effect}}
 |---|---|---|---|
-| `locale` | `string` | runtime locale | One-off locale override |
-| `scope` | `IntlRuntime` | `getIntl()` | Use scoped runtime locale |
-| `type` | `cardinal \| ordinal` | `cardinal` | Pluralization mode |
-| `zero` | `string` | `undefined` | Text for zero category |
-| `one` | `string` | `other` fallback | Text for one category |
-| `two` | `string` | `undefined` | Text for two category |
-| `few` | `string` | `undefined` | Text for few category |
-| `many` | `string` | `undefined` | Text for many category |
-| `other` | `string` | required | Text for other category |
+{{t.common.content.locale_string_runtime_locale_one_off_locale_override}}
+{{t.pages.documentation.formatters.intl_plural.content.scope_intlruntime_getintl_use_scoped_runtime_locale}}
+{{t.pages.documentation.formatters.intl_plural.content.type_cardinal_ordinal_cardinal_pluralization_mode}}
+{{t.pages.documentation.formatters.intl_plural.content.zero_string_undefined_text_for_zero_category}}
+{{t.pages.documentation.formatters.intl_plural.content.one_string_other_fallback_text_for_one_category}}
+{{t.pages.documentation.formatters.intl_plural.content.two_string_undefined_text_for_two_category}}
+{{t.pages.documentation.formatters.intl_plural.content.few_string_undefined_text_for_few_category}}
+{{t.pages.documentation.formatters.intl_plural.content.many_string_undefined_text_for_many_category}}
+{{t.pages.documentation.formatters.intl_plural.content.other_string_required_text_for_other_category}}
 
-If a category is missing, output falls back to `other` or the selected category's raw token.
+{{t.pages.documentation.formatters.intl_plural.content.if_a_category_is_missing_output_falls_back_to_other_or_the_selected_category_s_raw_token}}
 
-## Examples
+## {{t.common.content.examples}}
 
-### Cardinal examples
+### {{t.pages.documentation.formatters.intl_plural.content.cardinal_examples}}
 
 ```ts
 intlPlural(0, { locale: 'en-US', zero: 'no items', one: 'item', other: 'items' })
@@ -61,7 +59,7 @@ intlPlural(1, { locale: 'en-US', one: 'item', other: 'items' }) // "item"
 intlPlural(2, { locale: 'en-US', one: 'item', other: 'items' }) // "items"
 ```
 
-### Ordinal examples
+### {{t.pages.documentation.formatters.intl_plural.content.ordinal_examples}}
 
 ```ts
 intlPlural(1, {
@@ -81,7 +79,7 @@ intlPlural(11, {
 }) // other in en-US
 ```
 
-### Language-specific behavior
+### {{t.pages.documentation.formatters.intl_plural.content.language_specific_behavior}}
 
 ```ts
 intlPlural(2, {
@@ -94,7 +92,7 @@ intlPlural(2, {
 })
 ```
 
-### Runtime scoping
+### {{t.pages.documentation.formatters.intl_plural.content.runtime_scoping}}
 
 ```ts
 import { createIntl, intlPlural } from '@beforesemicolon/intl'
@@ -103,7 +101,7 @@ const scoped = createIntl({ locale: 'fr-FR', messages: {} })
 intlPlural(3, { scope: scoped, one: 'article', other: 'articles' })
 ```
 
-## See also
+## {{t.common.content.see_also}}
 
-- [intl-plural component reference](/documentation/components/intl-plural)
-- [Intl.PluralRules docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules)
+- {{t.pages.documentation.formatters.intl_plural.content.intl_plural_component_reference_documentation_components_intl_plural}}
+- {{t.pages.documentation.formatters.intl_plural.content.intl_pluralrules_docs_https_developer_mozilla_org_en_us_docs_web_javascript_reference_global_obj}}

@@ -1,19 +1,19 @@
 ---
-name: getLocaleDirection
+name: '{{t.pages.documentation.apis.get_locale_direction.meta.getlocaledirection}}'
 order: 7.09
-title: getLocaleDirection - Intl by Before Semicolon
-description: Resolve text direction for a locale using Intl.Locale.
+title: '{{t.pages.documentation.apis.get_locale_direction.meta.getlocaledirection_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.apis.get_locale_direction.meta.resolve_text_direction_for_a_locale_using_intl_locale}}'
 layout: document
 ---
 
-## `getLocaleDirection`
+## {{t.pages.documentation.apis.get_locale_direction.content.getlocaledirection}}
 
-`getLocaleDirection(locale)` returns text direction for a locale tag:
+{{t.pages.documentation.apis.get_locale_direction.content.getlocaledirection_locale_returns_text_direction_for_a_locale_tag}}
 
-- `'rtl'` for right-to-left locales
-- `'ltr'` for left-to-right locales
+- {{t.pages.documentation.apis.get_locale_direction.content.rtl_for_right_to_left_locales}}
+- {{t.pages.documentation.apis.get_locale_direction.content.ltr_for_left_to_right_locales}}
 
-This function uses [`Intl.Locale`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale).
+{{t.pages.documentation.apis.get_locale_direction.content.this_function_uses_intl_locale_https_developer_mozilla_org_en_us_docs_web_javascript_reference_g}}
 
 ```ts
 import { getLocaleDirection } from '@beforesemicolon/intl'
@@ -24,19 +24,18 @@ getLocaleDirection('fa') // "rtl"
 getLocaleDirection('zh-Hant') // "ltr"
 ```
 
-## Signature
+## {{t.common.content.signature}}
 
 ```ts
 function getLocaleDirection(locale: string): 'ltr' | 'rtl'
 ```
 
-## Practical notes
+## {{t.pages.documentation.apis.get_locale_direction.content.practical_notes}}
 
-- invalid locale values return `'ltr'` instead of throwing
-- this is useful for pre-setting `dir` before runtime loading completes
-- call this whenever you need a deterministic fallback while a runtime settles
+- {{t.pages.documentation.apis.get_locale_direction.content.invalid_locale_values_return_ltr_instead_of_throwing}}
+- {{t.pages.documentation.apis.get_locale_direction.content.this_is_useful_for_pre_setting_dir_before_runtime_loading_completes}}
+- {{t.pages.documentation.apis.get_locale_direction.content.call_this_whenever_you_need_a_deterministic_fallback_while_a_runtime_settles}}
 
 ```ts
 document.documentElement.dir = getLocaleDirection(selectedLocale)
 ```
-

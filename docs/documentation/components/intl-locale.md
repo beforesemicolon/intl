@@ -1,17 +1,16 @@
 ---
-name: intl-locale
+name: '{{t.pages.documentation.components.intl_locale.meta.intl_locale}}'
 order: 5.1
-title: <intl-locale> - Runtime Scope
-description: Define locale runtime boundaries, load messages, update document language, and scope child Intl components.
+title: '{{t.pages.documentation.components.intl_locale.meta.runtime_scope}}'
+description: '{{t.pages.documentation.components.intl_locale.meta.define_locale_runtime_boundaries_load_messages_update_document_language_and_scope_child_intl_com}}'
 layout: document
 ---
 
-## `<intl-locale>`
+## {{t.pages.documentation.components.intl_locale.content.text}}
 
-`<intl-locale>` creates the runtime scope used by every Intl component inside it.
-Use it around the part of the page that should share a locale, message source, fallback locale, and text direction.
+{{t.pages.documentation.components.intl_locale.content.creates_the_runtime_scope_used_by_every_intl_component_inside_it_use_it_around_the_part_of_the_p}}
 
-Native mapping: locale detection and direction follow [Intl.Locale](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale).
+{{t.pages.documentation.components.intl_locale.content.native_mapping_locale_detection_and_direction_follow_intl_locale_https_developer_mozilla_org_en}}
 
 ```html
 <intl-locale locale="en-US" fallback-locale="en" src-dir="/locales">
@@ -20,30 +19,30 @@ Native mapping: locale detection and direction follow [Intl.Locale](https://deve
 </intl-locale>
 ```
 
-## Attributes
+## {{t.common.content.attributes}}
 
-| Attribute | Type | Default | Description |
+{{t.common.content.attribute_type_default_description}}
 |---|---|---|---|
-| `locale` | `string` | `html[lang]` or `en` | Active locale for this scope. |
-| `fallback-locale` | `string` | `en` | Locale used for fallback message loading and message lookup. |
-| `src` | `string` | `undefined` | Exact JSON endpoint for this locale scope. |
-| `src-dir` | `string` | `/locales` | Directory used as `${srcDir}/${locale}.json` when `src` is not set. |
-| `update-document` | boolean attribute | absent | Updates `document.documentElement.lang` and `dir` from the runtime snapshot. |
-| `fallback` | boolean attribute | absent | Renders children immediately while locale messages load. Without it, children render after the runtime is ready. |
+{{t.pages.documentation.components.intl_locale.content.locale_string_html_lang_or_en_active_locale_for_this_scope}}
+{{t.pages.documentation.components.intl_locale.content.fallback_locale_string_en_locale_used_for_fallback_message_loading_and_message_lookup}}
+{{t.pages.documentation.components.intl_locale.content.src_string_undefined_exact_json_endpoint_for_this_locale_scope}}
+{{t.pages.documentation.components.intl_locale.content.src_dir_string_locales_directory_used_as_srcdir_locale_json_when_src_is_not_set}}
+{{t.pages.documentation.components.intl_locale.content.update_document_boolean_attribute_absent_updates_document_documentelement_lang_and_dir_from_the}}
+{{t.pages.documentation.components.intl_locale.content.fallback_boolean_attribute_absent_renders_children_immediately_while_locale_messages_load_withou}}
 
-## Lifecycle events
+## {{t.pages.documentation.components.intl_locale.content.lifecycle_events}}
 
-Events bubble and are composed, so you can listen from a parent container or `document.body`.
+{{t.pages.documentation.components.intl_locale.content.events_bubble_and_are_composed_so_you_can_listen_from_a_parent_container_or_document_body}}
 
-| Event | When it fires | `event.detail` |
+{{t.pages.documentation.components.intl_locale.content.event_when_it_fires_event_detail}}
 |---|---|---|
-| `locale-load` | Message loading completes. | `IntlRuntimeSnapshot` |
-| `locale-change` | The locale is ready after load or change. | `IntlRuntimeSnapshot` |
-| `locale-error` | Message loading fails. | `IntlRuntimeSnapshot` with `error` |
+{{t.pages.documentation.components.intl_locale.content.locale_load_message_loading_completes_intlruntimesnapshot}}
+{{t.pages.documentation.components.intl_locale.content.locale_change_the_locale_is_ready_after_load_or_change_intlruntimesnapshot}}
+{{t.pages.documentation.components.intl_locale.content.locale_error_message_loading_fails_intlruntimesnapshot_with_error}}
 
-## `locale`
+## {{t.common.content.locale}}
 
-`locale` sets the active locale for every Intl component inside the scope.
+{{t.pages.documentation.components.intl_locale.content.locale_sets_the_active_locale_for_every_intl_component_inside_the_scope}}
 
 ```html
 <intl-locale locale="en-US" src-dir="/locales">
@@ -57,11 +56,11 @@ Events bubble and are composed, so you can listen from a parent container or `do
 </intl-locale>
 ```
 
-When `locale` is omitted, the runtime uses `document.documentElement.lang` when available, then falls back to `en`.
+{{t.pages.documentation.components.intl_locale.content.when_locale_is_omitted_the_runtime_uses_document_documentelement_lang_when_available_then_falls}}
 
-## `fallback-locale`
+## {{t.pages.documentation.components.intl_locale.content.fallback_locale}}
 
-`fallback-locale` is used when messages for the active locale are missing or incomplete.
+{{t.pages.documentation.components.intl_locale.content.fallback_locale_is_used_when_messages_for_the_active_locale_are_missing_or_incomplete}}
 
 ```html
 <intl-locale locale="pt-CV" fallback-locale="pt" src-dir="/locales">
@@ -69,11 +68,11 @@ When `locale` is omitted, the runtime uses `document.documentElement.lang` when 
 </intl-locale>
 ```
 
-With this setup, the runtime loads `/locales/pt-CV.json` and can use `/locales/pt.json` as fallback messages.
+{{t.pages.documentation.components.intl_locale.content.with_this_setup_the_runtime_loads_locales_pt_cv_json_and_can_use_locales_pt_json_as_fallback_mes}}
 
-## `src`
+## {{t.pages.documentation.components.intl_locale.content.src}}
 
-Use `src` when the locale scope should load one exact JSON endpoint.
+{{t.pages.documentation.components.intl_locale.content.use_src_when_the_locale_scope_should_load_one_exact_json_endpoint}}
 
 ```html
 <intl-locale locale="en-US" src="/api/messages/current-user">
@@ -81,7 +80,7 @@ Use `src` when the locale scope should load one exact JSON endpoint.
 </intl-locale>
 ```
 
-`src` can also point to a page-specific JSON file.
+{{t.pages.documentation.components.intl_locale.content.src_can_also_point_to_a_page_specific_json_file}}
 
 ```html
 <intl-locale locale="en" src="/locales/en.landing-page.json">
@@ -92,11 +91,11 @@ Use `src` when the locale scope should load one exact JSON endpoint.
 </intl-locale>
 ```
 
-Use this for route-level or page-level message splitting when a page should load a smaller locale file.
+{{t.pages.documentation.components.intl_locale.content.use_this_for_route_level_or_page_level_message_splitting_when_a_page_should_load_a_smaller_local}}
 
-## `src-dir`
+## {{t.pages.documentation.components.intl_locale.content.src_dir}}
 
-Use `src-dir` when every locale follows the same directory convention.
+{{t.pages.documentation.components.intl_locale.content.use_src_dir_when_every_locale_follows_the_same_directory_convention}}
 
 ```html
 <intl-locale locale="pt-CV" fallback-locale="en" src-dir="/locales">
@@ -104,18 +103,18 @@ Use `src-dir` when every locale follows the same directory convention.
 </intl-locale>
 ```
 
-This loads:
+{{t.pages.documentation.components.intl_locale.content.this_loads}}
 
 ```text
 /locales/pt-CV.json
 /locales/en.json
 ```
 
-Use `src-dir` for app-wide bundles. Use `src` for exact files such as `/locales/en.landing-page.json`.
+{{t.pages.documentation.components.intl_locale.content.use_src_dir_for_app_wide_bundles_use_src_for_exact_files_such_as_locales_en_landing_page_json}}
 
-## `update-document`
+## {{t.pages.documentation.components.intl_locale.content.update_document}}
 
-`update-document` keeps the page-level `lang` and `dir` attributes synchronized with this runtime.
+{{t.pages.documentation.components.intl_locale.content.update_document_keeps_the_page_level_lang_and_dir_attributes_synchronized_with_this_runtime}}
 
 ```html
 <intl-locale locale="ar" src-dir="/locales" update-document>
@@ -123,17 +122,17 @@ Use `src-dir` for app-wide bundles. Use `src` for exact files such as `/locales/
 </intl-locale>
 ```
 
-After loading, the document can be updated like this:
+{{t.pages.documentation.components.intl_locale.content.after_loading_the_document_can_be_updated_like_this}}
 
 ```html
 <html lang="ar" dir="rtl">
 ```
 
-Use this on the root page locale. Avoid using it on small nested scopes unless that nested scope should control the whole document language.
+{{t.pages.documentation.components.intl_locale.content.use_this_on_the_root_page_locale_avoid_using_it_on_small_nested_scopes_unless_that_nested_scope}}
 
-## `fallback`
+## {{t.pages.documentation.components.intl_locale.content.fallback}}
 
-By default, children render after the runtime is ready. Add `fallback` when fallback text should render immediately while messages load.
+{{t.pages.documentation.components.intl_locale.content.by_default_children_render_after_the_runtime_is_ready_add_fallback_when_fallback_text_should_ren}}
 
 ```html
 <intl-locale locale="en-US" src-dir="/locales" fallback>
@@ -141,11 +140,11 @@ By default, children render after the runtime is ready. Add `fallback` when fall
 </intl-locale>
 ```
 
-Without `fallback`, the slot waits for the runtime. With `fallback`, child components can render their child text first and update when messages arrive.
+{{t.pages.documentation.components.intl_locale.content.without_fallback_the_slot_waits_for_the_runtime_with_fallback_child_components_can_render_their}}
 
-## `locale-load`
+## {{t.pages.documentation.components.intl_locale.content.locale_load}}
 
-Listen for `locale-load` when you need to know that a load attempt completed.
+{{t.pages.documentation.components.intl_locale.content.listen_for_locale_load_when_you_need_to_know_that_a_load_attempt_completed}}
 
 ```html
 <intl-locale id="app-locale" locale="fr-FR" src-dir="/locales"></intl-locale>
@@ -158,9 +157,9 @@ Listen for `locale-load` when you need to know that a load attempt completed.
 </script>
 ```
 
-## `locale-change`
+## {{t.pages.documentation.components.intl_locale.content.locale_change}}
 
-Listen for `locale-change` when UI should react to a ready locale.
+{{t.pages.documentation.components.intl_locale.content.listen_for_locale_change_when_ui_should_react_to_a_ready_locale}}
 
 ```html
 <intl-locale id="settings-locale" locale="en" src-dir="/locales" fallback>
@@ -186,9 +185,9 @@ Listen for `locale-change` when UI should react to a ready locale.
 </script>
 ```
 
-## `locale-error`
+## {{t.pages.documentation.components.intl_locale.content.locale_error}}
 
-Listen for `locale-error` when you want custom error handling for failed message loads.
+{{t.pages.documentation.components.intl_locale.content.listen_for_locale_error_when_you_want_custom_error_handling_for_failed_message_loads}}
 
 ```html
 <intl-locale id="app-locale" locale="fr-FR" src="/missing/fr.json">
@@ -202,9 +201,9 @@ Listen for `locale-error` when you want custom error handling for failed message
 </script>
 ```
 
-## Nested locale scopes
+## {{t.pages.documentation.components.intl_locale.content.nested_locale_scopes}}
 
-A nested provider uses the nearest scope. It can inherit parent messages and fallback configuration, then override them with its own loaded messages.
+{{t.pages.documentation.components.intl_locale.content.a_nested_provider_uses_the_nearest_scope_it_can_inherit_parent_messages_and_fallback_configurati}}
 
 ```html
 <intl-locale locale="en-US" src-dir="/locales">
@@ -216,26 +215,26 @@ A nested provider uses the nearest scope. It can inherit parent messages and fal
 </intl-locale>
 ```
 
-Nested scopes are useful for previews, embedded widgets, language switchers, and side-by-side localization QA.
+{{t.pages.documentation.components.intl_locale.content.nested_scopes_are_useful_for_previews_embedded_widgets_language_switchers_and_side_by_side_local}}
 
-## Page-scoped locale bundles
+## {{t.pages.documentation.components.intl_locale.content.page_scoped_locale_bundles}}
 
-Page-scoped bundles let each page load only the messages it needs instead of fetching one large locale bundle for the whole site.
+{{t.pages.documentation.components.intl_locale.content.page_scoped_bundles_let_each_page_load_only_the_messages_it_needs_instead_of_fetching_one_large}}
 
-For example, keep shared and page messages separate in source:
+{{t.pages.documentation.components.intl_locale.content.for_example_keep_shared_and_page_messages_separate_in_source}}
 
 ```text
 locales/common.json
 locales/landing-page.json
 ```
 
-At build time, merge those files for each locale and emit a page bundle:
+{{t.pages.documentation.components.intl_locale.content.at_build_time_merge_those_files_for_each_locale_and_emit_a_page_bundle}}
 
 ```text
 locales/en.landing-page.json
 ```
 
-Then wrap the landing page with an exact source:
+{{t.pages.documentation.components.intl_locale.content.then_wrap_the_landing_page_with_an_exact_source}}
 
 ```html
 <intl-locale locale="en" src="/locales/en.landing-page.json">
@@ -243,9 +242,9 @@ Then wrap the landing page with an exact source:
 </intl-locale>
 ```
 
-## See also
+## {{t.common.content.see_also}}
 
-- [createIntl](/documentation/apis/create-intl)
-- [initIntl](/documentation/apis/init-intl)
-- [setLocale](/documentation/apis/set-locale)
-- [loadLocale](/documentation/apis/load-locale)
+- {{t.pages.documentation.components.intl_locale.content.createintl_documentation_apis_create_intl}}
+- {{t.pages.documentation.components.intl_locale.content.initintl_documentation_apis_init_intl}}
+- {{t.pages.documentation.components.intl_locale.content.setlocale_documentation_apis_set_locale}}
+- {{t.pages.documentation.components.intl_locale.content.loadlocale_documentation_apis_load_locale}}

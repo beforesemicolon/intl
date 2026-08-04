@@ -1,40 +1,40 @@
 ---
-name: intl-name
+name: '{{t.pages.documentation.components.intl_name.meta.intl_name}}'
 order: 5.8
-title: <intl-name> - Display Names
-description: Render localized names for regions, languages, scripts, and currencies.
+title: '{{t.pages.documentation.components.intl_name.meta.display_names}}'
+description: '{{t.pages.documentation.components.intl_name.meta.render_localized_names_for_regions_languages_scripts_and_currencies}}'
 layout: document
 ---
 
-## `<intl-name>`
+## {{t.pages.documentation.components.intl_name.content.text}}
 
-`<intl-name>` resolves identifiers through `Intl.DisplayNames`.
+{{t.pages.documentation.components.intl_name.content.resolves_identifiers_through_intl_displaynames}}
 
-Native reference: [Intl.DisplayNames](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DisplayNames)
+{{t.pages.documentation.components.intl_name.content.native_reference_intl_displaynames_https_developer_mozilla_org_en_us_docs_web_javascript_referen}}
 
 ```html
 <intl-name type="region">US</intl-name>
 ```
 
-## Attributes and properties
+## {{t.common.content.attributes_and_properties}}
 
-| Attribute | JS property | Type | Description |
+{{t.common.content.attribute_js_property_type_description}}
 |---|---|---|---|
-| `value` | `value` | string | Identifier to display. Child text is used when omitted. |
-| `locale` | `locale` | string | Overrides the runtime locale. |
-| `type` | `type` | `language` \| `region` \| `script` \| `currency` | Identifier category. Defaults to `region`. |
-| `name-style` | `nameStyle` | `long` \| `short` \| `narrow` | Display name style. |
-| `language` | `language` | `dialect` \| `standard` | Language display style. |
+{{t.pages.documentation.components.intl_name.content.value_value_string_identifier_to_display_child_text_is_used_when_omitted}}
+{{t.common.content.locale_locale_string_overrides_the_runtime_locale}}
+{{t.pages.documentation.components.intl_name.content.type_type_language_region_script_currency_identifier_category_defaults_to_region}}
+{{t.pages.documentation.components.intl_name.content.name_style_namestyle_long_short_narrow_display_name_style}}
+{{t.pages.documentation.components.intl_name.content.language_language_dialect_standard_language_display_style}}
 
-## `value`
+## {{t.common.content.value}}
 
-Use child text for static identifiers.
+{{t.pages.documentation.components.intl_name.content.use_child_text_for_static_identifiers}}
 
 ```html
 <intl-name type="region">US</intl-name>
 ```
 
-Use the property from JavaScript for dynamic identifiers.
+{{t.pages.documentation.components.intl_name.content.use_the_property_from_javascript_for_dynamic_identifiers}}
 
 ```html
 <intl-name id="selected-region" type="region">US</intl-name>
@@ -44,18 +44,18 @@ Use the property from JavaScript for dynamic identifiers.
 </script>
 ```
 
-## `locale`
+## {{t.common.content.locale}}
 
-Use `locale` for a one-off override.
+{{t.common.content.use_locale_for_a_one_off_override}}
 
 ```html
 <intl-name locale="en-US" type="region">BR</intl-name>
 <intl-name locale="pt-BR" type="region">BR</intl-name>
 ```
 
-## `type`
+## {{t.common.content.type}}
 
-`type` tells the component which identifier category to resolve.
+{{t.pages.documentation.components.intl_name.content.type_tells_the_component_which_identifier_category_to_resolve}}
 
 ```html
 <intl-name type="region">US</intl-name>
@@ -64,9 +64,9 @@ Use `locale` for a one-off override.
 <intl-name type="currency">USD</intl-name>
 ```
 
-## `name-style`
+## {{t.pages.documentation.components.intl_name.content.name_style}}
 
-`name-style` controls output length when the browser supports multiple labels.
+{{t.pages.documentation.components.intl_name.content.name_style_controls_output_length_when_the_browser_supports_multiple_labels}}
 
 ```html
 <intl-name type="region" name-style="long">US</intl-name>
@@ -74,19 +74,19 @@ Use `locale` for a one-off override.
 <intl-name type="currency" name-style="narrow">USD</intl-name>
 ```
 
-For short or narrow styles, the component adds a long-form `aria-label` when the accessible label differs from the visible output.
+{{t.common.content.for_short_or_narrow_styles_the_component_adds_a_long_form_aria_label_when_the_accessible_label_d}}
 
-## `language`
+## {{t.pages.documentation.components.intl_name.content.language}}
 
-`language` controls language display when `type="language"`.
+{{t.pages.documentation.components.intl_name.content.language_controls_language_display_when_type_language}}
 
 ```html
 <intl-name type="language" language="dialect">pt-BR</intl-name>
 <intl-name type="language" language="standard">pt-BR</intl-name>
 ```
 
-Use `dialect` when regional language names matter. Use `standard` when you want the base language name when possible.
+{{t.pages.documentation.components.intl_name.content.use_dialect_when_regional_language_names_matter_use_standard_when_you_want_the_base_language_nam}}
 
-## See also
+## {{t.common.content.see_also}}
 
-- [intlName](/documentation/formatters/intl-name)
+- {{t.pages.documentation.components.intl_name.content.intlname_documentation_formatters_intl_name}}

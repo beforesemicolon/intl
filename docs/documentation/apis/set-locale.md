@@ -1,16 +1,16 @@
 ---
-name: setLocale
+name: '{{t.pages.documentation.apis.set_locale.meta.setlocale}}'
 order: 7.04
-title: setLocale - Intl by Before Semicolon
-description: Change the active locale on a runtime and load messages for the new locale.
+title: '{{t.pages.documentation.apis.set_locale.meta.setlocale_intl_by_before_semicolon}}'
+description: '{{t.pages.documentation.apis.set_locale.meta.change_the_active_locale_on_a_runtime_and_load_messages_for_the_new_locale}}'
 layout: document
 ---
 
-## `setLocale`
+## {{t.pages.documentation.apis.set_locale.content.setlocale}}
 
-`setLocale(locale, scope?)` updates the runtime locale and loads the locale payload for that runtime.
+{{t.pages.documentation.apis.set_locale.content.setlocale_locale_scope_updates_the_runtime_locale_and_loads_the_locale_payload_for_that_runtime}}
 
-It is the supported path for in-page language switching.
+{{t.pages.documentation.apis.set_locale.content.it_is_the_supported_path_for_in_page_language_switching}}
 
 ```ts
 import { initIntl, setLocale } from '@beforesemicolon/intl'
@@ -19,38 +19,38 @@ initIntl({ locale: 'en-US', srcDir: '/locales' })
 await setLocale('fr-FR')
 ```
 
-## Signature
+## {{t.common.content.signature}}
 
 ```ts
 function setLocale(locale: string, scope?: IntlRuntime): Promise<IntlRuntimeSnapshot>
 ```
 
-## What changes when this runs
+## {{t.pages.documentation.apis.set_locale.content.what_changes_when_this_runs}}
 
-- sets runtime locale
-- marks runtime status as `loading`
-- loads locale messages (`src` / `srcDir` or custom loader)
-- loads fallback locale messages when configured
-- notifies subscribers with updated snapshot once ready
+- {{t.pages.documentation.apis.set_locale.content.sets_runtime_locale}}
+- {{t.pages.documentation.apis.set_locale.content.marks_runtime_status_as_loading}}
+- {{t.pages.documentation.apis.set_locale.content.loads_locale_messages_src_srcdir_or_custom_loader}}
+- {{t.pages.documentation.apis.set_locale.content.loads_fallback_locale_messages_when_configured}}
+- {{t.pages.documentation.apis.set_locale.content.notifies_subscribers_with_updated_snapshot_once_ready}}
 
-If locale is unchanged or empty, it resolves immediately with the current snapshot.
+{{t.pages.documentation.apis.set_locale.content.if_locale_is_unchanged_or_empty_it_resolves_immediately_with_the_current_snapshot}}
 
 ```ts
 const sameLocale = await setLocale(getIntl().locale) // resolves fast, no fetch
 ```
 
-## Scoped vs default runtime
+## {{t.pages.documentation.apis.set_locale.content.scoped_vs_default_runtime}}
 
-Pass a runtime when language switching should be isolated.
+{{t.pages.documentation.apis.set_locale.content.pass_a_runtime_when_language_switching_should_be_isolated}}
 
 ```ts
 const preview = createIntl({ locale: 'en-US', srcDir: '/locales/previews' })
 await setLocale('ja-JP', preview)
 ```
 
-Without `scope`, the package default runtime is changed.
+{{t.pages.documentation.apis.set_locale.content.without_scope_the_package_default_runtime_is_changed}}
 
-## Language switcher pattern
+## {{t.pages.documentation.apis.set_locale.content.language_switcher_pattern}}
 
 ```ts
 const localeSelect = document.querySelector('#locale')
@@ -65,7 +65,7 @@ localeSelect?.addEventListener('change', async (event) => {
 })
 ```
 
-`setLocale` resolves even if loading fails; check `snapshot.status === 'error'` before switching UI assumptions.
+{{t.pages.documentation.apis.set_locale.content.setlocale_resolves_even_if_loading_fails_check_snapshot_status_error_before_switching_ui_assumpt}}
 
 ```ts
 const snapshot = await setLocale('ar')
@@ -74,4 +74,4 @@ if (snapshot.status === 'error') {
 }
 ```
 
-For manual loading without changing active locale, use `loadLocale()`.
+{{t.pages.documentation.apis.set_locale.content.for_manual_loading_without_changing_active_locale_use_loadlocale}}

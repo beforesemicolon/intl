@@ -1,34 +1,34 @@
 ---
-name: Intl
+name: '{{t.pages.home.meta.intl}}'
 order: 0
-title: Intl by Before Semicolon
-description: Drop-in internationalization primitives for Web Components, built for readable, composable, runtime-safe localized interfaces.
+title: '{{t.pages.home.meta.intl_by_before_semicolon}}'
+description: '{{t.pages.home.meta.drop_in_internationalization_primitives_for_web_components_built_for_readable_composable_runtime}}'
 layout: landing
 ---
 
-::: layout landing-hero version="v0.1.0" title="Internationalization" title2="in plain HTML." primaryLabel="Get Started" secondaryLabel="$ npm i @beforesemicolon/intl"
+::: layout landing-hero version="v0.1.0" title="{{t.pages.home.content.internationalization}}" title2="{{t.pages.home.content.in_plain_html}}" primaryLabel="{{t.common.content.get_started}}" secondaryLabel="$ npm i @beforesemicolon/intl"
 
 === copy
 
-Drop-in localization primitives for Web Components. Format messages, numbers, dates, durations, relative time, lists, display names, and plurals with scoped locale runtimes that can switch language without a page refresh.
+{{t.pages.home.content.drop_in_localization_primitives_for_web_components_format_messages_numbers_dates_durations_relat}}
 
 === stat
 
 ## 9
 
-WEB COMPONENTS
+{{t.pages.home.content.web_components}}
 
 === stat
 
 ## 1
 
-RUNTIME
+{{t.pages.home.content.runtime}}
 
 === stat
 
-## Intl
+## {{t.pages.home.content.intl}}
 
-FORMATTERS
+{{t.pages.home.content.formatters}}
 
 === code filename=index.html lang=html
 
@@ -54,19 +54,19 @@ FORMATTERS
 
 === header
 
-`// THE ECOSYSTEM`
+{{t.pages.home.content.the_ecosystem}}
 
-## Built on Web Component & Markup.
+## {{t.pages.home.content.built_on_web_component_markup}}
 
-Intl is built on top of Web Component and Markup. Same engine, modular packages, zero lock-in.
+{{t.pages.home.content.intl_is_built_on_top_of_web_component_and_markup_same_engine_modular_packages_zero_lock_in}}
 
-=== product title="Markup" package="@beforesemicolon/markup" color=orange icon=reactive href="https://markup.beforesemicolon.com"
+=== product title="{{t.pages.home.content.markup}}" package="@beforesemicolon/markup" color=orange icon=reactive href="https://markup.beforesemicolon.com"
 
-The reactive templating system behind the Before Semicolon component stack. Tagged templates, state, effects, repeat, and suspense.
+{{t.pages.home.content.the_reactive_templating_system_behind_the_before_semicolon_component_stack_tagged_templates_stat}}
 
-=== product title="Web Component" package="@beforesemicolon/web-component" color=cyan icon=webComponents href="https://web-component.beforesemicolon.com"
+=== product title="{{t.pages.home.content.web_component}}" package="@beforesemicolon/web-component" color=cyan icon=webComponents href="https://web-component.beforesemicolon.com"
 
-The custom-element layer Intl components are built on. Props, state, lifecycle hooks, scoped rendering, and framework-free browser registration.
+{{t.pages.home.content.the_custom_element_layer_intl_components_are_built_on_props_state_lifecycle_hooks_scoped_renderi}}
 
 :::
 
@@ -74,47 +74,47 @@ The custom-element layer Intl components are built on. Props, state, lifecycle h
 
 === header
 
-`// WHY INTL`
+{{t.pages.home.content.why_intl}}
 
-## Localize component-first interfaces without framework lock-in.
+## {{t.pages.home.content.localize_component_first_interfaces_without_framework_lock_in}}
 
-Use declarative custom elements for markup-heavy views and runtime-aware formatter functions for application code, tests, and server-side work.
+{{t.pages.home.content.use_declarative_custom_elements_for_markup_heavy_views_and_runtime_aware_formatter_functions_for}}
 
 === feature icon=reactive
 
-### Scoped locale runtime
+### {{t.pages.home.content.scoped_locale_runtime}}
 
-Set locale and messages once with `<intl-locale>`, switch language with `setLocale()`, and nest independent runtime scopes anywhere in the DOM.
+{{t.pages.home.content.set_locale_and_messages_once_with_switch_language_with_setlocale_and_nest_independent_runtime_sc}}
 
 === feature icon=terminal
 
-### Formatter APIs
+### {{t.pages.home.content.formatter_apis}}
 
-Call `intlMsg`, `intlNumber`, `intlDateTime`, `intlDuration`, `intlRelTime`, `intlList`, `intlName`, and `intlPlural` directly.
+{{t.pages.home.content.call_intlmsg_intlnumber_intldatetime_intlduration_intlreltime_intllist_intlname_and_intlplural_d}}
 
 === feature icon=webComponents
 
-### Accessible output
+### {{t.pages.home.content.accessible_output}}
 
-Components render light DOM text and semantic elements like `<time>`, with language direction metadata applied from the active locale.
+{{t.pages.home.content.components_render_light_dom_text_and_semantic_elements_like_with_language_direction_metadata_app}}
 
 === feature icon=standards
 
-### Explicit component API
+### {{t.pages.home.content.explicit_component_api}}
 
-Attributes map directly to the underlying `Intl` options, keeping markup readable and predictable from the first release.
+{{t.pages.home.content.attributes_map_directly_to_the_underlying_intl_options_keeping_markup_readable_and_predictable_f}}
 
 === feature icon=plug
 
-### Component entrypoints
+### {{t.pages.home.content.component_entrypoints}}
 
-Import all components from the root package or use per-component entrypoints when you want smaller browser bundles.
+{{t.pages.home.content.import_all_components_from_the_root_package_or_use_per_component_entrypoints_when_you_want_small}}
 
 === feature icon=surgical
 
-### Cached formatter reuse
+### {{t.pages.home.content.cached_formatter_reuse}}
 
-Formatter instances are cached by locale and options inside the active runtime scope, avoiding repeated `Intl.*` construction.
+{{t.pages.home.content.formatter_instances_are_cached_by_locale_and_options_inside_the_active_runtime_scope_avoiding_re}}
 
 :::
 
@@ -122,13 +122,13 @@ Formatter instances are cached by locale and options inside the active runtime s
 
 === header
 
-`// USE THIS TODAY`
+{{t.pages.home.content.use_this_today}}
 
-## Five practical localization examples.
+## {{t.pages.home.content.five_practical_localization_examples}}
 
-Each example works with the same runtime and component model, so teams can mix markup and JavaScript without changing libraries.
+{{t.pages.home.content.each_example_works_with_the_same_runtime_and_component_model_so_teams_can_mix_markup_and_javascr}}
 
-=== example label="Currency formatting" color=primary filename=currency.html lang=html
+=== example label="{{t.pages.home.content.currency_formatting}}" color=primary filename=currency.html lang=html
 
 ```html
 <intl-locale locale="en-US">
@@ -145,7 +145,7 @@ Each example works with the same runtime and component model, so teams can mix m
 </intl-locale>
 ```
 
-=== example label="Relative time and date" color=green filename=time.html lang=html
+=== example label="{{t.pages.home.content.relative_time_and_date}}" color=green filename=time.html lang=html
 
 ```html
 <intl-locale locale="en-US">
@@ -158,7 +158,7 @@ Each example works with the same runtime and component model, so teams can mix m
 </intl-locale>
 ```
 
-=== example label="Plural and list" color=cyan filename=plural-list.html lang=html
+=== example label="{{t.pages.home.content.plural_and_list}}" color=cyan filename=plural-list.html lang=html
 
 ```html
 <intl-locale locale="en-US">
@@ -167,7 +167,7 @@ Each example works with the same runtime and component model, so teams can mix m
 </intl-locale>
 ```
 
-=== example label="Language switcher" color=orange filename=language-switcher.html lang=html
+=== example label="{{t.pages.home.content.language_switcher}}" color=orange filename=language-switcher.html lang=html
 
 ```html
 <intl-locale id="page-locale" locale="en" src-dir="/locales">
@@ -186,7 +186,7 @@ Each example works with the same runtime and component model, so teams can mix m
 </script>
 ```
 
-=== example label="Full composition" color=primary filename=checkout.html lang=html
+=== example label="{{t.pages.home.content.full_composition}}" color=primary filename=checkout.html lang=html
 
 ```html
 <intl-locale locale="en-US" src-dir="/locales">
@@ -207,11 +207,11 @@ Each example works with the same runtime and component model, so teams can mix m
 
 === header
 
-`// QUICK START`
+{{t.pages.home.content.quick_start}}
 
-## Install in seconds.
+## {{t.pages.home.content.install_in_seconds}}
 
-Use the package entrypoint for all components and helpers, or import individual component entrypoints when you want smaller bundles.
+{{t.pages.home.content.use_the_package_entrypoint_for_all_components_and_helpers_or_import_individual_component_entrypo}}
 
 === tab key=cdn label=CDN command="<script src=&quot;https://unpkg.com/@beforesemicolon/intl/dist/client.js&quot;></script>"
 
@@ -227,13 +227,12 @@ Use the package entrypoint for all components and helpers, or import individual 
 
 === copy
 
-## Build localized interfaces with Web Components.
+## {{t.pages.home.content.build_localized_interfaces_with_web_components}}
 
-Read the docs for runtime setup, formatter APIs, browser registration, component props, edge cases, and compatibility notes.
+{{t.pages.home.content.read_the_docs_for_runtime_setup_formatter_apis_browser_registration_component_props_edge_cases_a}}
 
 === actions
 
-[Get Started](/documentation/get-started)
-[Read the Docs](/documentation)
+{{t.pages.home.content.get_started_documentation_get_started_read_the_docs_documentation}}
 
 :::
