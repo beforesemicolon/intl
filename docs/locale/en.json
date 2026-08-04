@@ -34,6 +34,50 @@
         "index": "/"
     },
     "common": {
+        "navigation": {
+            "home": "Home",
+            "content": "Content",
+            "features": "Features",
+            "code": "Code",
+            "install": "Install",
+            "documentation": "Documentation",
+            "docs": "Docs",
+            "learningResources": "Learning Resources",
+            "essentialsTraining": "Essentials Training",
+            "aboutBeforeSemicolon": "About Before Semicolon",
+            "openSource": "Open Source",
+            "website": "Website",
+            "blog": "Blog",
+            "youtubeChannel": "YouTube Channel"
+        },
+        "actions": {
+            "editDoc": "edit this doc",
+            "getStarted": "Get Started",
+            "readDocs": "Read the Docs",
+            "copy": "Copy",
+            "copied": "Copied",
+            "copyCode": "Copy code",
+            "codeCopied": "Code copied",
+            "commandCopied": "Command copied",
+            "copyInstallCommand": "Copy {{manager}} install command",
+            "previousExample": "Previous example",
+            "nextExample": "Next example"
+        },
+        "accessibility": {
+            "installationPackageManager": "Installation package manager",
+            "goToSlide": "Go to slide {{number}}",
+            "mobileMenu": {
+                "open": "Open documentation menu",
+                "close": "Close documentation menu"
+            }
+        },
+        "labels": {
+            "exampleUppercase": "EXAMPLE"
+        },
+        "footer": {
+            "description": "HTML-first internationalization for teams building in Web Components and component-first architectures.",
+            "copyright": "Copyright © 2026 Before Semicolon. All rights reserved."
+        },
         "content": {
             "native_api_intl_locale_https_developer_mozilla_org_en_us_docs_web_javascript_reference_global_ob": "Native API: [`Intl.Locale`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale)",
             "signature": "Signature",
