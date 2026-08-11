@@ -216,3 +216,10 @@ Message files are JSON objects. Nested keys are addressed with dot notation.
 - Use package-level formatter functions when JavaScript code needs the same formatting behavior as components.
 - Use `@beforesemicolon/intl/components/intl-*` entrypoints for lazy component registration.
 - Use `<intl-locale>` scopes when a page or subtree needs explicit locale state.
+
+## Community
+
+- [Contributing guidelines](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security policy](SECURITY.md)
+- [BSD 3-Clause License](LICENSE)
