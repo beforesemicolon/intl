@@ -28,3 +28,5 @@ TRANSLATION_BUILDER_PLAN.md
 src/clients
 .github
 build.js
+site.config.json
+netlify.toml
