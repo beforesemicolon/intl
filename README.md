@@ -22,8 +22,8 @@ Initialize the default runtime and call formatter functions directly.
 
 ```ts
 import {
-    formatMessage,
-    formatNumber,
+    intlMsg,
+    intlNumber,
     initIntl,
     setLocale,
 } from '@beforesemicolon/intl'
@@ -34,8 +34,8 @@ initIntl({
     srcDir: '/locales',
 })
 
-formatMessage('home.title')
-formatNumber(1200, { style: 'currency', currency: 'USD' })
+intlMsg('home.title')
+intlNumber(1200, { style: 'currency', currency: 'USD' })
 
 await setLocale('pt-CV')
 ```
@@ -123,30 +123,30 @@ await setLocale('pt-CV', checkoutIntl)
 ## Function API
 
 ```ts
-formatMessage(key, values?, options?)
-formatNumber(value, options?)
-formatDateTime(value, options?)
-formatDuration(value, options?)
-formatRelativeTime(value, options?)
-formatList(value, options?)
-formatName(value, options?)
-formatPlural(value, options?)
+intlMsg(key, values?, options?)
+intlNumber(value, options?)
+intlDateTime(value, options?)
+intlDuration(value, options?)
+intlRelTime(value, options?)
+intlList(value, options?)
+intlName(value, options?)
+intlPlural(value, options?)
 ```
 
 Each formatter accepts `locale` and `scope` options where applicable.
 
 ```ts
-formatMessage('hello', { name: 'Elson' }, { scope: checkoutIntl })
-formatNumber(1200, { locale: 'pt-CV' })
-formatDateTime('2026-01-01T10:00:00Z', {
+intlMsg('hello', { name: 'Elson' }, { scope: checkoutIntl })
+intlNumber(1200, { locale: 'pt-CV' })
+intlDateTime('2026-01-01T10:00:00Z', {
     dateStyle: 'medium',
     timeZone: 'UTC',
 })
-formatDuration(3600000, { fields: 'hours', style: 'short' })
-formatRelativeTime(Date.now() + 60000, { unit: 'auto' })
-formatList(['A', 'B', 'C'], { type: 'conjunction' })
-formatName('PT', { type: 'region' })
-formatPlural(2, { one: 'item', other: 'items' })
+intlDuration(3600000, { fields: 'hours', style: 'short' })
+intlRelTime(Date.now() + 60000, { unit: 'auto' })
+intlList(['A', 'B', 'C'], { type: 'conjunction' })
+intlName('PT', { type: 'region' })
+intlPlural(2, { one: 'item', other: 'items' })
 ```
 
 ## Component API
@@ -216,6 +216,17 @@ Message files are JSON objects. Nested keys are addressed with dot notation.
 - Use package-level formatter functions when JavaScript code needs the same formatting behavior as components.
 - Use `@beforesemicolon/intl/components/intl-*` entrypoints for lazy component registration.
 - Use `<intl-locale>` scopes when a page or subtree needs explicit locale state.
+
+## AI and ecosystem context
+
+- [`llms.txt`](https://intl.beforesemicolon.com/llms.txt) is the concise,
+  package-owned Intl and ecosystem contract for AI tools.
+- [`llms-full.txt`](https://intl.beforesemicolon.com/llms-full.txt) contains the
+  complete resolved documentation and examples.
+
+Intl builds on Web Component and composes with Router inside the same DOM tree.
+Markup owns reactive rendering, Web Component owns application elements, Router
+owns navigation, and Intl owns localized output.
 
 ## Community
 
