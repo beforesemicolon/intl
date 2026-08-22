@@ -13,10 +13,20 @@ const browserBuilds = [
     { entry: 'src/clients/intl-plural.ts', out: 'dist/intl-plural.js' },
 ]
 
-Promise.all([
-    buildModules(),
-    ...browserBuilds.map(({ entry, out }) => buildBrowser({ entry, out })),
-]).catch((error) => {
-    console.error(error)
-    process.exit(1)
-})
+await Promise.all([
+    buildModules({
+        esbuildOptions: {
+            keepNames: false,
+        },
+    }),
+    ...browserBuilds.map(({ entry, out }) =>
+        buildBrowser({
+            entry,
+            out,
+            esbuildOptions: {
+                keepNames: false,
+                sourcemap: false,
+            },
+        })
+    ),
+])
