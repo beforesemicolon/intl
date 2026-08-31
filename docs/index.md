@@ -6,7 +6,7 @@ description: '{{t.pages.home.meta.drop_in_internationalization_primitives_for_we
 layout: landing
 ---
 
-::: layout landing-hero version="v0.1.0" title="{{t.pages.home.content.internationalization}}" title2="{{t.pages.home.content.in_plain_html}}" primaryLabel="{{t.common.content.get_started}}" secondaryLabel="$ npm i @beforesemicolon/intl"
+::: layout landing-hero title="{{t.pages.home.content.internationalization}}" title2="{{t.pages.home.content.in_plain_html}}" primaryLabel="{{t.common.content.get_started}}" secondaryLabel="$ npm i @beforesemicolon/intl"
 
 === copy
 

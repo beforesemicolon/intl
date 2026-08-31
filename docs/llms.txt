@@ -1,0 +1,248 @@
+# {{project.name}}
+
+> Scoped internationalization through formatter functions and native Custom Elements built on `@beforesemicolon/web-component`.
+
+Package: `{{project.name}}`
+Version: `{{project.version}}`
+Documentation: https://intl.beforesemicolon.com/documentation/
+Complete context: https://intl.beforesemicolon.com/llms-full.txt
+
+Use this file as the authoritative compact contract when generating Intl code. Use the exact `intl*` API names documented here; do not substitute framework i18n hooks, context providers, or undocumented `format*` aliases.
+
+## Before Semicolon ecosystem
+
+The packages form one composable browser ecosystem:
+
+1. `@beforesemicolon/markup` owns reactive rendering, state, effects, refs, and helpers.
+2. `@beforesemicolon/web-component` owns reactive native Custom Elements and re-exports Markup.
+3. `@beforesemicolon/router` owns navigation and route-aware rendering.
+4. `@beforesemicolon/intl` owns locale scopes, message loading, translations, fallback behavior, and internationalized formatting.
+
+Intl depends on Web Component for its elements, but it exports Intl components, runtime APIs, and formatter APIs—not `html`, `WebComponent`, or Router APIs. Import those capabilities from their owning packages.
+
+Canonical ecosystem contracts:
+
+- https://markup.beforesemicolon.com/llms.txt
+- https://web-component.beforesemicolon.com/llms.txt
+- https://router.beforesemicolon.com/llms.txt
+
+## Installation and setup
+
+```bash
+npm install @beforesemicolon/intl
+```
+
+The package entrypoint registers all Intl Custom Elements and exports the runtime and formatter APIs:
+
+```javascript
+import {
+    initIntl,
+    setLocale,
+    intlMsg,
+    intlNumber,
+    intlDateTime,
+} from '@beforesemicolon/intl'
+```
+
+For direct browser use, load Web Component first:
+
+```html
+<script src="https://unpkg.com/@beforesemicolon/web-component/dist/client.js"></script>
+<script src="https://unpkg.com/@beforesemicolon/intl/dist/client.js"></script>
+<script>
+    const { initIntl, setLocale, intlMsg, intlNumber } = BFS.INTL
+</script>
+```
+
+## Core mental model
+
+- An Intl runtime stores the active locale, direction, fallback locale, messages, loading status, and formatter caches.
+- `<intl-locale>` provides a runtime scope to descendant Intl components.
+- Nested locale providers inherit parent and fallback messages unless overridden.
+- Formatter functions work without DOM components and may target a specific runtime scope.
+- Visible fallback text in Intl elements remains useful before messages load and when a key is missing.
+
+## Component-first usage
+
+```html
+<intl-locale
+    locale="en-US"
+    fallback-locale="en"
+    src-dir="/locales"
+    update-document
+>
+    <h1><intl-msg key="checkout.title">Checkout</intl-msg></h1>
+    <intl-number type="currency" currency="USD">1299.99</intl-number>
+    <intl-datetime date-style="medium" time-zone="UTC">
+        2026-01-01T10:00:00Z
+    </intl-datetime>
+</intl-locale>
+```
+
+Use one top-level provider for the main application locale. Use nested providers only for intentional localized subtrees.
+
+Primary components:
+
+- `<intl-locale>`: runtime provider and locale message loader.
+- `<intl-msg>`: message lookup and value interpolation.
+- `<intl-number>`: number, currency, percent, and unit formatting.
+- `<intl-datetime>`: date and time formatting.
+- `<intl-duration>`: duration formatting.
+- `<intl-rel-time>`: relative time formatting, optionally live.
+- `<intl-list>`: conjunction, disjunction, and unit lists.
+- `<intl-name>`: language, region, currency, and other display names.
+- `<intl-plural>`: plural category selection.
+
+## Runtime API
+
+Create an isolated scope when localization should not use the default singleton:
+
+```javascript
+import { createIntl, getIntl, loadLocale, setLocale } from '@beforesemicolon/intl'
+
+const checkoutIntl = createIntl({
+    locale: 'en-US',
+    fallbackLocale: 'en',
+    messages: {
+        checkout: {
+            total: 'Total: {amount}',
+        },
+    },
+})
+
+getIntl(checkoutIntl)
+await loadLocale('pt-CV', checkoutIntl)
+await setLocale('pt-CV', checkoutIntl)
+```
+
+Runtime APIs:
+
+- `createIntl(options)` creates an independent runtime.
+- `initIntl(options)` initializes or replaces the default runtime configuration.
+- `getIntl(scope?)` returns the provided runtime or the default runtime.
+- `loadLocale(locale?, scope?)` loads messages for a locale.
+- `setLocale(locale, scope?)` activates and loads a locale.
+- `subscribeIntl(listener, scope?)` observes runtime snapshots and returns an unsubscribe function.
+- `destroyIntl(scope?)` disposes a runtime.
+- `resetIntl()` resets the default runtime.
+- `getLocaleDirection(locale)` returns `ltr` or `rtl`.
+
+## Formatter API
+
+Use these exact exported names:
+
+```javascript
+import {
+    intlMsg,
+    intlNumber,
+    intlDateTime,
+    intlDuration,
+    intlRelTime,
+    intlList,
+    intlName,
+    intlPlural,
+} from '@beforesemicolon/intl'
+
+intlMsg('checkout.total', { amount: '$12.00' }, { scope: checkoutIntl })
+intlNumber(1200, { locale: 'en-US', style: 'currency', currency: 'USD' })
+intlDateTime('2026-01-01T10:00:00Z', {
+    locale: 'en-US',
+    dateStyle: 'medium',
+    timeZone: 'UTC',
+})
+intlDuration(3600000, { fields: 'hours', style: 'short' })
+intlRelTime(Date.now() + 60000, { unit: 'auto' })
+intlList(['A', 'B', 'C'], { type: 'conjunction' })
+intlName('PT', { type: 'region' })
+intlPlural(2, { one: 'item', other: 'items' })
+```
+
+Read the formatter-specific pages for supported option names. Do not translate native `Intl` option names into framework conventions.
+
+## Message files and fallback
+
+Message files are JSON objects. Nested keys use dot notation:
+
+```json
+{
+    "checkout": {
+        "title": "Checkout",
+        "total": "Total: {amount}"
+    }
+}
+```
+
+```html
+<intl-msg key="checkout.total" values='{"amount":"$12.00"}'>
+    Total
+</intl-msg>
+```
+
+- `src-dir="/locales"` loads `/locales/{locale}.json`.
+- Use `src` when a scope owns an exact bundle URL.
+- Keep fallback text readable for loading, missing keys, crawlers, and no-JavaScript output.
+- Put `update-document` only on the top-most application scope so document language and direction have one owner.
+
+## Locale changes
+
+```javascript
+import { setLocale } from '@beforesemicolon/intl'
+
+const selector = document.querySelector('#locale')
+selector?.addEventListener('change', async (event) => {
+    const locale = event.target.value
+    await setLocale(locale)
+})
+```
+
+Subscribed components update from the active runtime without a page reload.
+
+## Router and Web Component composition
+
+Intl components may appear inside Router routes and custom application components:
+
+```bash
+npm install @beforesemicolon/router @beforesemicolon/intl
+```
+
+```javascript
+import '@beforesemicolon/router'
+import '@beforesemicolon/intl'
+import { WebComponent, html } from '@beforesemicolon/web-component'
+```
+
+```html
+<page-route path="/invoices/:invoiceId">
+    <intl-locale locale="en-US" src="/locales/en-US.invoice.json">
+        <h1><intl-msg key="invoice.title">Invoice</intl-msg></h1>
+        <intl-number type="currency" currency="USD">250</intl-number>
+    </intl-locale>
+</page-route>
+```
+
+Router changes URLs and route content. Intl changes locale output. Web Component owns reusable application elements, and Markup owns their reactive templates.
+
+For CDN use, load scripts in this order: Web Component, then Router and/or Intl.
+
+## Rules for generated code
+
+- Use the exported `intlMsg`, `intlNumber`, `intlDateTime`, `intlDuration`, `intlRelTime`, `intlList`, `intlName`, and `intlPlural` names.
+- Use Intl components for visible localized DOM and formatter functions for values needed in JavaScript.
+- Keep message keys semantic and nested by feature rather than duplicating visible English text as keys.
+- Provide readable fallback content in HTML.
+- Keep one owner for document language and direction.
+- Import `html` and `WebComponent` from Web Component and navigation APIs from Router.
+- Do not invent React context, hooks, directives, or translation syntax.
+
+## Canonical pages
+
+- https://intl.beforesemicolon.com/documentation/get-started
+- https://intl.beforesemicolon.com/documentation/guide-best-practices
+- https://intl.beforesemicolon.com/documentation/components/intl-locale
+- https://intl.beforesemicolon.com/documentation/components/intl-msg
+- https://intl.beforesemicolon.com/documentation/apis/create-intl
+- https://intl.beforesemicolon.com/documentation/apis/set-locale
+- https://intl.beforesemicolon.com/documentation/apis/load-locale
+- https://intl.beforesemicolon.com/documentation/formatters/intl-message
+- https://intl.beforesemicolon.com/documentation/formatters/intl-number
+- https://intl.beforesemicolon.com/documentation/formatters/intl-date-time

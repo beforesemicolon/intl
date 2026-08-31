@@ -1,4 +1,5 @@
 import { buildBrowser, buildModules } from '@beforesemicolon/builder'
+import { writeFile } from 'node:fs/promises'
 
 const browserBuilds = [
     { entry: 'src/client.ts', out: 'dist/client.js' },
@@ -13,10 +14,41 @@ const browserBuilds = [
     { entry: 'src/clients/intl-plural.ts', out: 'dist/intl-plural.js' },
 ]
 
-Promise.all([
-    buildModules(),
-    ...browserBuilds.map(({ entry, out }) => buildBrowser({ entry, out })),
-]).catch((error) => {
-    console.error(error)
-    process.exit(1)
-})
+await Promise.all([
+    buildModules({
+        esbuildOptions: {
+            keepNames: false,
+            tsconfig: 'tsconfig.json',
+            plugins: [
+                {
+                    name: 'commonjs-module-interop',
+                    setup(build) {
+                        if (build.initialOptions.format !== 'cjs') return
+                        // Compile sibling modules together as CommonJS, not
+                        // Node ESM imports of already-transpiled CommonJS.
+                        build.onResolve({ filter: /.*/ }, (args) =>
+                            args.kind === 'entry-point'
+                                ? { path: args.path, namespace: 'cjs-source' }
+                                : undefined
+                        )
+                    },
+                },
+            ],
+        },
+    }),
+    ...browserBuilds.map(({ entry, out }) =>
+        buildBrowser({
+            entry,
+            out,
+            esbuildOptions: {
+                keepNames: false,
+                sourcemap: false,
+            },
+        })
+    ),
+])
+
+await writeFile(
+    new URL('./dist/cjs/package.json', import.meta.url),
+    `${JSON.stringify({ type: 'commonjs' }, null, 4)}\n`
+)
