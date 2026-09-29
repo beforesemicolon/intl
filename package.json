@@ -140,5 +140,8 @@
     "dependencies": {
         "@beforesemicolon/web-component": "^1.21.0",
         "@formatjs/intl-durationformat": "^0.10.0"
+    },
+    "overrides": {
+        "html-minifier": "npm:@keep-lts/html-minifier@4.0.1"
     }
 }
