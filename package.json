@@ -136,7 +136,7 @@
         "typescript": "^5.7.2"
     },
     "dependencies": {
-        "@beforesemicolon/web-component": "^1.21.0-next",
+        "@beforesemicolon/web-component": "^1.21.1-next",
         "@formatjs/intl-durationformat": "^0.11.0"
     },
     "overrides": {
