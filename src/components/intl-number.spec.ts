@@ -78,6 +78,29 @@ describe('intl-number', () => {
         ])
     })
 
+    it('should render digit ranges and explicit grouping modes', async () => {
+        html`
+            <intl-number value="1234.567" grouping="true" fractions="2" locale="en-US"></intl-number>
+            <intl-number value="1234.567" grouping="auto" fractions="1 2" locale="en-US"></intl-number>
+            <intl-number value="1234.567" significant-digits="3" locale="en-US"></intl-number>
+            <intl-number value="1234.567" significant-digits="3 5" locale="en-US"></intl-number>
+            <intl-number value="1234.567" fractions="invalid" locale="en-US"></intl-number>
+        `.render(document.body)
+        await wait()
+
+        const numbers = [...document.querySelectorAll('intl-number')] as Array<
+            HTMLElement & { contentRoot: HTMLElement }
+        >
+
+        expect(numbers.map((number) => number.contentRoot.textContent)).toEqual([
+            '1,234.57',
+            '1,234.57',
+            '1,230',
+            '1,234.6',
+            '1,234.567',
+        ])
+    })
+
     it('should render currency, percent, and unit options', async () => {
         html`
             <intl-number value="20" type="currency" currency="USD" locale="en-US"></intl-number>
