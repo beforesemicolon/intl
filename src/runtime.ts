@@ -94,10 +94,16 @@ const resolveLocale = (locale?: string, parentScope?: IntlRuntime) => {
 export const getLocaleDirection = (locale: string): IntlDirection => {
     try {
         const intlLocale = new Intl.Locale(locale) as Intl.Locale & {
+            getTextInfo?: () => { direction?: IntlDirection }
             textInfo?: { direction?: IntlDirection }
         }
 
-        return intlLocale.textInfo?.direction === 'rtl' ? 'rtl' : 'ltr'
+        const textInfo =
+            typeof intlLocale.getTextInfo === 'function'
+                ? intlLocale.getTextInfo()
+                : intlLocale.textInfo
+
+        return textInfo?.direction === 'rtl' ? 'rtl' : 'ltr'
     } catch {
         return 'ltr'
     }

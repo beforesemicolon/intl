@@ -47,6 +47,63 @@ describe('intl runtime', () => {
         expect(getLocaleDirection('not-a-valid-locale@@')).toBe('ltr')
     })
 
+    it.each([
+        ['ar', 'rtl'],
+        ['he', 'rtl'],
+        ['en-US', 'ltr'],
+    ])(
+        'resolves the direction of %s with the native Locale API',
+        (locale, direction) => {
+            expect(getLocaleDirection(locale)).toBe(direction)
+        }
+    )
+
+    it('prefers getTextInfo and preserves its Locale receiver', () => {
+        const locale = {
+            textInfo: { direction: 'ltr' },
+            getTextInfo() {
+                expect(this).toBe(locale)
+                return { direction: 'rtl' }
+            },
+        }
+        const spy = jest
+            .spyOn(Intl, 'Locale')
+            .mockReturnValue(locale as unknown as Intl.Locale)
+
+        try {
+            expect(getLocaleDirection('ar')).toBe('rtl')
+        } finally {
+            spy.mockRestore()
+        }
+    })
+
+    it.each(['rtl', 'ltr'] as const)(
+        'supports legacy textInfo direction %s',
+        (direction) => {
+            const spy = jest.spyOn(Intl, 'Locale').mockReturnValue({
+                textInfo: { direction },
+            } as unknown as Intl.Locale)
+
+            try {
+                expect(getLocaleDirection('ar')).toBe(direction)
+            } finally {
+                spy.mockRestore()
+            }
+        }
+    )
+
+    it('falls back to ltr when neither direction API is available', () => {
+        const spy = jest
+            .spyOn(Intl, 'Locale')
+            .mockReturnValue({} as Intl.Locale)
+
+        try {
+            expect(getLocaleDirection('ar')).toBe('ltr')
+        } finally {
+            spy.mockRestore()
+        }
+    })
+
     it('covers empty keys and non-object path access in messages', () => {
         const intl = createIntl({
             locale: 'en-US',
