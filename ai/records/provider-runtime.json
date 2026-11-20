@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "intl/provider-runtime",
+  "package": "@beforesemicolon/intl",
+  "version": "0.5.0",
+  "name": "getIntlLocaleRuntime",
+  "summary": "Find the mounted locale scope for an element.",
+  "setup": {
+    "npm": {
+      "specifier": "@beforesemicolon/intl",
+      "names": [
+        "getIntlLocaleRuntime"
+      ],
+      "import": "import { getIntlLocaleRuntime } from '@beforesemicolon/intl'",
+      "registration": "The npm root registers its custom elements automatically."
+    }
+  },
+  "api": {
+    "signatures": {
+      "getIntlLocaleRuntime": "(element: Element | null) => IntlRuntime | undefined"
+    }
+  },
+  "example": {
+    "npm": "import { getIntlLocaleRuntime } from '@beforesemicolon/intl'\nconst scope = getIntlLocaleRuntime(document.querySelector('intl-locale'))\nif (scope) await scope.setLocale('pt')"
+  },
+  "links": [
+    {
+      "label": "Documentation",
+      "url": "https://intl.beforesemicolon.com/documentation/components/intl-locale.html"
+    },
+    {
+      "label": "intl/runtime",
+      "url": "runtime.json"
+    },
+    {
+      "label": "intl/intl-locale",
+      "url": "intl-locale.json"
+    }
+  ],
+  "guidance": [
+    "This helper is not in BFS.INTL. In classic mode use setLocale for the top-level default provider.",
+    "If a provider is not mounted yet, scope may be undefined."
+  ]
+}

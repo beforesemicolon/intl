@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "id": "intl/intl-name",
+  "package": "@beforesemicolon/intl",
+  "version": "0.5.0",
+  "name": "intl-name",
+  "summary": "Display a localized name for a region, language, or currency code.",
+  "setup": {
+    "npm": {
+      "specifier": "@beforesemicolon/intl",
+      "names": [],
+      "import": "import '@beforesemicolon/intl'",
+      "registration": "The npm root registers its custom elements automatically."
+    },
+    "classic": {
+      "scripts": [
+        {
+          "package": "@beforesemicolon/web-component",
+          "version": "1.22.0",
+          "path": "dist/client.js",
+          "global": "BFS.WebComponent"
+        },
+        {
+          "package": "@beforesemicolon/intl",
+          "version": "0.5.0",
+          "path": "dist/client.js",
+          "global": "BFS.INTL"
+        }
+      ],
+      "globals": [],
+      "requiredGlobals": [
+        "BFS.WebComponent",
+        "BFS.MARKUP"
+      ],
+      "registration": "The script registers its custom elements automatically."
+    }
+  },
+  "api": {
+    "tag": "intl-name",
+    "attributes": [
+      "value",
+      "type",
+      "name-style",
+      "locale",
+      "language"
+    ],
+    "types": {
+      "IntlNameProps": "export interface IntlNameProps {\n    value: string | undefined;\n    type: Intl.DisplayNamesOptions['type'];\n    nameStyle: Intl.DisplayNamesOptions['style'];\n    locale: string;\n    language: Intl.DisplayNamesOptions['languageDisplay'];\n}"
+    }
+  },
+  "example": {
+    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-name value=\"PT\" type=\"region\">Portugal</intl-name>",
+    "classic": "<intl-name value=\"PT\" type=\"region\">Portugal</intl-name>"
+  },
+  "links": [
+    {
+      "label": "Documentation",
+      "url": "https://intl.beforesemicolon.com/documentation/components/intl-name.html"
+    }
+  ]
+}

@@ -141,7 +141,7 @@ dist
 # files
 .DS_Store
 index.html
-en.json
+/en.json
 !docs/locale/en.json
 
 # dirs

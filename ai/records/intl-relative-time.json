@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "intl/intl-relative-time",
+  "package": "@beforesemicolon/intl",
+  "version": "0.5.0",
+  "name": "intl-relative-time",
+  "summary": "Legacy alias for intl-rel-time; prefer the shorter tag.",
+  "setup": {
+    "npm": {
+      "specifier": "@beforesemicolon/intl",
+      "names": [],
+      "import": "import '@beforesemicolon/intl'",
+      "registration": "The npm root registers its custom elements automatically."
+    },
+    "classic": {
+      "scripts": [
+        {
+          "package": "@beforesemicolon/web-component",
+          "version": "1.22.0",
+          "path": "dist/client.js",
+          "global": "BFS.WebComponent"
+        },
+        {
+          "package": "@beforesemicolon/intl",
+          "version": "0.5.0",
+          "path": "dist/client.js",
+          "global": "BFS.INTL"
+        }
+      ],
+      "globals": [],
+      "requiredGlobals": [
+        "BFS.WebComponent",
+        "BFS.MARKUP"
+      ],
+      "registration": "The script registers its custom elements automatically."
+    }
+  },
+  "api": {
+    "tag": "intl-relative-time",
+    "attributes": [
+      "live",
+      "decimals",
+      "precision",
+      "value",
+      "time-style",
+      "numeric",
+      "unit",
+      "locale"
+    ]
+  },
+  "example": {
+    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-rel-time value=\"1780000000000\"></intl-rel-time>",
+    "classic": "<intl-rel-time value=\"1780000000000\"></intl-rel-time>"
+  },
+  "links": [
+    {
+      "label": "Documentation",
+      "url": "https://intl.beforesemicolon.com/documentation/components/intl-relative-time.html"
+    },
+    {
+      "label": "intl/intl-rel-time",
+      "url": "intl-rel-time.json"
+    }
+  ]
+}

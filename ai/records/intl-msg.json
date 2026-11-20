@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "id": "intl/intl-msg",
+  "package": "@beforesemicolon/intl",
+  "version": "0.5.0",
+  "name": "intl-msg",
+  "summary": "Resolve a localized message key and interpolate values.",
+  "setup": {
+    "npm": {
+      "specifier": "@beforesemicolon/intl",
+      "names": [],
+      "import": "import '@beforesemicolon/intl'",
+      "registration": "The npm root registers its custom elements automatically."
+    },
+    "classic": {
+      "scripts": [
+        {
+          "package": "@beforesemicolon/web-component",
+          "version": "1.22.0",
+          "path": "dist/client.js",
+          "global": "BFS.WebComponent"
+        },
+        {
+          "package": "@beforesemicolon/intl",
+          "version": "0.5.0",
+          "path": "dist/client.js",
+          "global": "BFS.INTL"
+        }
+      ],
+      "globals": [],
+      "requiredGlobals": [
+        "BFS.WebComponent",
+        "BFS.MARKUP"
+      ],
+      "registration": "The script registers its custom elements automatically."
+    }
+  },
+  "api": {
+    "tag": "intl-msg",
+    "attributes": [
+      "id",
+      "key",
+      "values"
+    ]
+  },
+  "example": {
+    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-msg key=\"home.hello\" values='{\"name\":\"Pat\"}'>Hello Pat</intl-msg>",
+    "classic": "<intl-msg key=\"home.hello\" values='{\"name\":\"Pat\"}'>Hello Pat</intl-msg>"
+  },
+  "links": [
+    {
+      "label": "Documentation",
+      "url": "https://intl.beforesemicolon.com/documentation/components/intl-msg.html"
+    },
+    {
+      "label": "intl/intl-locale",
+      "url": "intl-locale.json"
+    },
+    {
+      "label": "intl/formatters",
+      "url": "formatters.json"
+    }
+  ],
+  "guidance": [
+    "Use key, not the legacy id alias. Dotted keys resolve nested message objects. Keep fallback text meaningful.",
+    "Supply only trusted translation content and trusted interpolations; this component renders output as a template. For untrusted strings, use native textContent."
+  ]
+}

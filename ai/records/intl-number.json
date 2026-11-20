@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "id": "intl/intl-number",
+  "package": "@beforesemicolon/intl",
+  "version": "0.5.0",
+  "name": "intl-number",
+  "summary": "Format a number, currency, percent, or unit.",
+  "setup": {
+    "npm": {
+      "specifier": "@beforesemicolon/intl",
+      "names": [],
+      "import": "import '@beforesemicolon/intl'",
+      "registration": "The npm root registers its custom elements automatically."
+    },
+    "classic": {
+      "scripts": [
+        {
+          "package": "@beforesemicolon/web-component",
+          "version": "1.22.0",
+          "path": "dist/client.js",
+          "global": "BFS.WebComponent"
+        },
+        {
+          "package": "@beforesemicolon/intl",
+          "version": "0.5.0",
+          "path": "dist/client.js",
+          "global": "BFS.INTL"
+        }
+      ],
+      "globals": [],
+      "requiredGlobals": [
+        "BFS.WebComponent",
+        "BFS.MARKUP"
+      ],
+      "registration": "The script registers its custom elements automatically."
+    }
+  },
+  "api": {
+    "tag": "intl-number",
+    "attributes": [
+      "value",
+      "locale",
+      "type",
+      "currency",
+      "currency-style",
+      "currency-sign",
+      "unit",
+      "unit-style",
+      "notation",
+      "compact",
+      "system",
+      "grouping",
+      "sign",
+      "rounding",
+      "rounding-increment",
+      "rounding-priority",
+      "trailing-zero",
+      "min-digits",
+      "significant-digits",
+      "fractions"
+    ],
+    "types": {
+      "IntlNumberProps": "export interface IntlNumberProps {\n    value: number | string | undefined;\n    locale: string;\n    type: Intl.NumberFormatOptions['style'];\n    currency: string;\n    currencyStyle: Intl.NumberFormatOptions['currencyDisplay'];\n    currencySign: Intl.NumberFormatOptions['currencySign'];\n    unit: string;\n    unitStyle: Intl.NumberFormatOptions['unitDisplay'];\n    notation: Intl.NumberFormatOptions['notation'];\n    compact: Intl.NumberFormatOptions['compactDisplay'];\n    system: string;\n    grouping: string | boolean;\n    sign: Intl.NumberFormatOptions['signDisplay'];\n    rounding: string;\n    roundingIncrement: number | string | undefined;\n    roundingPriority: string;\n    trailingZero: string;\n    minDigits: number | string | undefined;\n    significantDigits: number | string | undefined;\n    fractions: number | string | undefined;\n}"
+    }
+  },
+  "example": {
+    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-number value=\"1200\" type=\"currency\" currency=\"USD\">1200</intl-number>",
+    "classic": "<intl-number value=\"1200\" type=\"currency\" currency=\"USD\">1200</intl-number>"
+  },
+  "links": [
+    {
+      "label": "Documentation",
+      "url": "https://intl.beforesemicolon.com/documentation/components/intl-number.html"
+    }
+  ]
+}

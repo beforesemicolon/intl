@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "id": "intl/runtime",
+  "package": "@beforesemicolon/intl",
+  "version": "0.5.0",
+  "name": "createIntl / initIntl / setLocale",
+  "summary": "Create a scoped locale runtime, load messages, or change the current language.",
+  "setup": {
+    "npm": {
+      "specifier": "@beforesemicolon/intl/runtime",
+      "names": [
+        "createIntl",
+        "initIntl",
+        "getIntl",
+        "setLocale",
+        "loadLocale",
+        "subscribeIntl",
+        "destroyIntl",
+        "resetIntl",
+        "getLocaleDirection"
+      ],
+      "import": "import { createIntl, initIntl, getIntl, setLocale, loadLocale, subscribeIntl, destroyIntl, resetIntl, getLocaleDirection } from '@beforesemicolon/intl/runtime'",
+      "registration": "No custom elements register when importing this subpath."
+    },
+    "classic": {
+      "scripts": [
+        {
+          "package": "@beforesemicolon/web-component",
+          "version": "1.22.0",
+          "path": "dist/client.js",
+          "global": "BFS.WebComponent"
+        },
+        {
+          "package": "@beforesemicolon/intl",
+          "version": "0.5.0",
+          "path": "dist/client.js",
+          "global": "BFS.INTL"
+        }
+      ],
+      "globals": [
+        "BFS.INTL.createIntl",
+        "BFS.INTL.initIntl",
+        "BFS.INTL.getIntl",
+        "BFS.INTL.setLocale",
+        "BFS.INTL.loadLocale",
+        "BFS.INTL.subscribeIntl",
+        "BFS.INTL.destroyIntl",
+        "BFS.INTL.resetIntl",
+        "BFS.INTL.getLocaleDirection"
+      ],
+      "requiredGlobals": [
+        "BFS.WebComponent",
+        "BFS.MARKUP"
+      ],
+      "registration": "The script registers its custom elements automatically."
+    }
+  },
+  "api": {
+    "signatures": {
+      "createIntl": "(options?: IntlRuntimeOptions) => IntlRuntime",
+      "initIntl": "(options?: IntlRuntimeOptions) => IntlRuntime",
+      "getIntl": "(scope?: IntlRuntime) => IntlRuntime",
+      "setLocale": "(locale: string, scope?: IntlRuntime) => Promise<IntlRuntimeSnapshot>",
+      "loadLocale": "(locale?: string, scope?: IntlRuntime) => Promise<IntlRuntimeSnapshot>",
+      "subscribeIntl": "(listener: IntlRuntimeListener, scope?: IntlRuntime) => () => void",
+      "destroyIntl": "(scope?: IntlRuntime) => void",
+      "resetIntl": "() => void",
+      "getLocaleDirection": "(locale: string) => IntlDirection"
+    },
+    "types": {
+      "IntlDirection": "export type IntlDirection = 'ltr' | 'rtl';",
+      "IntlRuntime": "export interface IntlRuntime {\n    readonly locale: string;\n    readonly fallbackLocale?: string;\n    readonly messages: IntlMessages;\n    readonly fallbackMessages: IntlMessages;\n    readonly direction: IntlDirection;\n    readonly loadedLocales: Set<string>;\n    readonly status: IntlRuntimeStatus;\n    readonly error?: unknown;\n    readonly parentScope?: IntlRuntime;\n    readonly formatterCache: Map<string, unknown>;\n    readonly messageCache: Map<string, unknown>;\n    snapshot(): IntlRuntimeSnapshot;\n    setLocale(locale: string): Promise<IntlRuntimeSnapshot>;\n    loadLocale(locale?: string): Promise<IntlRuntimeSnapshot>;\n    setMessages(messages: IntlMessages, locale?: string): IntlRuntimeSnapshot;\n    setFallbackMessages(messages: IntlMessages, locale?: string): IntlRuntimeSnapshot;\n    getMessage<T = unknown>(key: string): T | undefined;\n    subscribe(listener: IntlRuntimeListener): () => void;\n    destroy(): void;\n}",
+      "IntlRuntimeOptions": "export interface IntlRuntimeOptions {\n    locale?: string;\n    fallbackLocale?: string;\n    messages?: IntlMessages;\n    fallbackMessages?: IntlMessages;\n    src?: string;\n    srcDir?: string;\n    baseUrl?: string;\n    loader?: (locale: string, signal?: AbortSignal) => Promise<IntlMessages> | IntlMessages;\n    parentScope?: IntlRuntime;\n}",
+      "IntlRuntimeSnapshot": "export interface IntlRuntimeSnapshot {\n    locale: string;\n    fallbackLocale?: string;\n    messages: IntlMessages;\n    fallbackMessages: IntlMessages;\n    direction: IntlDirection;\n    loadedLocales: Set<string>;\n    status: IntlRuntimeStatus;\n    error?: unknown;\n    parentScope?: IntlRuntime;\n}",
+      "IntlMessages": "export type IntlMessages = Record<string, unknown>;",
+      "IntlRuntimeListener": "export type IntlRuntimeListener = (snapshot: IntlRuntimeSnapshot) => void;",
+      "IntlRuntimeStatus": "export type IntlRuntimeStatus = 'idle' | 'loading' | 'ready' | 'error';"
+    }
+  },
+  "example": {
+    "npm": "import { createIntl, setLocale } from '@beforesemicolon/intl/runtime'\nconst messages = { en: { greeting: 'Hello' }, pt: { greeting: 'Olá' } }\nconst scope = createIntl({ locale: 'en', loader: (locale) => messages[locale] ?? {} })\nawait setLocale('pt', scope)\nconsole.log(scope.getMessage('greeting'))\nscope.destroy()",
+    "classic": "await BFS.INTL.setLocale('pt')"
+  },
+  "links": [
+    {
+      "label": "Documentation",
+      "url": "https://intl.beforesemicolon.com/documentation/apis/create-intl.html"
+    },
+    {
+      "label": "intl/intl-locale",
+      "url": "intl-locale.json"
+    },
+    {
+      "label": "intl/intl-msg",
+      "url": "intl-msg.json"
+    },
+    {
+      "label": "intl/formatters",
+      "url": "formatters.json"
+    }
+  ],
+  "guidance": [
+    "Import the runtime subpath when no Custom Element registration is required.",
+    "Use the default runtime or explicit scope consistently. Use initIntl only when you mean to replace the default; a mounted top-level intl-locale sets it up.",
+    "Runtime lookup checks active messages, fallback messages, then parent scope. Use subscribeIntl for pending, ready, and error status."
+  ]
+}

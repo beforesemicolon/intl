@@ -21,7 +21,7 @@ renovate.json
 renovate.json5
 website
 build-docs.js
-en.json
+/en.json
 static
 INTL_MODERNIZATION_PLAN.md
 TRANSLATION_BUILDER_PLAN.md

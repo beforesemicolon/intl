@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "id": "intl/intl-datetime",
+  "package": "@beforesemicolon/intl",
+  "version": "0.5.0",
+  "name": "intl-datetime",
+  "summary": "Format a date or time with an optional zone.",
+  "setup": {
+    "npm": {
+      "specifier": "@beforesemicolon/intl",
+      "names": [],
+      "import": "import '@beforesemicolon/intl'",
+      "registration": "The npm root registers its custom elements automatically."
+    },
+    "classic": {
+      "scripts": [
+        {
+          "package": "@beforesemicolon/web-component",
+          "version": "1.22.0",
+          "path": "dist/client.js",
+          "global": "BFS.WebComponent"
+        },
+        {
+          "package": "@beforesemicolon/intl",
+          "version": "0.5.0",
+          "path": "dist/client.js",
+          "global": "BFS.INTL"
+        }
+      ],
+      "globals": [],
+      "requiredGlobals": [
+        "BFS.WebComponent",
+        "BFS.MARKUP"
+      ],
+      "registration": "The script registers its custom elements automatically."
+    }
+  },
+  "api": {
+    "tag": "intl-datetime",
+    "attributes": [
+      "value",
+      "locale",
+      "date-style",
+      "time-style",
+      "time-zone",
+      "timezone",
+      "time-zone-name",
+      "timezone-name",
+      "calendar",
+      "hour-cycle",
+      "hour12",
+      "weekday",
+      "era",
+      "year",
+      "month",
+      "day",
+      "day-period",
+      "hour",
+      "minute",
+      "second"
+    ],
+    "types": {
+      "IntlDatetimeProps": "export interface IntlDatetimeProps {\n    value: string | number | Date | undefined;\n    locale: string;\n    dateStyle: Intl.DateTimeFormatOptions['dateStyle'];\n    timeStyle: Intl.DateTimeFormatOptions['timeStyle'];\n    timeZone: string;\n    timezone: string;\n    timeZoneName: Intl.DateTimeFormatOptions['timeZoneName'];\n    timezoneName: Intl.DateTimeFormatOptions['timeZoneName'];\n    calendar: string;\n    hourCycle: Intl.DateTimeFormatOptions['hourCycle'];\n    hour12: boolean | string | undefined;\n    weekday: Intl.DateTimeFormatOptions['weekday'];\n    era: Intl.DateTimeFormatOptions['era'];\n    year: Intl.DateTimeFormatOptions['year'];\n    month: Intl.DateTimeFormatOptions['month'];\n    day: Intl.DateTimeFormatOptions['day'];\n    dayPeriod: Intl.DateTimeFormatOptions['dayPeriod'];\n    hour: Intl.DateTimeFormatOptions['hour'];\n    minute: Intl.DateTimeFormatOptions['minute'];\n    second: Intl.DateTimeFormatOptions['second'];\n}"
+    }
+  },
+  "example": {
+    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-datetime value=\"2026-01-01T10:00:00Z\" date-style=\"medium\" time-zone=\"UTC\">January 1, 2026</intl-datetime>",
+    "classic": "<intl-datetime value=\"2026-01-01T10:00:00Z\" date-style=\"medium\" time-zone=\"UTC\">January 1, 2026</intl-datetime>"
+  },
+  "links": [
+    {
+      "label": "Documentation",
+      "url": "https://intl.beforesemicolon.com/documentation/components/intl-datetime.html"
+    }
+  ]
+}

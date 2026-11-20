@@ -1,44 +1,29 @@
 ---
-name: '{{t.pages.documentation.apis.on_locale_messages_loaded.meta.onlocalemessagesloaded}}'
+name: Locale lifecycle events
 order: 7.26
-title: '{{t.pages.documentation.apis.on_locale_messages_loaded.meta.onlocalemessagesloaded_intl_by_before_semicolon}}'
-description: '{{t.pages.documentation.apis.on_locale_messages_loaded.meta.register_the_intl_locale_component_and_return_locale_lifecycle_behavior_for_the_browser_entrypoi}}'
+title: Locale lifecycle events | Before Semicolon Intl
+description: Observe locale loading and changes with Intl events and runtime subscriptions.
 layout: document
 ---
 
-## {{t.pages.documentation.apis.on_locale_messages_loaded.content.onlocalemessagesloaded}}
+## Locale lifecycle events
 
-{{t.pages.documentation.apis.on_locale_messages_loaded.content.onlocalemessagesloaded_is_exported_from_the_browser_bundle_and_used_when_you_load_dist_client_js}}
+`onLocaleMessagesLoaded` is not a public API in this release. When a
+top-level `intl-locale` loads its messages, use its DOM events:
 
-{{t.pages.documentation.apis.on_locale_messages_loaded.content.it_ties_locale_events_to_the_custom_element_layer_so_dom_workflows_can_react_to_runtime_lifecycl}}
-
-## {{t.common.content.signature}}
-
-```ts
-function onLocaleMessagesLoaded(
-  options?: IntlLocaleOptions
-) // Browser entry helper
-```
-
-## {{t.pages.documentation.apis.on_locale_messages_loaded.content.event_model_and_lifecycle}}
-
-{{t.pages.documentation.apis.on_locale_messages_loaded.content.the_helper_powers_the_same_locale_events_that_emits}}
-
-- {{t.pages.documentation.apis.on_locale_messages_loaded.content.locale_load_when_a_locale_file_fetch_completes}}
-- {{t.pages.documentation.apis.on_locale_messages_loaded.content.locale_change_when_active_locale_is_ready}}
-- {{t.pages.documentation.apis.on_locale_messages_loaded.content.locale_error_when_fetch_parsing_fails}}
+- `locale-load` reports a completed message load.
+- `locale-change` reports that the loaded locale is ready.
+- `locale-error` reports a load error.
 
 ```html
-<intl-locale locale="en-US" src-dir="/locales"></intl-locale>
 <script>
-  document.body.addEventListener('locale-load', (event) => {
-    console.log('loaded', event.detail.locale)
-  })
+    document.addEventListener('locale-load', (event) => {
+        console.log(event.detail.locale)
+    })
 </script>
+<intl-locale locale="en-US" src-dir="/locales"></intl-locale>
 ```
 
-{{t.pages.documentation.apis.on_locale_messages_loaded.content.use_this_in_browser_mode_when_you_need_global_setup_and_want_to_keep_logic_in_html}}
-
-{{t.pages.documentation.apis.on_locale_messages_loaded.content.for_explicit_js_subscriptions_and_snapshots_prefer_subscribeintl}}
-
-{{t.pages.documentation.apis.on_locale_messages_loaded.content.native_references_customevent_https_developer_mozilla_org_en_us_docs_web_api_customevent_web_com}}
+For runtime-driven changes, including calls to `setLocale`, use
+`subscribeIntl(callback)` or `scope.subscribe(callback)`. Call the returned
+unsubscribe function to stop listening.
