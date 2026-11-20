@@ -7,6 +7,7 @@ Version: `{{project.version}}`
 Documentation: https://intl.beforesemicolon.com/documentation/
 Complete context: https://intl.beforesemicolon.com/llms-full.txt
 Versioned API records: https://cdn.jsdelivr.net/npm/@beforesemicolon/intl@{{project.version}}/ai/index.json
+Package agent skill: https://cdn.jsdelivr.net/npm/@beforesemicolon/intl@{{project.version}}/skills/beforesemicolon-intl/SKILL.md
 
 Use this file as the authoritative compact contract when generating Intl code. Use the exact `intl*` API names documented here; do not substitute framework i18n hooks, context providers, or undocumented `format*` aliases.
 

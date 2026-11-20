@@ -226,6 +226,7 @@ Message files are JSON objects. Nested keys are addressed with dot notation.
 
 ## AI and ecosystem context
 
+- [Build with Before Semicolon Intl: agent skill](https://cdn.jsdelivr.net/npm/@beforesemicolon/intl@0.5.0/skills/beforesemicolon-intl/SKILL.md). The canonical `skills/beforesemicolon-intl/SKILL.md` also ships in the npm tarball.
 - [Versioned AI reference (0.5.0)](https://cdn.jsdelivr.net/npm/@beforesemicolon/intl@0.5.0/ai/index.json) provides small API records and examples for this release. Read `ai/index.json` from an installed package without network access.
 - [`llms.txt`](https://intl.beforesemicolon.com/llms.txt) is the concise,
   package-owned Intl and ecosystem contract for AI tools.

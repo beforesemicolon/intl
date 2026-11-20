@@ -1,4 +1,8 @@
 {
+  "skill": {
+    "name": "beforesemicolon-intl",
+    "path": "skills/beforesemicolon-intl/SKILL.md"
+  },
   "schemaVersion": 1,
   "package": "@beforesemicolon/intl",
   "version": "0.5.0",

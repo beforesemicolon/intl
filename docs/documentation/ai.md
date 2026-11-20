@@ -22,3 +22,9 @@ for an older installed version.
 Check the `intl/intl-locale` record for a browser locale switch. Use
 `subscribeIntl` when you need load status, and call the returned function at
 teardown.
+
+## Package agent skill
+
+Install or open the [Build with Before Semicolon Intl skill](https://cdn.jsdelivr.net/npm/@beforesemicolon/intl@0.5.0/skills/beforesemicolon-intl/SKILL.md).
+The same `skills/beforesemicolon-intl/SKILL.md` file ships in the npm tarball.
+Use it to choose the right record for the version in your project.
