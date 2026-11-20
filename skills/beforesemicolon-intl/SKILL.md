@@ -49,6 +49,70 @@ description: Build or debug scoped localization with @beforesemicolon/intl. Use 
   unsubscribe on teardown. The 0.5 release has no
   `BFS.INTL.onLocaleMessagesLoaded` function.
 
+## Working patterns
+
+**Use the runtime in an npm app without registering elements.** This scope
+gets its own messages and can switch language independently. The missing
+`item.label` falls back to English after the switch.
+
+```js
+import { createIntl, setLocale } from '@beforesemicolon/intl/runtime'
+import { intlMsg } from '@beforesemicolon/intl/formatters'
+
+const messages = {
+  en: { item: { label: 'Book' } },
+  pt: { item: { title: 'Livro' } }
+}
+const scope = createIntl({
+  locale: 'en',
+  fallbackLocale: 'en',
+  loader: (locale) => messages[locale] ?? {}
+})
+await setLocale('pt', scope)
+console.log(intlMsg('item.title', undefined, { scope })) // Livro
+console.log(intlMsg('item.label', undefined, { scope })) // Book
+scope.destroy()
+```
+
+When a bundled UI uses only a provider and a message, use the explicit
+initializers once instead of importing the full root:
+
+```js
+import * as webComponent from '@beforesemicolon/web-component'
+import registerLocale from '@beforesemicolon/intl/components/intl-locale'
+import registerMessage from '@beforesemicolon/intl/components/intl-msg'
+
+registerLocale(webComponent)
+registerMessage(webComponent)
+```
+
+**Switch the main locale on a no-build page.** For Intl 0.5.0, serve
+`/locales/en.json` with `{"home":{"title":"Welcome"}}` and
+`/locales/pt.json` with `{"home":{"title":"Bem-vindo"}}`.
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@beforesemicolon/web-component@1.22.0/dist/client.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@beforesemicolon/intl@0.5.0/dist/client.js"></script>
+<intl-locale locale="en" fallback-locale="en" src-dir="/locales" fallback update-document>
+  <h1><intl-msg key="home.title">Welcome</intl-msg></h1>
+</intl-locale>
+<label for="language">Language</label>
+<select id="language">
+  <option value="en">English</option>
+  <option value="pt">Português</option>
+</select>
+<script>
+  document.querySelector('#language').addEventListener('change', async (event) => {
+    await BFS.INTL.setLocale(event.target.value)
+  })
+</script>
+```
+
+See the [complete tested HTML](https://cdn.jsdelivr.net/npm/@beforesemicolon/intl@0.5.0/ai/examples/locale-switch.html)
+in `ai/examples/locale-switch.html` and the message fixtures under
+`ai/examples/locales/` inside the 0.5.0 package. Run from a local HTTP server;
+the provider fetches over HTTP rather than reading files from disk.
+
 ## Verify the interaction
 
 Check initial text, change the locale with a labeled control, and confirm the
