@@ -14,7 +14,7 @@ server
 .eslintrc.js
 jest.config.cjs
 .eslintrc.cjs
-index.html
+/index.html
 renovate.json
 .renovaterc.json
 .renovaterc

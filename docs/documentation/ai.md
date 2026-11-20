@@ -28,3 +28,6 @@ teardown.
 Install or open the [Build with Before Semicolon Intl skill](https://cdn.jsdelivr.net/npm/@beforesemicolon/intl@0.5.0/skills/beforesemicolon-intl/SKILL.md).
 The same `skills/beforesemicolon-intl/SKILL.md` file ships in the npm tarball.
 Use it to choose the right record for the version in your project.
+
+Copy the full skill directory, including its manifest, local reference pages,
+and runnable examples. The complete versioned library works offline.

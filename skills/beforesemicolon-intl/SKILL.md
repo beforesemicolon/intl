@@ -5,6 +5,23 @@ description: Build or debug scoped localization with @beforesemicolon/intl. Use 
 
 # Build with Before Semicolon Intl
 
+## Read the packaged documentation
+
+This skill includes the complete public Intl reference for 0.5.0. It works
+after you copy the whole skill directory; runtime code and examples do not need
+to load this documentation.
+
+- [Offline API reference](references/index.md) maps every public export, type,
+  component, npm entry point, and classic browser global to its versioned page.
+- [Complete practical workflows](references/workflows.md) explains setup choices,
+  composition, failure modes, and testing.
+- [Runnable examples](examples/README.md) includes the full application files,
+  exact dependency versions, and local run instructions.
+
+Choose the smallest section that answers the request. If it needs a different
+installed version, get that release's skill and records instead of mixing APIs
+from several releases.
+
 ## Match the project
 
 1. Read the installed version from package metadata or the lockfile. In a
@@ -108,10 +125,11 @@ registerMessage(webComponent)
 </script>
 ```
 
-See the [complete tested HTML](https://cdn.jsdelivr.net/npm/@beforesemicolon/intl@0.5.0/ai/examples/locale-switch.html)
-in `ai/examples/locale-switch.html` and the message fixtures under
-`ai/examples/locales/` inside the 0.5.0 package. Run from a local HTTP server;
-the provider fetches over HTTP rather than reading files from disk.
+Use the [complete tested HTML](examples/classic/locale-switch.html) and its
+[English](examples/classic/locales/en.json) and
+[Portuguese](examples/classic/locales/pt.json) messages, or open the
+[bundled selective example](examples/npm-scoped/index.html). Run both from HTTP;
+the provider does not load local files directly from disk.
 
 ## Companion packages
 

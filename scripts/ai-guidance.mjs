@@ -134,7 +134,7 @@ export const records = [
         'Format a date or time with an optional zone.',
         ['date', 'time', 'datetime', 'timezone', 'calendar'],
         ['value', 'date-style', 'time-zone'],
-        '<intl-datetime value="2026-01-01T10:00:00Z" date-style="medium" time-zone="UTC">January 1, 2026</intl-datetime>',
+        '<intl-datetime value="2026-01-01T10:00:00Z" date-style="medium" time-zone="UTC"></intl-datetime>',
         { typeNames: ['IntlDatetimeProps'] }
     ),
     component(
@@ -142,7 +142,7 @@ export const records = [
         'Format a duration from milliseconds.',
         ['duration', 'hours', 'minutes', 'elapsed'],
         ['value', 'time-style', 'fields', 'locale'],
-        '<intl-duration value="3600000" fields="hours" time-style="short">1 hr</intl-duration>',
+        '<intl-duration value="3600000" fields="hours" time-style="short"></intl-duration>',
         { typeNames: ['IntlDurationProps'] }
     ),
     component(
@@ -166,7 +166,7 @@ export const records = [
         'Format a localized list with conjunction, disjunction, or unit style.',
         ['list', 'and', 'or', 'join'],
         ['value', 'type', 'locale', 'type-style'],
-        '<intl-list value="book pen pencil" type="and">book, pen, and pencil</intl-list>',
+        '<intl-list value="book pen pencil" type="and"></intl-list>',
         { typeNames: ['IntlListProps'] }
     ),
     component(
@@ -174,7 +174,7 @@ export const records = [
         'Display a localized name for a region, language, or currency code.',
         ['country', 'translated language name', 'display name', 'code'],
         ['value', 'type', 'name-style', 'locale'],
-        '<intl-name value="PT" type="region">Portugal</intl-name>',
+        '<intl-name value="PT" type="region"></intl-name>',
         { typeNames: ['IntlNameProps'] }
     ),
     component(
@@ -182,7 +182,7 @@ export const records = [
         'Choose localized text by plural category.',
         ['count', 'plural', 'singular', 'quantity'],
         ['value', 'one', 'other', 'type'],
-        '<intl-plural value="2" one="item" other="items">items</intl-plural>',
+        '<intl-plural value="2" one="item" other="items"></intl-plural>',
         { typeNames: ['IntlPluralProps'] }
     ),
     {

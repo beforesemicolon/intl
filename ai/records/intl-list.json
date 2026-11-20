@@ -48,8 +48,8 @@
     }
   },
   "example": {
-    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-list value=\"book pen pencil\" type=\"and\">book, pen, and pencil</intl-list>",
-    "classic": "<intl-list value=\"book pen pencil\" type=\"and\">book, pen, and pencil</intl-list>"
+    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-list value=\"book pen pencil\" type=\"and\"></intl-list>",
+    "classic": "<intl-list value=\"book pen pencil\" type=\"and\"></intl-list>"
   },
   "links": [
     {

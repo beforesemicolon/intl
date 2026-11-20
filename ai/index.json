@@ -7,7 +7,8 @@
   "sourceRefStatus": "expected-release-tag",
   "skill": {
     "name": "beforesemicolon-intl",
-    "path": "skills/beforesemicolon-intl/SKILL.md"
+    "path": "skills/beforesemicolon-intl/SKILL.md",
+    "manifest": "skills/beforesemicolon-intl/manifest.json"
   },
   "records": [
     {

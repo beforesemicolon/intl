@@ -53,8 +53,8 @@
     }
   },
   "example": {
-    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-plural value=\"2\" one=\"item\" other=\"items\">items</intl-plural>",
-    "classic": "<intl-plural value=\"2\" one=\"item\" other=\"items\">items</intl-plural>"
+    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-plural value=\"2\" one=\"item\" other=\"items\"></intl-plural>",
+    "classic": "<intl-plural value=\"2\" one=\"item\" other=\"items\"></intl-plural>"
   },
   "links": [
     {

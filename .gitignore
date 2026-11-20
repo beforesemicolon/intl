@@ -140,7 +140,7 @@ dist
 
 # files
 .DS_Store
-index.html
+/index.html
 /en.json
 !docs/locale/en.json
 

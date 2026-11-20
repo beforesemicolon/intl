@@ -49,8 +49,8 @@
     }
   },
   "example": {
-    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-name value=\"PT\" type=\"region\">Portugal</intl-name>",
-    "classic": "<intl-name value=\"PT\" type=\"region\">Portugal</intl-name>"
+    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-name value=\"PT\" type=\"region\"></intl-name>",
+    "classic": "<intl-name value=\"PT\" type=\"region\"></intl-name>"
   },
   "links": [
     {

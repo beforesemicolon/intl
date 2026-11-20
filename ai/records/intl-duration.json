@@ -48,8 +48,8 @@
     }
   },
   "example": {
-    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-duration value=\"3600000\" fields=\"hours\" time-style=\"short\">1 hr</intl-duration>",
-    "classic": "<intl-duration value=\"3600000\" fields=\"hours\" time-style=\"short\">1 hr</intl-duration>"
+    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-duration value=\"3600000\" fields=\"hours\" time-style=\"short\"></intl-duration>",
+    "classic": "<intl-duration value=\"3600000\" fields=\"hours\" time-style=\"short\"></intl-duration>"
   },
   "links": [
     {

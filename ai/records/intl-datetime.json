@@ -64,8 +64,8 @@
     }
   },
   "example": {
-    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-datetime value=\"2026-01-01T10:00:00Z\" date-style=\"medium\" time-zone=\"UTC\">January 1, 2026</intl-datetime>",
-    "classic": "<intl-datetime value=\"2026-01-01T10:00:00Z\" date-style=\"medium\" time-zone=\"UTC\">January 1, 2026</intl-datetime>"
+    "npm": "// Register in the app entry: import '@beforesemicolon/intl'\n// In the HTML:\n<intl-datetime value=\"2026-01-01T10:00:00Z\" date-style=\"medium\" time-zone=\"UTC\"></intl-datetime>",
+    "classic": "<intl-datetime value=\"2026-01-01T10:00:00Z\" date-style=\"medium\" time-zone=\"UTC\"></intl-datetime>"
   },
   "links": [
     {
