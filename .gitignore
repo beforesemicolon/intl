@@ -140,8 +140,8 @@ dist
 
 # files
 .DS_Store
-index.html
-en.json
+/index.html
+/en.json
 !docs/locale/en.json
 
 # dirs
@@ -149,3 +149,9 @@ website
 static
 coverage_tmp
 coverage_tmp_json
+
+# Generated release reference and skill library (included by npm pack)
+/ai/
+/skills/beforesemicolon-intl/examples/
+/skills/beforesemicolon-intl/references/
+/skills/beforesemicolon-intl/manifest.json

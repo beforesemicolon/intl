@@ -7,7 +7,7 @@ Scoped internationalization for formatter functions and Web Components.
 - Runtime scopes with locale, fallback locale, messages, loading state, and formatter caches.
 - Formatter functions for messages, numbers, dates, durations, relative time, lists, display names, and plurals.
 - Web Components that use the nearest `<intl-locale>` provider.
-- Per-component entrypoints for lazy loading.
+- Per-component initializer entrypoints for explicit setup.
 - A browser bundle for script-first apps.
 
 ## Install
@@ -42,13 +42,11 @@ await setLocale('pt-CV')
 
 ## Component-First Usage
 
-Register the components you use, then add `<intl-locale>` around localized UI.
+Import the root entry to register all Intl elements once. Then add
+`<intl-locale>` around the localized UI.
 
 ```ts
-import '@beforesemicolon/intl/components/intl-locale'
-import '@beforesemicolon/intl/components/intl-msg'
-import '@beforesemicolon/intl/components/intl-number'
-import '@beforesemicolon/intl/components/intl-datetime'
+import '@beforesemicolon/intl'
 ```
 
 ```html
@@ -78,25 +76,34 @@ parent messages and fallback messages unless they override them.
 </intl-locale>
 ```
 
-## Lazy CDN Usage
+## Classic Browser Usage
 
 ```html
 <script src="https://unpkg.com/@beforesemicolon/web-component/dist/client.js"></script>
 <script src="https://unpkg.com/@beforesemicolon/intl/dist/client.js"></script>
 
 <script>
-    BFS.INTL.onLocaleMessagesLoaded
-    BFS.INTL.intlMsg('home.title')
-    BFS.INTL.intlNumber({ value: 1200, type: 'currency', currency: 'USD' })
+    document.addEventListener('locale-load', (event) => {
+        console.log(event.detail.locale)
+    })
+    BFS.INTL.intlNumber(1200, { style: 'currency', currency: 'USD' })
 </script>
 ```
 
-For ESM CDNs, import component entrypoints independently:
+For selective npm registration, call the component initializer with Web Component.
+A side-effect-only import of the component subpath does not register it.
 
 ```js
-import 'https://esm.sh/@beforesemicolon/intl/components/intl-locale'
-import 'https://esm.sh/@beforesemicolon/intl/components/intl-msg'
+import * as webComponent from '@beforesemicolon/web-component'
+import registerLocale from '@beforesemicolon/intl/components/intl-locale'
+import registerMessage from '@beforesemicolon/intl/components/intl-msg'
+
+registerLocale(webComponent)
+registerMessage(webComponent)
 ```
+
+Use the full classic bundle when composing a shared locale provider with its
+descendants. Do not assume independent classic component scripts share a runtime.
 
 ## Runtime API
 
@@ -214,11 +221,13 @@ Message files are JSON objects. Nested keys are addressed with dot notation.
 - Use `<intl-msg key="...">` for message lookup.
 - Use `time-zone` and `time-zone-name` for date-time options.
 - Use package-level formatter functions when JavaScript code needs the same formatting behavior as components.
-- Use `@beforesemicolon/intl/components/intl-*` entrypoints for lazy component registration.
+- Use the default initializer from a component subpath for selective registration.
 - Use `<intl-locale>` scopes when a page or subtree needs explicit locale state.
 
 ## AI and ecosystem context
 
+- [Build with Before Semicolon Intl: agent skill](https://cdn.jsdelivr.net/npm/@beforesemicolon/intl@0.5.0/skills/beforesemicolon-intl/SKILL.md). The canonical `skills/beforesemicolon-intl/SKILL.md` also ships in the npm tarball.
+- [Versioned AI reference (0.5.0)](https://cdn.jsdelivr.net/npm/@beforesemicolon/intl@0.5.0/ai/index.json) provides small API records and examples for this release. Read `ai/index.json` from an installed package without network access.
 - [`llms.txt`](https://intl.beforesemicolon.com/llms.txt) is the concise,
   package-owned Intl and ecosystem contract for AI tools.
 - [`llms-full.txt`](https://intl.beforesemicolon.com/llms-full.txt) contains the

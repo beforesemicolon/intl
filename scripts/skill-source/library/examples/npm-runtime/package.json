@@ -1,0 +1,16 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "start": "esbuild app.js --bundle --format=esm --platform=node --outfile=app.bundle.mjs && node app.bundle.mjs",
+        "start:routes": "esbuild route-locales.js --bundle --format=esm --platform=node --outfile=route-locales.bundle.mjs && node route-locales.bundle.mjs"
+    },
+    "dependencies": {
+        "@beforesemicolon/intl": "0.5.0",
+        "@beforesemicolon/markup": "1.22.0",
+        "@beforesemicolon/web-component": "1.22.0"
+    },
+    "devDependencies": {
+        "esbuild": "0.28.2"
+    }
+}

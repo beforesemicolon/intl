@@ -35,3 +35,31 @@ documentation when public APIs or documented behavior change.
 
 Pull requests require review before merge. By contributing, you agree that your
 contribution is licensed under this project's [BSD 3-Clause License](LICENSE).
+
+## Versioned AI references
+
+Keep judgment and examples in `scripts/ai-guidance.mjs`. The generator reads
+the built declaration, package, and classic entry points. It checks public
+registrations, documented names, and local links. It does not change the
+runtime.
+
+The maintained inputs are the runtime source, `scripts/ai-guidance.mjs`,
+`scripts/skill-source/`, and `skills/beforesemicolon-intl/SKILL.md`. Do not edit
+or commit the generated `ai/` records or the generated references, examples,
+and manifest inside the skill. `npm run build:package` runs the existing
+checks, rebuilds these outputs, and checks that npm includes them. A normal
+`npm pack` also builds the artifacts from a clean checkout after `npm ci`.
+
+```sh
+npm ci
+npm run build:package
+npm pack --dry-run
+```
+
+If you edit only the guidance, use `npm run ai:generate` with existing built
+package artifacts, then `npm run ai:check`. The latter verifies local outputs
+without rewriting them.
+
+Update the version-pinned reference link in the README and AI docs. Keep older
+versions available through their published npm tarballs; do not rewrite an
+older index with newer API names.
