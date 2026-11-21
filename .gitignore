@@ -149,3 +149,9 @@ website
 static
 coverage_tmp
 coverage_tmp_json
+
+# Generated release reference and skill library (included by npm pack)
+/ai/
+/skills/beforesemicolon-intl/examples/
+/skills/beforesemicolon-intl/references/
+/skills/beforesemicolon-intl/manifest.json

@@ -63,7 +63,8 @@ from several releases.
 - After mount, switch the runtime with `setLocale(locale, scope)` (omit scope
   only for the default provider). Do not assume changing a provider attribute
   switches the mounted scope. Use `subscribeIntl` for runtime progress and
-  unsubscribe on teardown. The 0.5 release has no
+  unsubscribe on teardown. Let only the latest picker request update
+  app-owned status text. The 0.5 release has no
   `BFS.INTL.onLocaleMessagesLoaded` function.
 
 ## Working patterns

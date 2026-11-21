@@ -12,6 +12,7 @@ import path from 'node:path'
 import { createRequire } from 'node:module'
 import ts from 'typescript'
 import { JSDOM } from 'jsdom'
+import { buildSync } from 'esbuild'
 import { records as guide } from './ai-guidance.mjs'
 import { buildSkillLibrary } from './generate-skill-library.mjs'
 
@@ -86,14 +87,17 @@ const checker = program.getTypeChecker()
 const surfaces = {}
 const tsSignatures = {}
 const runtimeDOM = new JSDOM('', { url: 'https://example.test/' })
+const moduleDOM = new JSDOM('', { url: 'https://example.test/' })
 const require = createRequire(import.meta.url)
-{
+const installDOM = ({ window }) => {
     for (const key of nodeGlobals)
         Object.defineProperty(globalThis, key, {
-            value:
-                key === 'window' ? runtimeDOM.window : runtimeDOM.window[key],
+            value: key === 'window' ? window : window[key],
             configurable: true,
         })
+}
+{
+    installDOM(runtimeDOM)
     for (const [suffix, entry] of Object.entries(exportMap)) {
         const specifier = suffix === '.' ? pkg.name : pkg.name + suffix.slice(1)
         const declaration = program.getSourceFile(path.resolve(entry.types))
@@ -143,6 +147,30 @@ const require = createRequire(import.meta.url)
     }
 }
 
+// The package's ESM entries use bundler resolution. Execute the actual built
+// import targets through that resolution, in a separate DOM from CommonJS.
+installDOM(moduleDOM)
+for (const [suffix, entry] of Object.entries(exportMap)) {
+    const specifier = suffix === '.' ? pkg.name : pkg.name + suffix.slice(1)
+    const { outputFiles } = buildSync({
+        entryPoints: [entry.import],
+        bundle: true,
+        platform: 'browser',
+        format: 'cjs',
+        write: false,
+    })
+    const module = { exports: {} }
+    new Function('module', 'exports', outputFiles[0].text)(
+        module,
+        module.exports
+    )
+    assert.deepEqual(
+        Object.keys(module.exports).sort(),
+        surfaces[specifier].names,
+        `Unexpected ESM exports for ${specifier}`
+    )
+}
+
 const tags = new Map()
 const visit = (node, test) => {
     test(node)
@@ -177,7 +205,11 @@ for (const file of readdirSync('src/components').filter(
         )
         assert.ok(
             runtimeDOM.window.customElements.get(name),
-            `${name} is missing from the npm artifact`
+            `${name} is missing from the CommonJS artifact`
+        )
+        assert.ok(
+            moduleDOM.window.customElements.get(name),
+            `${name} is missing from the ESM artifact`
         )
         tags.set(name, { file })
     })
@@ -530,8 +562,9 @@ if (process.argv.includes('--check')) {
         writeFileSync(destination, value)
     }
 }
-console.log(
+console.error(
     `${pkg.name}@${version}: ${output.length} records; ${tags.size} browser registrations; ${Object.keys(surfaces).length} npm entries`
 )
 dom.window.close()
 runtimeDOM.window.close()
+moduleDOM.window.close()

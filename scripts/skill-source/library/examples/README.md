@@ -4,6 +4,7 @@
   [entry](npm-scoped/app.js), [package.json](npm-scoped/package.json),
   [en messages](npm-scoped/locales/en.json), [pt messages](npm-scoped/locales/pt.json).
 - [Runtime-only npm example](npm-runtime/app.js) with [package.json](npm-runtime/package.json).
+- [Lazy common and route dictionaries](npm-runtime/route-locales.js), a runtime-only example with a reproducible out-of-order language change.
 - [No-build locale switching](classic/locale-switch.html) with
   [en messages](classic/locales/en.json) and [pt messages](classic/locales/pt.json).
 - [Offline API reference](../references/index.md) and [workflows](../references/workflows.md).
@@ -15,7 +16,9 @@ candidate versions are available on npm, run `npm install` then `npm start`.
 The scoped UI serves a local page; change its Language control to Portuguese.
 Expect the heading to change and text missing in Portuguese to fall back to
 English. The runtime-only example bundles one script for Node and prints the
-active and fallback messages. It does not require a DOM.
+active and fallback messages. It does not require a DOM. From that same
+`npm-runtime` directory, run `npm run start:routes` to check shared and
+page messages, the per-language cache, and an out-of-order route response.
 
 Before publication, install the matching Intl, Web Component and Markup
 candidate tarballs instead of requesting unpublished versions from the npm

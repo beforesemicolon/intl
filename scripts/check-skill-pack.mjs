@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 
 const read = (file) => JSON.parse(readFileSync(file, 'utf8'))
@@ -20,11 +20,24 @@ assert.ok(
     packedFiles.has(index.skill.manifest),
     'No offline skill manifest in tarball'
 )
-for (const record of index.records)
+for (const file of readdirSync('ai', {
+    recursive: true,
+    withFileTypes: true,
+})) {
+    if (!file.isFile()) continue
+    const relative = path
+        .join(file.parentPath, file.name)
+        .split(path.sep)
+        .join('/')
     assert.ok(
-        packedFiles.has('ai/' + record.path),
-        'Missing packed API record ' + record.id
+        packedFiles.has(relative),
+        'Missing packaged AI release asset: ' + relative
     )
+}
+assert.ok(
+    ![...packedFiles].some((file) => file.startsWith('scripts/skill-source/')),
+    'Authoring inputs must not be part of the npm tarball'
+)
 assert.deepEqual(
     Object.keys(manifest.coverage).sort(),
     index.records.map((r) => r.id).sort(),
